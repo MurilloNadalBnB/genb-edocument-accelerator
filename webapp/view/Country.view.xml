@@ -1,0 +1,78 @@
+<mvc:View
+	controllerName="bnb.edoc.controller.Country"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:core="sap.ui.core"
+	height="100%">
+	<f:DynamicPage id="countryPage" class="edocPage">
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:breadcrumbs>
+					<Breadcrumbs currentLocationText="{c>/name}">
+						<Link text="Overview" press=".onHome"/>
+					</Breadcrumbs>
+				</f:breadcrumbs>
+				<f:heading>
+					<HBox alignItems="Center">
+						<Avatar initials="{c>/code}" displayShape="Square" displaySize="S" backgroundColor="Accent6" class="sapUiSmallMarginEnd"/>
+						<Title text="{c>/name}" wrapping="true"/>
+					</HBox>
+				</f:heading>
+				<f:expandedContent>
+					<Text text="{c>/scenario}"/>
+				</f:expandedContent>
+				<f:snappedContent>
+					<Text text="{c>/scenario}"/>
+				</f:snappedContent>
+			</f:DynamicPageTitle>
+		</f:title>
+		<f:header>
+			<f:DynamicPageHeader pinnable="false">
+				<VBox>
+					<HBox wrap="Wrap" class="edocAttrs">
+						<VBox class="edocAttr">
+							<Label text="XML format"/>
+							<Text text="{c>/schema}"/>
+						</VBox>
+						<VBox class="edocAttr">
+							<Label text="Interface"/>
+							<Text text="{c>/iface}" class="edocMono"/>
+						</VBox>
+						<VBox class="edocAttr">
+							<Label text="eDocument type"/>
+							<Text text="{c>/edoc}" class="edocMono"/>
+						</VBox>
+						<VBox class="edocAttr">
+							<Label text="Status"/>
+							<ObjectStatus text="Available" state="Success" icon="sap-icon://sys-enter-2"/>
+						</VBox>
+					</HBox>
+					<core:Fragment fragmentName="bnb.edoc.view.Steps" type="XML"/>
+				</VBox>
+			</f:DynamicPageHeader>
+		</f:header>
+		<f:content>
+			<VBox class="sapUiResponsiveContentPadding">
+				<Title text="Choose a document type" level="H3" class="sapUiSmallMarginBottom"/>
+				<FlexBox wrap="Wrap" items="{c>/docs}">
+					<GenericTile
+						header="{c>label}"
+						subheader="{c>desc}"
+						frameType="TwoByOne"
+						press=".onDoc"
+						class="sapUiSmallMarginEnd sapUiSmallMarginBottom edocDocTile">
+						<TileContent footer="SAP source: {c>source}">
+							<NumericContent value="{= String(${c>rules}) }" scale="{= ${c>rules} === 1 ? 'rule' : 'rules' }" icon="{c>icon}" valueColor="{= ${c>rules} ? 'Good' : 'Neutral' }" withMargin="false"/>
+						</TileContent>
+					</GenericTile>
+				</FlexBox>
+				<MessageStrip
+					class="sapUiSmallMarginTop"
+					type="Information"
+					showIcon="true"
+					text="Accounting documents use the same legal XML as invoices. Only the SAP source changes (BKPF / BSEG instead of VBRK / VBRP), so the field picker and suggestions adapt automatically."/>
+			</VBox>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>

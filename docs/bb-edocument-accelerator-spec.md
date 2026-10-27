@@ -1,6 +1,6 @@
 # B&B eDocument Accelerator, especificação funcional e regras de negócio
 
-> Documento de continuidade. Descreve tudo o que foi definido e implementado no mockup `edoc-accelerator-mockup.html` (versão de 27/10/2026), para servir de base a um novo projeto. Leia junto com o HTML, que é a referência visual e funcional.
+> Documento de continuidade. Descreve tudo o que foi definido e implementado no mockup original [`legacy/edoc-accelerator-mockup.html`](legacy/edoc-accelerator-mockup.html) (versão de 27/10/2026). A versão atual do mockup é a app OpenUI5 na raiz do repositório (ver seções 14 e 16), que reaproveita as mesmas regras de negócio.
 
 ---
 
@@ -77,7 +77,7 @@ Cada combinação **País + Tipo de documento** tem o seu próprio conjunto de r
 | FR | UBL `Invoice`, `InvoiceTypeCode 380`, IVA 20% | UBL `CreditNote`, `CreditNoteTypeCode 381`, com `BillingReference` | Mesmo XML da Invoice |
 | DE | UBL `Invoice` com `CustomizationID` XRechnung 3.0, `BuyerReference` = Leitweg-ID, IVA 19% | UBL `CreditNote` com `BillingReference` | Mesmo XML da Invoice |
 
-**Polônia:** é o XML enviado pelo Nilo (wrapper `SendInvoiceType` com `header` + `invoice/n0:Faktura`, namespace `http://crd.gov.pl/wzor/2021/11/29/11089/`). Para deixar a árvore mais leve, foram removidos alguns blocos repetidos: o 2º `Transport`, o 2º `ZamowienieWiersz` e o 2º `Informacje`/`Rejestry` do `Stopka`. Os demais repetidos (Podmiot3, FaWiersz, DaneFaKorygowanej etc.) foram mantidos.
+**Polônia:** é um XML de exemplo do KSeF, só com valores fictícios (wrapper `SendInvoiceType` com `header` + `invoice/n0:Faktura`, namespace `http://crd.gov.pl/wzor/2021/11/29/11089/`). Para deixar a árvore mais leve, foram removidos alguns blocos repetidos: o 2º `Transport`, o 2º `ZamowienieWiersz` e o 2º `Informacje`/`Rejestry` do `Stopka`. Os demais repetidos (Podmiot3, FaWiersz, DaneFaKorygowanej etc.) foram mantidos.
 
 **França e Alemanha:** são UBL de exemplo, montados por um gerador (`ublXml(cc, credit)`) com: CustomizationID, ID, IssueDate, DueDate (só Invoice), TypeCode, Note, DocumentCurrencyCode, BuyerReference, OrderReference, BillingReference (só CreditNote), AccountingSupplierParty, AccountingCustomerParty (EndpointID, PartyIdentification, PostalAddress, PartyTaxScheme, PartyLegalEntity, Contact), PaymentMeans, PaymentTerms, TaxTotal/TaxSubtotal, LegalMonetaryTotal e 2 linhas (InvoiceLine ou CreditNoteLine).
 
@@ -540,18 +540,26 @@ Onde `{x}` é a origem SAP, ou o próprio destino quando o Check não tem origem
 
 ---
 
-## 14. Visual (Fiori Horizon, CSS próprio)
+## 14. Visual (SAP Fiori, OpenUI5)
 
-O mockup **não** usa UI5 nem Fundamental Styles. É CSS próprio imitando o Horizon:
+O mockup original usava CSS próprio imitando o Horizon. A versão atual é uma app **OpenUI5 freestyle** (tema `sap_horizon`, com troca para `sap_horizon_dark` no menu do perfil), carregada do CDN da SAP na versão LTS **1.148.9**. Não há backend: tudo é mock em memória e a app roda como site estático (GitHub Pages).
 
-- Fundo `#f5f6f7`, superfícies brancas, texto `#1d2d3e`, texto secundário `#556b82`.
-- Cor de marca `#0070f2` (hover `#0064d9`), seleção `#ebf8ff`.
-- Semânticas: positivo `#256f3a`, warning `#a93e00`, negativo `#aa0808`, informação `#0064d9`, change `#5d36ff`.
-- Raio 12px em cards, 8px em botões e inputs, botões com 36px de altura (Emphasized, Default, Transparent).
-- Componentes recriados: Shell bar, Side navigation, Object page header, Wizard, Tiles, Tab bar, Tree, Table, Segmented button, Message strip, Dialog, Floating footer, Message toast.
-- Responsivo: abaixo de 1100px os painéis empilham; abaixo de 800px o menu fica só com ícones e o diálogo empilha.
+| Área | Controle UI5 |
+|---|---|
+| Shell bar com logo, busca, notificações, product switch e perfil fictício | `sap.f.ShellBar` + `sap.f.SearchManager` + `sap.m.Avatar` |
+| Menu lateral recolhível | `sap.tnt.ToolPage` + `sap.tnt.SideNavigation` |
+| Overview, País e Workspace | `sap.f.DynamicPage` com breadcrumbs, header e footer |
+| Grid de países e tipos de documento | `sap.m.GenericTile` |
+| Abas | `sap.m.IconTabBar` (modo inline) |
+| Árvore do XML | `sap.ui.table.TreeTable` |
+| Pills de regra | `sap.m.ObjectStatus` invertido com Indication colors (MAP 05, CHECK 02, CHANGE 07, CONST 04) |
+| Diálogo de regra | `sap.m.Dialog` + `sap.ui.layout.Splitter` + `sap.m.Tree` + `sap.m.SegmentedButton` |
+| Code Preview | `sap.ui.codeeditor.CodeEditor` (modo `abap`, só leitura) |
+| Estados vazios | `sap.m.IllustratedMessage` |
 
-Para o produto real, as opções são SAPUI5/OpenUI5 (Fiori Elements ou freestyle), UI5 Web Components ou Fundamental Library Styles.
+O CSS próprio ([`webapp/css/style.css`](../webapp/css/style.css)) só complementa o tema e usa as variáveis CSS do Horizon, por isso funciona no modo claro e no escuro.
+
+**Perfil fictício:** Jordan Lee, Senior eDocument Consultant (`jordan.lee@bnb-demo.example`). As notificações e o product switch são ilustrativos.
 
 ---
 
@@ -560,7 +568,7 @@ Para o produto real, as opções são SAPUI5/OpenUI5 (Fiori Elements ou freestyl
 1. **Templates reais de XML:** carregar do XSD ou do proxy da interface DRC de cada país (EDOINTERFACE + SPROXY).
 2. **Metadados reais:** ligar cada nó do XML ao componente ABAP real da estrutura de saída (`cl_abap_typedescr`).
 3. **Catálogo dinâmico:** ler tabelas e campos do DDIC (DD03L / DD04T) e permitir tabelas Z.
-4. **Templates de código por país:** BAdI/método correto, leitura de fonte (`cl_edoc_source_sd_invoice`, `cl_edoc_source_fi_invoice`) e padrão de mensagens do eDocument Cockpit, seguindo o `CleanABAP.md` do projeto e os adaptors existentes (por exemplo `zcl_edoc_adaptor_fr` e os BAdIs JYSK).
+4. **Templates de código por país:** BAdI/método correto, leitura de fonte (`cl_edoc_source_sd_invoice`, `cl_edoc_source_fi_invoice`) e padrão de mensagens do eDocument Cockpit, seguindo as convenções de Clean ABAP e os padrões de adaptors já usados em projetos anteriores.
 5. **Persistência:** salvar e versionar as regras por país e documento (tabela Z ou serviço BTP/CAP) e permitir exportar e importar em JSON.
 6. **Gerador real:** serviço ABAP ou CAP que recebe as regras e cria a classe via ADT API ou abapGit, com syntax check antes de entregar.
 7. **Base de sugestões:** evoluir a heurística para uma base de conhecimento por país, alimentada pelos projetos já entregues.
@@ -572,5 +580,10 @@ Para o produto real, as opções são SAPUI5/OpenUI5 (Fiori Elements ou freestyl
 
 | Arquivo | Conteúdo |
 |---|---|
-| `edoc-accelerator-mockup.html` | Mockup completo, autocontido (HTML + CSS + JS + XML da Polônia embutido) |
-| `bb-edocument-accelerator-spec.md` | Este documento |
+| `index.html` | Bootstrap do OpenUI5 (CDN) |
+| `webapp/manifest.json`, `webapp/Component.js` | Descriptor, rotas (`#/`, `#/country/{code}`, `#/country/{code}/{doc}`) e o modelo do perfil fictício |
+| `webapp/model/engine.js` | Regras de negócio portadas do mockup original: países, catálogo SAP, templates XML, sugestões, validações, XML Preview e gerador ABAP |
+| `webapp/model/plTemplate.js` | XML de exemplo da Polônia (KSeF FA(2)) |
+| `webapp/view/*`, `webapp/controller/*` | Telas (App, Home, Country, Workspace) e o diálogo de regra |
+| `docs/legacy/edoc-accelerator-mockup.html` | Mockup original em HTML/CSS/JS puro, mantido como referência |
+| `docs/bb-edocument-accelerator-spec.md` | Este documento |

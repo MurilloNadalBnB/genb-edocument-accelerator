@@ -1,0 +1,201 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:l="sap.ui.layout">
+	<Dialog
+		id="ruleDialog"
+		title="{dlg>/title}"
+		icon="sap-icon://source-code"
+		contentWidth="68rem"
+		contentHeight="38rem"
+		resizable="true"
+		draggable="true"
+		verticalScrolling="false"
+		horizontalScrolling="false"
+		class="edocDialog">
+		<subHeader>
+			<OverflowToolbar style="Clear" class="edocDlgSub">
+				<Text text="{dlg>/path}" class="edocMono edocMuted edocSmall" wrapping="false"/>
+			</OverflowToolbar>
+		</subHeader>
+		<content>
+			<l:Splitter height="100%" width="100%">
+				<!-- SAP source catalog -->
+				<VBox height="100%" renderType="Bare" class="edocDlgLeft">
+					<layoutData><l:SplitterLayoutData size="24rem" minSize="280"/></layoutData>
+					<HBox alignItems="Center" class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
+						<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd edocBrand"/>
+						<Title text="SAP source fields" level="H5"/>
+						<Text text="· {dlg>/sourceLabel}" class="edocMuted edocSmall sapUiTinyMarginBegin" wrapping="false"/>
+					</HBox>
+					<SearchField value="{dlg>/q}" liveChange=".onDlgSearch" placeholder="Search table, field or description" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop edocDlgSearch"/>
+					<VBox visible="{= ${dlg>/suggestions}.length > 0 &amp;&amp; ${dlg>/type} !== 'constant' }" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop edocSugg">
+						<Label text="Suggested for this field"/>
+						<HBox items="{dlg>/suggestions}" wrap="Wrap" renderType="Bare">
+							<ToggleButton text="{dlg>f}" tooltip="{dlg>desc}" icon="sap-icon://lightbulb" pressed="{dlg>selected}" press=".onDlgPickSuggestion" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
+						</HBox>
+					</VBox>
+					<ScrollContainer vertical="true" height="100%" class="sapUiSmallMarginTop edocCatScroll">
+						<layoutData><FlexItemData growFactor="1" minHeight="0"/></layoutData>
+						<Tree
+							id="catalogTree"
+							items="{path: 'dlg>/catalog', parameters: {arrayNames: ['nodes']}}"
+							mode="SingleSelectMaster"
+							includeItemInSelection="true"
+							itemPress=".onCatalogPress"
+							updateFinished=".onCatalogUpdated"
+							noDataText="No SAP field matches your search."
+							class="edocCatalog">
+							<CustomTreeItem type="Active">
+								<HBox alignItems="Center" renderType="Bare" class="edocCatItem">
+									<core:Icon src="{dlg>icon}" class="sapUiTinyMarginEnd edocBrand" visible="{= ${dlg>kind} !== 'field' }"/>
+									<Text text="{dlg>text}" wrapping="false" class="edocCatKey"/>
+									<Text text="{dlg>desc}" wrapping="false" class="edocMuted edocSmall sapUiTinyMarginBegin"/>
+									<core:Icon src="sap-icon://lightbulb" visible="{= !!${dlg>suggested} }" tooltip="Suggested" class="sapUiTinyMarginBegin edocBrand"/>
+								</HBox>
+							</CustomTreeItem>
+						</Tree>
+					</ScrollContainer>
+				</VBox>
+
+				<!-- Rule form -->
+				<ScrollContainer height="100%" vertical="true" horizontal="false">
+					<layoutData><l:SplitterLayoutData size="auto" minSize="380"/></layoutData>
+					<VBox class="sapUiSmallMargin edocDlgForm">
+						<Label text="What should happen with this field?" design="Bold"/>
+						<SegmentedButton selectedKey="{dlg>/type}" selectionChange=".onDlgType" width="100%" class="sapUiTinyMarginTop">
+							<items>
+								<SegmentedButtonItem key="map" text="Map value" icon="sap-icon://journey-arrive"/>
+								<SegmentedButtonItem key="check" text="Check" icon="sap-icon://shield"/>
+								<SegmentedButtonItem key="change" text="Change value" icon="sap-icon://switch-views"/>
+								<SegmentedButtonItem key="constant" text="Constant" icon="sap-icon://pushpin-off"/>
+							</items>
+						</SegmentedButton>
+						<Text text="{dlg>/typeHelp}" class="edocMuted edocSmall sapUiTinyMarginTop"/>
+
+						<Label text="XML target" class="sapUiSmallMarginTop"/>
+						<HBox alignItems="Center" class="edocReadonly">
+							<Text text="&lt;{dlg>/nodeName}&gt;" class="edocMono"/>
+							<Text text="sample: {= ${dlg>/nodeValue} || 'empty' }" class="edocMuted edocSmall sapUiSmallMarginBegin"/>
+						</HBox>
+
+						<!-- SAP source -->
+						<VBox visible="{= ${dlg>/type} !== 'constant' }">
+							<Label text="{= ${dlg>/type} === 'check' ? 'SAP source field (optional, leave empty to check the XML value)' : 'SAP source field' }"
+								required="{= ${dlg>/type} !== 'check' }" class="sapUiSmallMarginTop"/>
+							<HBox alignItems="Center" class="edocReadonly" visible="{= !!${dlg>/source} }">
+								<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd edocBrand"/>
+								<ObjectIdentifier title="{dlg>/source}" text="{dlg>/sourceDesc}">
+									<layoutData><FlexItemData growFactor="1"/></layoutData>
+								</ObjectIdentifier>
+								<Button icon="sap-icon://decline" type="Transparent" tooltip="Remove" press=".onDlgClearSource"/>
+							</HBox>
+							<HBox class="edocReadonly edocPlaceholder" visible="{= !${dlg>/source} }">
+								<Text text="{= ${dlg>/type} === 'check' ? 'The check will run on the value written to the XML' : 'Pick a field from the list on the left' }" class="edocMuted"/>
+							</HBox>
+						</VBox>
+
+						<!-- Map -->
+						<VBox visible="{= ${dlg>/type} === 'map' }">
+							<Label text="Output format" class="sapUiSmallMarginTop"/>
+							<Select selectedKey="{dlg>/cfg/format}" items="{dlg>/formats}" width="100%">
+								<core:Item key="{dlg>key}" text="{dlg>text}"/>
+							</Select>
+						</VBox>
+
+						<!-- Check -->
+						<VBox visible="{= ${dlg>/type} === 'check' }">
+							<HBox>
+								<VBox width="50%" class="sapUiTinyMarginEnd">
+									<Label text="Condition" class="sapUiSmallMarginTop"/>
+									<Select selectedKey="{dlg>/cfg/cond}" items="{dlg>/conds}" width="100%" change=".onDlgCondChange">
+										<core:Item key="{dlg>key}" text="{dlg>text}"/>
+									</Select>
+								</VBox>
+								<VBox width="50%">
+									<Label text="Parameter" class="sapUiSmallMarginTop"/>
+									<Input value="{dlg>/cfg/param}" placeholder="{dlg>/paramPlaceholder}" valueLiveUpdate="true" visible="{= ${dlg>/cfg/cond} !== 'notInitial' }"/>
+									<HBox class="edocReadonly" visible="{= ${dlg>/cfg/cond} === 'notInitial' }"><Text text="Not needed" class="edocMuted"/></HBox>
+								</VBox>
+							</HBox>
+							<Label text="When the check fails" class="sapUiSmallMarginTop"/>
+							<SegmentedButton selectedKey="{dlg>/cfg/severity}" width="100%">
+								<items>
+									<SegmentedButtonItem key="E" text="Error, stop the eDocument" icon="sap-icon://error"/>
+									<SegmentedButtonItem key="W" text="Warning only" icon="sap-icon://alert"/>
+								</items>
+							</SegmentedButton>
+							<Label text="Message text" class="sapUiSmallMarginTop"/>
+							<Input value="{dlg>/cfg/msg}" placeholder="Message shown in the eDocument Cockpit" valueLiveUpdate="true"/>
+						</VBox>
+
+						<!-- Change -->
+						<VBox visible="{= ${dlg>/type} === 'change' }">
+							<Label text="Transformation" class="sapUiSmallMarginTop"/>
+							<Select selectedKey="{dlg>/cfg/transform}" items="{dlg>/transforms}" width="100%">
+								<core:Item key="{dlg>key}" text="{dlg>text}"/>
+							</Select>
+							<VBox visible="{= ${dlg>/cfg/transform} === 'valmap' }">
+								<Label text="Value mapping" class="sapUiSmallMarginTop"/>
+								<Table items="{dlg>/cfg/valmap}" class="edocValmap">
+									<columns>
+										<Column><Text text="SAP value"/></Column>
+										<Column width="2.5rem" hAlign="Center"/>
+										<Column><Text text="XML value"/></Column>
+										<Column width="3rem" hAlign="End"/>
+									</columns>
+									<items>
+										<ColumnListItem>
+											<cells>
+												<Input value="{dlg>from}" placeholder="e.g. F2" valueLiveUpdate="true" class="edocMonoInput"/>
+												<core:Icon src="sap-icon://arrow-right"/>
+												<Input value="{dlg>to}" placeholder="e.g. VAT" valueLiveUpdate="true" class="edocMonoInput"/>
+												<Button icon="sap-icon://delete" type="Transparent" tooltip="Remove" press=".onVmDelete"/>
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
+								<Button text="Add value" icon="sap-icon://add" type="Transparent" press=".onVmAdd" class="sapUiTinyMarginTop"/>
+							</VBox>
+							<HBox visible="{= ${dlg>/cfg/transform} === 'concat' }">
+								<VBox width="60%" class="sapUiTinyMarginEnd">
+									<Label text="Second field" class="sapUiSmallMarginTop"/>
+									<Input value="{dlg>/cfg/second}" placeholder="e.g. ADRC-HOUSE_NUM1" valueLiveUpdate="true"/>
+								</VBox>
+								<VBox width="40%">
+									<Label text="Separator" class="sapUiSmallMarginTop"/>
+									<Input value="{dlg>/cfg/sep}" placeholder="space" valueLiveUpdate="true"/>
+								</VBox>
+							</HBox>
+							<VBox visible="{= ${dlg>/cfg/transform} === 'prefix' }">
+								<Label text="Prefix" class="sapUiSmallMarginTop"/>
+								<Input value="{dlg>/cfg/prefix}" placeholder="e.g. PL" valueLiveUpdate="true"/>
+							</VBox>
+						</VBox>
+
+						<!-- Constant -->
+						<VBox visible="{= ${dlg>/type} === 'constant' }">
+							<Label text="Constant value" required="true" class="sapUiSmallMarginTop"/>
+							<Input value="{dlg>/cfg/constant}" placeholder="Value written to the XML" valueLiveUpdate="true"/>
+						</VBox>
+
+						<!-- Preview -->
+						<VBox class="edocPreview sapUiSmallMarginTop">
+							<Label text="Preview"/>
+							<Text text="{dlg>/preview}" renderWhitespace="true" class="edocMono"/>
+						</VBox>
+						<MessageStrip visible="{= !!${dlg>/error} }" text="{dlg>/error}" type="Error" showIcon="true" class="sapUiSmallMarginTop"/>
+					</VBox>
+				</ScrollContainer>
+			</l:Splitter>
+		</content>
+		<footer>
+			<OverflowToolbar>
+				<Text text="Tip: double-click a field on the left to pick it and apply in one go." class="edocMuted edocSmall"/>
+				<ToolbarSpacer/>
+				<Button text="{dlg>/saveText}" type="Emphasized" press=".onDlgApply"/>
+				<Button text="Cancel" press=".onDlgClose"/>
+			</OverflowToolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

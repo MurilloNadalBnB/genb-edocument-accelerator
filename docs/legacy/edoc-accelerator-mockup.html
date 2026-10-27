@@ -373,7 +373,7 @@ select.input{padding-right:28px;appearance:none;background:#fff url("data:image/
   <div class="shell-sub">Mapping Workbench</div>
   <div class="shell-right">
     <label class="shell-search"><span id="ic-s"></span><input placeholder="Search countries, fields, rules" aria-label="Search"></label>
-    <div class="avatar" title="Nilo">NN</div>
+    <div class="avatar" title="Jordan Lee">JL</div>
   </div>
 </header>
 <div class="app">
@@ -807,7 +807,7 @@ function refreshContent(){
     const code = genAbap();
     el.innerHTML = `<section class="card codecard">
       <div class="code-h"><h2>ABAP Preview</h2><span class="pill pill-auto">Mock</span>
-        <span class="muted" style="font-size:13px;flex:1">Illustrative output. The real generator will follow the CCIR Clean ABAP conventions.</span>
+        <span class="muted" style="font-size:13px;flex:1">Illustrative output. The real generator will follow the project's Clean ABAP conventions.</span>
         ${code?`<button class="btn btn-def btn-sm" data-action="copyCode">${ic('copy')}Copy</button>`:''}</div>
       ${code?`<pre class="code dark" id="codeview">${code.split('\n').map(l=>`<div class="cl"><span>${hlAbap(l)||' '}</span></div>`).join('')}</pre>`
         : `<div class="empty"><div class="ill">${ic('code')}</div><h4>Nothing to generate yet</h4><p>Define at least one rule in the Field Mapping tab, then come back here.</p></div>`}

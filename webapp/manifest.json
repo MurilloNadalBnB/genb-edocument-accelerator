@@ -1,0 +1,56 @@
+{
+	"_version": "1.60.0",
+	"sap.app": {
+		"id": "bnb.edoc",
+		"type": "application",
+		"title": "B&B eDocument Accelerator",
+		"description": "Mapping Workbench (mock)",
+		"applicationVersion": {"version": "0.1.0"}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"deviceTypes": {"desktop": true, "tablet": true, "phone": true}
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "bnb.edoc.view.App",
+			"type": "XML",
+			"id": "app"
+		},
+		"dependencies": {
+			"minUI5Version": "1.148.0",
+			"libs": {
+				"sap.m": {},
+				"sap.f": {},
+				"sap.tnt": {},
+				"sap.ui.layout": {},
+				"sap.ui.table": {},
+				"sap.ui.codeeditor": {}
+			}
+		},
+		"resources": {
+			"css": [{"uri": "css/style.css"}]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"type": "View",
+				"viewType": "XML",
+				"path": "bnb.edoc.view",
+				"controlId": "pages",
+				"controlAggregation": "pages",
+				"transition": "show"
+			},
+			"routes": [
+				{"name": "home", "pattern": "", "target": "home"},
+				{"name": "country", "pattern": "country/{code}", "target": "country"},
+				{"name": "workspace", "pattern": "country/{code}/{doc}", "target": "workspace"}
+			],
+			"targets": {
+				"home": {"id": "home", "name": "Home"},
+				"country": {"id": "country", "name": "Country"},
+				"workspace": {"id": "workspace", "name": "Workspace"}
+			}
+		}
+	}
+}

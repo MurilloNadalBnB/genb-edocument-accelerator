@@ -1,0 +1,62 @@
+<mvc:View
+	controllerName="bnb.edoc.controller.App"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:tnt="sap.tnt"
+	displayBlock="true"
+	height="100%">
+	<tnt:ToolPage id="toolPage" sideExpanded="{app>/sideExpanded}">
+		<tnt:header>
+			<f:ShellBar
+				id="shellBar"
+				title="B&amp;B eDocument Accelerator"
+				secondTitle="Mapping Workbench"
+				homeIcon="webapp/img/logo.svg"
+				homeIconTooltip="Overview"
+				showMenuButton="true"
+				showNotifications="true"
+				showProductSwitcher="true"
+				notificationsNumber="{app>/unreadCount}"
+				homeIconPressed=".onHome"
+				menuButtonPressed=".onToggleSide"
+				notificationsPressed=".onNotifications"
+				productSwitcherPressed=".onProductSwitcher"
+				avatarPressed=".onAvatar">
+				<f:searchManager>
+					<f:SearchManager placeholder="Search countries, fields, rules" search=".onShellSearch"/>
+				</f:searchManager>
+				<f:profile>
+					<Avatar initials="{app>/user/initials}" tooltip="{app>/user/name}"/>
+				</f:profile>
+			</f:ShellBar>
+		</tnt:header>
+		<tnt:sideContent>
+			<tnt:SideNavigation id="sideNav" itemPress=".onNavPress">
+				<tnt:NavigationList>
+					<tnt:NavigationListItem key="home" text="Overview" icon="sap-icon://home"/>
+					<tnt:NavigationListGroup text="Countries">
+						<tnt:NavigationListItem key="FR" text="France" icon="sap-icon://flag"/>
+						<tnt:NavigationListItem key="PL" text="Poland" icon="sap-icon://flag"/>
+						<tnt:NavigationListItem key="DE" text="Germany" icon="sap-icon://flag"/>
+					</tnt:NavigationListGroup>
+					<tnt:NavigationListGroup text="Planned">
+						<tnt:NavigationListItem key="IT" text="Italy" icon="sap-icon://future" selectable="false"/>
+						<tnt:NavigationListItem key="ES" text="Spain" icon="sap-icon://future" selectable="false"/>
+						<tnt:NavigationListItem key="BE" text="Belgium" icon="sap-icon://future" selectable="false"/>
+						<tnt:NavigationListItem key="PT" text="Portugal" icon="sap-icon://future" selectable="false"/>
+					</tnt:NavigationListGroup>
+				</tnt:NavigationList>
+				<tnt:fixedItem>
+					<tnt:NavigationList>
+						<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>
+						<tnt:NavigationListItem key="settings" text="Settings" icon="sap-icon://action-settings" selectable="false"/>
+					</tnt:NavigationList>
+				</tnt:fixedItem>
+			</tnt:SideNavigation>
+		</tnt:sideContent>
+		<tnt:mainContents>
+			<NavContainer id="pages" autoFocus="false"/>
+		</tnt:mainContents>
+	</tnt:ToolPage>
+</mvc:View>

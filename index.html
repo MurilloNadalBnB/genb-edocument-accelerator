@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>B&amp;B eDocument Accelerator</title>
+	<link rel="icon" type="image/svg+xml" href="webapp/img/logo.svg">
+	<!-- OpenUI5 from the SAP CDN, pinned to an LTS patch so the look does not change between recordings -->
+	<script
+		id="sap-ui-bootstrap"
+		src="https://sdk.openui5.org/1.148.9/resources/sap-ui-core.js"
+		data-sap-ui-theme="sap_horizon"
+		data-sap-ui-resource-roots='{"bnb.edoc": "./webapp/"}'
+		data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
+		data-sap-ui-compat-version="edge"
+		data-sap-ui-async="true"
+		data-sap-ui-xx-component-preload="off"
+		data-sap-ui-language="en"></script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+	<div data-sap-ui-component data-name="bnb.edoc" data-id="container" data-settings='{"id": "edoc"}' style="height:100%"></div>
+</body>
+</html>
