@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B&amp;B eDocument Accelerator</title>
+<style>
+:root{
+  --bg:#f5f6f7; --surface:#fff; --text:#1d2d3e; --text2:#556b82; --text3:#8396a8;
+  --border:#d9d9d9; --border2:#e5e5e5; --hover:#eaecee;
+  --brand:#0070f2; --brand-h:#0064d9; --brand-d:#0057d2; --brand-bg:#ebf8ff; --sel:#ebf8ff;
+  --pos:#256f3a; --pos-bg:#f5fae5; --warn:#a93e00; --warn-bg:#fff8d6; --neg:#aa0808; --neg-bg:#ffeaf4;
+  --info:#0064d9; --info-bg:#e1f4ff; --chg:#5d36ff; --chg-bg:#f1ecff;
+  --shadow:0 0 .125rem rgba(34,53,72,.15),0 .125rem .5rem rgba(34,53,72,.15);
+  --shadow-l:0 0 .125rem rgba(34,53,72,.15),0 .625rem 1.875rem rgba(34,53,72,.25);
+  --font:"72","72full",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);font-size:14px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select{font:inherit;color:inherit}
+svg{display:block}
+.mono{font-family:var(--mono);font-size:12.5px}
+.muted{color:var(--text2)}
+
+/* Shell bar */
+.shell{height:52px;background:#fff;display:flex;align-items:center;gap:12px;padding:0 16px;box-shadow:0 0 .125rem rgba(34,53,72,.15),0 .125rem .25rem rgba(34,53,72,.12);position:relative;z-index:10}
+.logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0070f2,#1db3ff);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:.5px}
+.shell-title{font-weight:700;font-size:16px;white-space:nowrap}
+.shell-sub{color:var(--text2);padding-left:12px;border-left:1px solid var(--border);white-space:nowrap}
+.shell-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.shell-search{display:flex;align-items:center;gap:6px;height:36px;width:280px;padding:0 12px;border-radius:18px;background:#eff1f2;color:var(--text2)}
+.shell-search input{border:0;background:transparent;outline:0;flex:1;min-width:0}
+.avatar{width:32px;height:32px;border-radius:50%;background:#5d36ff;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+
+/* Layout */
+.app{display:flex;height:calc(100vh - 52px)}
+.sidenav{width:264px;background:#fff;border-right:1px solid var(--border2);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s;overflow:hidden auto}
+.sidenav.collapsed{width:64px}
+.sidenav.collapsed .nav-text,.sidenav.collapsed .nav-sec,.sidenav.collapsed .nav-count,.sidenav.collapsed .tag{display:none}
+.nav-sec{font-size:12px;color:var(--text2);font-weight:700;padding:16px 16px 6px;white-space:nowrap}
+.nav-item{display:flex;align-items:center;gap:10px;margin:2px 8px;padding:6px 8px;border-radius:8px;border:0;background:none;width:calc(100% - 16px);text-align:left;min-height:44px}
+.nav-item:hover{background:var(--hover)}
+.nav-item.sel{background:var(--brand-bg);color:var(--brand-h)}
+.nav-item.sel .nav-name{font-weight:700}
+.nav-item.disabled{opacity:.55;cursor:default}
+.nav-item.disabled:hover{background:none}
+.flag{width:30px;height:30px;border-radius:8px;font-size:11px;font-weight:800;display:grid;place-items:center;background:#eef1f4;color:var(--text);flex-shrink:0;letter-spacing:.3px}
+.flag svg{width:16px;height:16px}
+.nav-item.sel .flag{background:var(--brand);color:#fff}
+.nav-text{display:flex;flex-direction:column;min-width:0;flex:1}
+.nav-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-desc{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.sel .nav-desc{color:var(--brand-h)}
+.nav-count{font-size:12px;font-weight:700;background:var(--brand);color:#fff;border-radius:10px;padding:1px 7px}
+.nav-foot{margin-top:auto;border-top:1px solid var(--border2);padding:4px 0}
+.tag{font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;background:#eff1f2;color:var(--text2);white-space:nowrap}
+main{flex:1;min-width:0;overflow:auto;display:flex;flex-direction:column}
+
+/* Generic */
+.card{background:#fff;border-radius:12px;box-shadow:var(--shadow)}
+.page{padding:24px 32px 40px;max-width:1280px;width:100%}
+.sec-title{font-size:16px;font-weight:700;margin:28px 0 12px}
+.btn{height:36px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--brand-h);font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn-emph{background:var(--brand);color:#fff}
+.btn-emph:hover{background:var(--brand-h)}
+.btn-def{background:#fff;border-color:#bcc3ca}
+.btn-def:hover,.btn-trans:hover{background:var(--hover)}
+.btn-icon{width:36px;padding:0;justify-content:center}
+.btn-sm{height:28px;padding:0 10px;font-size:13px}
+.btn-sm.btn-icon{width:28px;padding:0}
+.btn-neg{color:var(--neg)}
+.input{height:36px;border:1px solid #bcc3ca;border-radius:8px;padding:0 10px;background:#fff;outline:0;width:100%}
+.input:focus,select.input:focus{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
+select.input{padding-right:28px;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%230064d9' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center/14px}
+.search{display:flex;align-items:center;gap:6px;height:36px;border:1px solid #bcc3ca;border-radius:8px;padding:0 10px;background:#fff}
+.search:focus-within{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand)}
+.search input{border:0;outline:0;flex:1;min-width:0;background:transparent}
+.search svg{width:16px;height:16px;color:var(--text2);flex-shrink:0}
+.seg{display:inline-flex;border:1px solid #bcc3ca;border-radius:8px;overflow:hidden;background:#fff}
+.seg button{border:0;background:transparent;height:34px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;color:var(--text);border-left:1px solid #e1e4e7}
+.seg button:first-child{border-left:0}
+.seg button:hover{background:var(--hover)}
+.seg button.on{background:var(--brand-bg);color:var(--brand-h);font-weight:700;box-shadow:inset 0 -2px 0 var(--brand)}
+.seg button svg{width:15px;height:15px}
+.seg.sm button{height:28px;padding:0 10px;font-size:13px}
+.strip{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.45}
+.strip svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.strip-info{background:var(--info-bg);color:#00144a;border:1px solid #b8e0ff}
+.strip-info svg{color:var(--info)}
+.strip-neg{background:var(--neg-bg);color:var(--neg);border:1px solid #ffc2d6}
+.strip-warn{background:var(--warn-bg);color:#5b2a00;border:1px solid #ffdf72}
+.pill{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+.pill svg{width:12px;height:12px}
+.pill-map{background:var(--info-bg);color:var(--info)}
+.pill-check{background:var(--warn-bg);color:var(--warn)}
+.pill-change{background:var(--chg-bg);color:var(--chg)}
+.pill-constant{background:var(--pos-bg);color:var(--pos)}
+.pill-auto{background:#eff1f2;color:var(--text2);font-weight:600}
+
+/* Object header */
+.ohead{background:#fff;padding:12px 32px 14px;box-shadow:0 1px 0 var(--border2)}
+.crumbs{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--text2);margin-bottom:8px;flex-wrap:wrap}
+.crumbs a{color:var(--brand-h);text-decoration:none;cursor:pointer}
+.crumbs a:hover{text-decoration:underline}
+.oh-row{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.oh-title{display:flex;align-items:center;gap:12px;min-width:0}
+.oh-title h1{font-size:22px;margin:0;font-weight:700}
+.oh-title .flag{width:40px;height:40px;font-size:14px;background:var(--brand);color:#fff;border-radius:10px}
+.oh-sub{color:var(--text2);margin-top:2px}
+.oh-attrs{display:flex;gap:28px;margin-top:12px;flex-wrap:wrap}
+.attr .l{font-size:12px;color:var(--text2)}
+.attr .v{font-weight:600;margin-top:2px}
+.oh-kpi{margin-left:auto;display:flex;gap:24px;align-items:flex-end}
+.kpi .l{font-size:12px;color:var(--text2)}
+.kpi .v{font-size:22px;font-weight:300;color:var(--brand-h)}
+.kpi .v small{font-size:13px;color:var(--text2);font-weight:400}
+.progress{height:6px;border-radius:3px;background:#e5e9ed;overflow:hidden;width:180px;margin-top:6px}
+.progress i{display:block;height:100%;background:var(--brand);border-radius:3px;transition:width .3s}
+
+/* Wizard */
+.wizard{display:flex;align-items:center;gap:0;margin-top:16px;max-width:620px}
+.wstep{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:13px;color:var(--text2)}
+.wdot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid #bcc3ca;background:#fff;color:var(--text2)}
+.wdot svg{width:14px;height:14px}
+.wstep.done .wdot{background:var(--brand);border-color:var(--brand);color:#fff}
+.wstep.cur .wdot{border:2px solid var(--brand);color:var(--brand-h)}
+.wstep.cur{color:var(--text);font-weight:700}
+.wline{flex:1;height:1px;background:#bcc3ca;margin:0 12px;min-width:24px}
+.wline.done{background:var(--brand)}
+
+/* Home */
+.hero{display:grid;grid-template-columns:1fr;gap:28px;padding:28px;align-items:center}
+.eyebrow{font-size:12px;font-weight:700;color:var(--brand-h);text-transform:uppercase;letter-spacing:.8px}
+.hero h1{font-size:26px;line-height:1.25;margin:8px 0 10px}
+.hero p{color:var(--text2);line-height:1.55;margin:0 0 18px;max-width:760px}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;background:var(--bg);border-radius:12px;padding:18px;overflow:auto}
+.fbox{background:#20476b;color:#fff;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;text-align:center;flex-shrink:0}
+.fbox.xml{border-radius:16px;padding:14px 16px;text-align:left;line-height:1.6}
+.fbox small{display:block;font-weight:400;opacity:.8}
+.farrow{color:var(--text3);flex-shrink:0}
+.farrow svg{width:18px;height:18px}
+.fsap{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.fsap .row{display:flex;gap:6px;align-items:center}
+.fsap .fbox{min-width:78px}
+.steps-grid,.tiles,.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stepc{padding:18px}
+.stepc .n{width:28px;height:28px;border-radius:50%;background:var(--brand-bg);color:var(--brand-h);font-weight:700;display:grid;place-items:center;margin-bottom:10px}
+.stepc h3{margin:0 0 6px;font-size:15px}
+.stepc p{margin:0;color:var(--text2);line-height:1.5;font-size:13px}
+.stepc .pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ccard{padding:16px;display:flex;gap:12px;align-items:center;cursor:pointer;border:1px solid transparent;transition:box-shadow .15s,border-color .15s}
+.ccard:hover{box-shadow:var(--shadow-l);border-color:#b8e0ff}
+.ccard .flag{width:40px;height:40px;font-size:14px}
+.ccard .t{font-weight:700}
+.ccard .d{font-size:12.5px;color:var(--text2);margin-top:2px}
+.ccard.disabled{opacity:.55;cursor:default}
+.ccard.disabled:hover{box-shadow:var(--shadow);border-color:transparent}
+
+/* Doc tiles */
+.tile{padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:12px;border:1px solid transparent;transition:box-shadow .15s,border-color .15s,transform .15s;text-align:left;background:#fff}
+.tile:hover{box-shadow:var(--shadow-l);border-color:#b8e0ff;transform:translateY(-1px)}
+.tile-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--brand-bg);color:var(--brand-h)}
+.tile-ic svg{width:22px;height:22px}
+.tile h3{margin:0;font-size:16px}
+.tile p{margin:0;color:var(--text2);font-size:13px;line-height:1.5}
+.tile dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px}
+.tile dt{color:var(--text2)}
+.tile dd{margin:0;font-weight:600}
+.tile-f{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border2);padding-top:12px;margin-top:auto;font-size:13px}
+
+/* Workspace */
+.ws{display:flex;flex-direction:column;height:100%;min-height:0}
+.tabbar{display:flex;gap:4px;background:#fff;padding:0 32px;box-shadow:0 1px 0 var(--border2)}
+.tab{border:0;background:none;height:44px;padding:0 14px;color:var(--text2);font-weight:600;position:relative;display:flex;align-items:center;gap:6px}
+.tab svg{width:16px;height:16px}
+.tab.on{color:var(--brand-h)}
+.tab.on:after{content:"";position:absolute;left:8px;right:8px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--brand)}
+.tab .cnt{font-size:11px;background:#eff1f2;color:var(--text2);padding:1px 6px;border-radius:8px}
+.ws-content{flex:1;min-height:0;padding:16px 24px 0;display:flex;flex-direction:column}
+.ws-grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(420px,1.15fr) minmax(380px,1fr);gap:16px}
+.pane{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.pane-h{display:flex;align-items:center;gap:8px;padding:12px 16px 8px}
+.pane-h h2{font-size:15px;margin:0;font-weight:700}
+.pane-h .sub{color:var(--text2);font-size:12.5px}
+.pane-tools{display:flex;gap:8px;align-items:center;padding:4px 16px 10px;border-bottom:1px solid var(--border2);flex-wrap:wrap}
+.pane-tools .search{flex:1;min-width:160px}
+.pane-b{flex:1;min-height:0;overflow:auto}
+
+/* Tree */
+.trow{display:flex;align-items:center;gap:6px;height:32px;padding-right:8px;padding-left:calc(var(--d) * 18px + 8px);cursor:pointer;border-bottom:1px solid #f2f3f4;position:relative}
+.trow:hover{background:#f5f6f7}
+.trow.sel{background:var(--sel);box-shadow:inset 3px 0 0 var(--brand)}
+.twist{width:18px;height:18px;display:grid;place-items:center;color:var(--text2);border-radius:4px;flex-shrink:0}
+.twist[data-action]:hover{background:#dfe3e7}
+.twist svg{width:12px;height:12px;transition:transform .12s}
+.twist.open svg{transform:rotate(90deg)}
+.tic{width:18px;height:18px;display:grid;place-items:center;flex-shrink:0;border-radius:4px;font-size:11px;font-weight:800}
+.tic svg{width:15px;height:15px}
+.tic.grpic{color:#e9730c}
+.tic.leafic{color:var(--text3)}
+.tic.attr{color:var(--chg);background:var(--chg-bg)}
+.trow.has .tic.leafic{color:var(--brand)}
+.tname{white-space:nowrap;font-size:13.5px}
+.trow.grp .tname{font-weight:600}
+.pfx{color:var(--text3);font-weight:400}
+.idx{color:var(--text2);font-weight:400;margin-left:3px;font-size:12px}
+.tval{color:var(--text3);font-family:var(--mono);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.tbadges{margin-left:auto;display:flex;gap:4px;align-items:center;flex-shrink:0}
+.tsrc{font-family:var(--mono);font-size:11.5px;color:var(--brand-h);background:#fff;border:1px solid #b8e0ff;border-radius:4px;padding:1px 5px}
+.cnt{font-size:11.5px;color:var(--brand-h);font-weight:700;background:var(--brand-bg);border-radius:8px;padding:1px 7px}
+.cnt.muted{background:#f2f3f4;color:var(--text3);font-weight:600}
+.tadd{width:24px;height:24px;border-radius:6px;border:1px solid #bcc3ca;background:#fff;color:var(--brand-h);display:grid;place-items:center;opacity:0;flex-shrink:0}
+.tadd svg{width:12px;height:12px}
+.trow:hover .tadd,.trow.sel .tadd{opacity:1}
+.tadd:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.tree-empty{padding:40px;text-align:center;color:var(--text2)}
+
+/* Side panel */
+.fd{padding:16px;border-bottom:1px solid var(--border2)}
+.fd-top{display:flex;gap:10px;align-items:flex-start}
+.fd-ic{width:36px;height:36px;border-radius:10px;background:var(--brand-bg);color:var(--brand-h);display:grid;place-items:center;flex-shrink:0}
+.fd-ic svg{width:18px;height:18px}
+.fd-name{font-size:16px;font-weight:700;font-family:var(--mono)}
+.fd-path{font-size:12px;color:var(--text2);font-family:var(--mono);word-break:break-all;margin-top:2px}
+.fd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.fd-grid .l{font-size:12px;color:var(--text2)}
+.fd-grid .v{font-weight:600;margin-top:2px;font-size:13px;word-break:break-word}
+.fd-actions{display:flex;gap:8px;flex-wrap:wrap}
+.fd-sugg{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 12px;font-size:12.5px;color:var(--text2)}
+.chip{height:28px;border:1px solid #bcc3ca;border-radius:14px;background:#fff;padding:0 10px;display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:12px;color:var(--brand-h)}
+.chip svg{width:13px;height:13px}
+.chip:hover{background:var(--brand-bg);border-color:#89d1ff}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.nrules{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.nrule{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:#fafbfc}
+.nrule .d{flex:1;min-width:0;font-size:13px}
+.nrule .d .s{font-family:var(--mono);font-size:12px;color:var(--brand-h)}
+.rules-h{display:flex;align-items:center;gap:8px;padding:14px 16px 8px}
+.rules-h h3{margin:0;font-size:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:12px;color:var(--text2);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border);background:#fafbfc;position:sticky;top:0;z-index:1}
+.tbl td{padding:8px 10px;border-bottom:1px solid #eef0f2;vertical-align:middle}
+.tbl tr.rr{cursor:pointer}
+.tbl tr.rr:hover td{background:#f5f6f7}
+.tbl tr.rr.sel td{background:var(--sel)}
+.tbl .fn{font-family:var(--mono);font-weight:600;font-size:12.5px}
+.tbl .fp{font-size:11.5px;color:var(--text3);font-family:var(--mono);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl .src{font-family:var(--mono);font-size:12px;color:var(--brand-h)}
+.tbl .det{color:var(--text2);font-size:12px;margin-top:2px}
+.tbl .act{white-space:nowrap;text-align:right}
+.empty{padding:36px 24px;text-align:center;color:var(--text2)}
+.empty .ill{width:64px;height:64px;border-radius:50%;background:var(--brand-bg);color:var(--brand);display:grid;place-items:center;margin:0 auto 12px}
+.empty .ill svg{width:28px;height:28px}
+.empty h4{margin:0 0 6px;color:var(--text);font-size:15px}
+.empty p{margin:0 auto;max-width:340px;line-height:1.5;font-size:13px}
+
+/* Footer bar */
+.footer-bar{margin:12px 24px 14px;background:#fff;border-radius:12px;box-shadow:var(--shadow);height:52px;display:flex;align-items:center;gap:8px;padding:0 10px 0 16px;flex-shrink:0}
+.footer-bar .st{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.footer-bar .st i{width:8px;height:8px;border-radius:50%;background:#e76500;display:inline-block}
+.footer-bar .st i.ok{background:#36a41d}
+.footer-bar .sp{margin-left:auto}
+
+/* Code & XML views */
+.codecard{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.code-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border2);flex-wrap:wrap}
+.code-h h2{font-size:15px;margin:0}
+.code{flex:1;min-height:0;overflow:auto;margin:0;padding:14px 0;font-family:var(--mono);font-size:12.5px;line-height:1.65;counter-reset:ln}
+.code.dark{background:#12171c;color:#e3e7eb}
+.cl{padding:0 16px 0 0;white-space:pre;display:flex}
+.cl:before{counter-increment:ln;content:counter(ln);width:44px;text-align:right;padding-right:14px;color:#5b6773;flex-shrink:0;user-select:none}
+.c-kw{color:#6cb4ff;font-weight:600}.c-str{color:#9ad877}.c-cm{color:#8b98a5;font-style:italic}.c-num{color:#f0a35e}
+.xl{padding:0 16px 0 0;white-space:pre;display:flex;align-items:center;cursor:default}
+.xl:before{counter-increment:ln;content:counter(ln);width:44px;text-align:right;padding-right:14px;color:#a6b2bd;flex-shrink:0;user-select:none}
+.xl.mapped{background:var(--brand-bg);cursor:pointer}
+.xl.mapped:hover{background:#d6efff}
+.xt{color:#0064d9}.xa{color:#a93e00}.xv{color:#256f3a}.xx{color:var(--text)}
+.xnote{margin-left:14px;font-family:var(--font);display:inline-flex;gap:4px}
+
+/* Dialog */
+.overlay{position:fixed;inset:0;background:rgba(29,45,62,.45);display:grid;place-items:center;z-index:50;padding:16px;animation:fade .12s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.dialog{background:#fff;border-radius:12px;box-shadow:var(--shadow-l);width:min(1120px,100%);height:min(740px,100%);display:flex;flex-direction:column;overflow:hidden;animation:pop .15s}
+@keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:none;opacity:1}}
+.dlg-h{display:flex;align-items:center;gap:10px;padding:12px 12px 4px 20px}
+.dlg-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.dlg-title svg{width:18px;height:18px;color:var(--brand)}
+.dlg-sub{padding:0 20px 12px;font-family:var(--mono);font-size:12px;color:var(--text2);border-bottom:1px solid var(--border2);word-break:break-all}
+.dlg-h .btn{margin-left:auto}
+.dlg-body{flex:1;min-height:0;display:grid;grid-template-columns:360px 1fr}
+.dlg-tree{border-right:1px solid var(--border2);display:flex;flex-direction:column;min-height:0;background:#fafbfc}
+.dlg-tree-h{padding:12px 14px 8px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.dlg-tree-h span{font-weight:400;color:var(--text2)}
+.dlg-tree .search{margin:0 14px 8px}
+.sugg{padding:0 14px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sugg-l{font-size:12px;color:var(--text2);width:100%}
+.cat{flex:1;min-height:0;overflow:auto;border-top:1px solid var(--border2);background:#fff}
+.cat-g{font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;padding:10px 14px 4px}
+.cat-t{display:flex;align-items:center;gap:6px;padding:6px 12px;cursor:pointer;font-size:13px}
+.cat-t:hover{background:#f5f6f7}
+.cat-t .twist{width:16px;height:16px}
+.cat-t b{font-family:var(--mono);font-size:12.5px}
+.cat-t span.d{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.cat-t .tic{color:#0a6ed1}
+.cat-f{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 52px;cursor:pointer;font-size:13px;border-left:3px solid transparent}
+.cat-f:hover{background:#f5f6f7}
+.cat-f.sel{background:var(--sel);border-left-color:var(--brand)}
+.cat-f .mono{min-width:96px;color:var(--text)}
+.cat-f .d{color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-f .sg{margin-left:auto;color:var(--brand)}
+.cat-f .sg svg{width:13px;height:13px}
+.dlg-form{padding:18px 22px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.frow label{display:block;font-size:12.5px;color:var(--text2);margin-bottom:6px;font-weight:600}
+.frow .req{color:var(--neg)}
+.type-help{font-size:12.5px;color:var(--text2);margin-top:6px}
+.ro{min-height:36px;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:8px;background:#f5f6f7;border:1px solid var(--border2)}
+.vh{min-height:40px;display:flex;align-items:center;padding:4px;border-radius:8px;border:1px dashed #bcc3ca;background:#fff}
+.vh .ph{color:var(--text3);padding:0 8px;font-size:13px}
+.token{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 6px 0 10px;border-radius:6px;background:var(--brand-bg);border:1px solid #89d1ff;color:var(--brand-h);font-family:var(--mono);font-size:12.5px;font-weight:600}
+.token small{font-family:var(--font);font-weight:400;color:var(--text2)}
+.token button{border:0;background:none;width:20px;height:20px;border-radius:4px;color:var(--text2);display:grid;place-items:center;padding:0}
+.token button:hover{background:#cde9ff}
+.token button svg{width:12px;height:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vm{border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+.vm-r{display:grid;grid-template-columns:1fr 24px 1fr 32px;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid #f0f1f2}
+.vm-r:last-child{border-bottom:0}
+.vm-r .input{height:30px}
+.vm-h{font-size:12px;color:var(--text2);font-weight:600;background:#fafbfc}
+.vm-r .arr{color:var(--text3);display:grid;place-items:center}
+.vm-r .arr svg{width:14px;height:14px}
+.preview{border-radius:10px;background:#12171c;color:#e3e7eb;padding:12px 14px}
+.preview-l{font-size:11.5px;text-transform:uppercase;letter-spacing:.7px;color:#8b98a5;margin-bottom:6px;font-weight:700}
+.preview code{font-family:var(--mono);font-size:12.5px;white-space:pre-wrap;line-height:1.6}
+.dlg-f{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 20px;border-top:1px solid var(--border2);background:#fff}
+.dlg-hint{font-size:12.5px;color:var(--text2);margin-right:auto}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);background:rgba(29,45,62,.95);color:#fff;padding:10px 16px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:all .2s;z-index:80;max-width:min(520px,90vw);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr}
+  .ws-grid{grid-template-columns:1fr;overflow:auto}
+  .pane{min-height:420px}
+  .shell-search{display:none}
+}
+@media (max-width:800px){
+  .sidenav{width:64px}
+  .sidenav .nav-text,.sidenav .nav-sec,.sidenav .nav-count,.sidenav .tag{display:none}
+  .steps-grid,.tiles,.cgrid{grid-template-columns:1fr}
+  .page{padding:16px}
+  .ohead,.tabbar{padding-left:16px;padding-right:16px}
+  .ws-content{padding:12px 12px 0}
+  .footer-bar{margin:10px 12px}
+  .shell-sub{display:none}
+  .dlg-body{grid-template-columns:1fr;overflow:auto}
+  .dlg-tree{max-height:300px}
+  .oh-kpi{margin-left:0}
+  .fd-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<header class="shell">
+  <div class="logo">eA</div>
+  <div class="shell-title">B&amp;B eDocument Accelerator</div>
+  <div class="shell-sub">Mapping Workbench</div>
+  <div class="shell-right">
+    <label class="shell-search"><span id="ic-s"></span><input placeholder="Search countries, fields, rules" aria-label="Search"></label>
+    <div class="avatar" title="Nilo">NN</div>
+  </div>
+</header>
+<div class="app">
+  <nav class="sidenav" id="nav" aria-label="Countries"></nav>
+  <main id="main"></main>
+</div>
+<div id="dlg"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ======================= Icons ======================= */
+const P = {
+  chevR:'<path d="M6 3.5l4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+  chevL:'<path d="M10 3.5L5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+  search:'<circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  close:'<path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  check:'<path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+  plus:'<path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  edit:'<path d="M10.5 2.5l3 3L6 13H3v-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+  trash:'<path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>',
+  home:'<path d="M2.5 7.5L8 3l5.5 4.5V13h-3.5V9.5H6V13H2.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+  folder:'<path d="M1.5 4.5a1 1 0 011-1h3.2l1.5 1.5h6.3a1 1 0 011 1v6.5a1 1 0 01-1 1h-11a1 1 0 01-1-1z" fill="currentColor" opacity=".9"/>',
+  field:'<rect x="2.5" y="3" width="11" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 6.5h6M5 9.5h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+  table:'<rect x="2" y="3" width="12" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M6 6.5V13" stroke="currentColor" stroke-width="1.4"/>',
+  xml:'<path d="M5.5 4L2 8l3.5 4M10.5 4L14 8l-3.5 4M9 3L7 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  code:'<path d="M5.5 4L2 8l3.5 4M10.5 4L14 8l-3.5 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  map:'<path d="M2 8h9M8 4.5L11.5 8 8 11.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 3v10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  shield:'<path d="M8 1.8l5 2v4c0 3-2.2 5.2-5 6.4C5.2 13 3 10.8 3 7.8v-4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.8 8l1.6 1.6L10.4 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  swap:'<path d="M2.5 5.5h10M10 3l2.5 2.5L10 8M13.5 10.5h-10M6 8l-2.5 2.5L6 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  pin:'<path d="M5 2.5h6M6 2.5v4L4 9h8l-2-2.5v-4M8 9v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  wand:'<path d="M2.5 13.5l7-7M9 3V1.5M12 4l1-1M13 7h1.5M7 2.5l-1-1M11.5 9.5l1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+  doc:'<path d="M4 1.8h5.2L12.5 5v9.2H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 2v3.3h3.3M6 8.5h4.5M6 11h4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+  credit:'<path d="M4 1.8h5.2L12.5 5v9.2H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 9.5h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  ledger:'<rect x="2.5" y="2" width="11" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 2v12M7.5 5.5h4M7.5 8h4M7.5 10.5h2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+  expand:'<path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  collapse:'<path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  info:'<circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2V11M8 5v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+  copy:'<rect x="5" y="5" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 10.5V3.5A1 1 0 014 2.5h6.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+  save:'<path d="M2.5 2.5h8.5l2.5 2.5v8.5h-11z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 2.5v3h5v-3M5 13.5v-4h6v4" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+  arrow:'<path d="M2.5 8h10M9 4.5L12.5 8 9 11.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+};
+const ic = n => `<svg viewBox="0 0 16 16" aria-hidden="true">${P[n]||''}</svg>`;
+document.getElementById('ic-s').innerHTML = ic('search');
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ======================= Master data ======================= */
+const COUNTRIES = [
+  {code:'FR', name:'France', short:'e-Invoicing reform, UBL', scenario:'B2B e-Invoicing reform, UBL 2.1 (EN 16931)', schema:'UBL 2.1 Invoice / CreditNote', iface:'FR_UBL_INVOICE', edoc:'FR_INV'},
+  {code:'PL', name:'Poland', short:'KSeF, FA(2)', scenario:'KSeF national e-invoicing system, structure FA(2)', schema:'KSeF FA(2)', iface:'PL_KSEF_INVOICE', edoc:'PL_INV'},
+  {code:'DE', name:'Germany', short:'XRechnung, UBL', scenario:'XRechnung 3.0 on UBL 2.1 (EN 16931)', schema:'XRechnung UBL', iface:'DE_XRECHNUNG_UBL', edoc:'DE_INV'},
+  {code:'IT', name:'Italy', short:'FatturaPA, SdI', planned:true},
+  {code:'ES', name:'Spain', short:'SII / VeriFactu', planned:true},
+  {code:'BE', name:'Belgium', short:'Peppol BIS 3.0', planned:true},
+  {code:'PT', name:'Portugal', short:'CIUS-PT', planned:true},
+];
+const DOCS = [
+  {id:'invoice', label:'Invoice', icon:'doc', src:'SD', desc:'Outgoing billing documents created in SD billing.', source:'SD billing (VBRK / VBRP)'},
+  {id:'credit', label:'Credit Note', icon:'credit', src:'SD', desc:'Billing credit memos that correct a previous invoice.', source:'SD billing (VBRK / VBRP / VBFA)'},
+  {id:'fi', label:'Accounting Document', icon:'ledger', src:'FI', desc:'FI invoices and credit memos posted directly in accounting (FB70 / FB75).', source:'FI document (BKPF / BSEG / BSET)'},
+];
+const TYPES = {
+  map:{label:'Map value', short:'MAP', icon:'map', help:'Fill the XML field with the value of an SAP field.'},
+  check:{label:'Check', short:'CHECK', icon:'shield', help:'Validate a value before the eDocument is created and raise an error or a warning.'},
+  change:{label:'Change value', short:'CHANGE', icon:'swap', help:'Convert the SAP value before it is written to the XML (value mapping, concatenation, sign, format).'},
+  constant:{label:'Constant', short:'CONST', icon:'pin', help:'Always write a fixed value to the XML field.'},
+};
+const TYPE_ORDER = {map:0, constant:1, change:2, check:3};
+
+const CATALOG = {
+  VBRK:{d:'Billing Document: Header', f:[['VBELN','Billing Document'],['FKART','Billing Type'],['VBTYP','SD Document Category'],['FKDAT','Billing Date'],['WAERK','Document Currency'],['NETWR','Net Value'],['MWSBK','Tax Amount'],['KUNAG','Sold-to Party'],['KUNRG','Payer'],['BUKRS','Company Code'],['ZTERM','Terms of Payment'],['XBLNR','Reference Document Number'],['STCEG','VAT Registration Number'],['LAND1','Destination Country'],['INCO1','Incoterms'],['SFAKN','Cancelled Billing Document'],['ERDAT','Created On']]},
+  VBRP:{d:'Billing Document: Item', f:[['POSNR','Item'],['MATNR','Material'],['ARKTX','Item Description'],['FKIMG','Billed Quantity'],['VRKME','Sales Unit'],['NETWR','Net Value'],['MWSBP','Tax Amount'],['MWSKZ','Tax Code'],['AUBEL','Sales Document'],['VGBEL','Reference Document'],['CHARG','Batch'],['WERKS','Plant']]},
+  VBKD:{d:'Sales Document: Business Data', f:[['BSTKD','Customer PO Number'],['BSTDK','Customer PO Date'],['IHREZ','Your Reference'],['ZTERM','Terms of Payment']]},
+  VBFA:{d:'Sales Document Flow', f:[['VBELV','Preceding Document'],['POSNV','Preceding Item'],['VBTYP_V','Preceding Doc. Category']]},
+  BKPF:{d:'Accounting Document Header', f:[['BUKRS','Company Code'],['BELNR','Document Number'],['GJAHR','Fiscal Year'],['BLART','Document Type'],['BLDAT','Document Date'],['BUDAT','Posting Date'],['WAERS','Currency'],['XBLNR','Reference'],['BKTXT','Document Header Text'],['USNAM','User Name'],['TCODE','Transaction Code'],['STBLG','Reversed With']]},
+  BSEG:{d:'Accounting Document Segment', f:[['BUZEI','Line Item'],['KOART','Account Type'],['KUNNR','Customer'],['HKONT','G/L Account'],['SHKZG','Debit/Credit Indicator'],['WRBTR','Amount in Doc. Currency'],['DMBTR','Amount in Local Currency'],['MWSKZ','Tax Code'],['SGTXT','Item Text'],['ZUONR','Assignment'],['ZFBDT','Baseline Date'],['ZTERM','Terms of Payment'],['MENGE','Quantity'],['MEINS','Base Unit']]},
+  BSET:{d:'Tax Data Document Segment', f:[['MWSKZ','Tax Code'],['KBETR','Tax Rate'],['FWBAS','Tax Base (Doc. Currency)'],['FWSTE','Tax Amount (Doc. Currency)'],['HWSTE','Tax Amount (Local Currency)']]},
+  KNA1:{d:'Customer Master: General Data', f:[['KUNNR','Customer'],['NAME1','Name'],['NAME2','Name 2'],['STCEG','VAT Registration Number'],['STCD1','Tax Number 1'],['STCD2','Tax Number 2'],['LAND1','Country'],['ORT01','City'],['PSTLZ','Postal Code'],['STRAS','Street'],['TELF1','Telephone'],['ADRNR','Address Number']]},
+  ADRC:{d:'Addresses (Business Address Services)', f:[['NAME1','Name'],['STREET','Street'],['HOUSE_NUM1','House Number'],['CITY1','City'],['POST_CODE1','Postal Code'],['COUNTRY','Country'],['REGION','Region'],['TEL_NUMBER','Telephone']]},
+  ADR6:{d:'E-Mail Addresses (BAS)', f:[['SMTP_ADDR','E-Mail Address']]},
+  T001:{d:'Company Codes', f:[['BUKRS','Company Code'],['BUTXT','Company Name'],['LAND1','Country'],['WAERS','Currency'],['STCEG','VAT Registration Number'],['ADRNR','Address Number']]},
+  T012K:{d:'House Bank Accounts', f:[['HBKID','House Bank'],['HKTID','Account ID'],['BANKN','Bank Account Number']]},
+  EDOCUMENT:{d:'eDocument', f:[['EDOC_GUID','eDocument GUID'],['PROCESS','eDocument Process'],['EDOC_TYPE','eDocument Type'],['PROC_STATUS','Process Status'],['SOURCE_TYPE','Source Type'],['SOURCE_KEY','Source Key'],['LAND','Country']]},
+  SYST:{d:'ABAP System Fields', f:[['DATUM','Current Date'],['UZEIT','Current Time'],['SYSID','System ID']]},
+};
+const CAT_GROUPS = {
+  SD:[['Billing',['VBRK','VBRP','VBKD','VBFA']],['Partner',['KNA1','ADRC','ADR6']],['Company',['T001','T012K']],['Framework',['EDOCUMENT','SYST']]],
+  FI:[['Accounting',['BKPF','BSEG','BSET']],['Partner',['KNA1','ADRC','ADR6']],['Company',['T001','T012K']],['Framework',['EDOCUMENT','SYST']]],
+};
+const ITEM_TABLE = {SD:'VBRP', FI:'BSEG'};
+const LINE_NODES = ['FaWiersz','InvoiceLine','CreditNoteLine','ZamowienieWiersz'];
+function fieldDesc(f){ const [t,n]=f.split('-'); const x=CATALOG[t]?.f.find(a=>a[0]===n); return x?x[1]:''; }
+
+/* ======================= XML templates ======================= */
+const PL_XML = "<SendInvoiceType>\n<header>\n<nip>String 1</nip>\n<action>String 2</action>\n<system>String 3</system>\n<submissionType>String 4</submissionType>\n</header>\n<invoice>\n<n0:Faktura xmlns:n0=\"http://crd.gov.pl/wzor/2021/11/29/11089/\">\n<n0:Naglowek>\n<n0:KodFormularza kodSystemowy=\"String 5\" wersjaSchemy=\"String 6\">String 7</n0:KodFormularza>\n<n0:WariantFormularza>8</n0:WariantFormularza>\n<n0:DataWytworzeniaFa>1999-05-31T13:20:00Z</n0:DataWytworzeniaFa>\n<n0:SystemInfo>Token 9</n0:SystemInfo>\n</n0:Naglowek>\n<n0:Podmiot1>\n<n0:PrefiksPodatnika>String 10</n0:PrefiksPodatnika>\n<n0:NrEORI>Token 11</n0:NrEORI>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 12</n0:NIP>\n<n0:ImiePierwsze>Token 13</n0:ImiePierwsze>\n<n0:Nazwisko>Token 14</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 15</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 16</n0:KodKraju>\n<n0:Wojewodztwo>Token 17</n0:Wojewodztwo>\n<n0:Powiat>Token 18</n0:Powiat>\n<n0:Gmina>Token 19</n0:Gmina>\n<n0:Ulica>Token 20</n0:Ulica>\n<n0:NrDomu>Token 21</n0:NrDomu>\n<n0:NrLokalu>Token 22</n0:NrLokalu>\n<n0:Miejscowosc>Token 23</n0:Miejscowosc>\n<n0:KodPocztowy>Token 24</n0:KodPocztowy>\n<n0:Poczta>Token 25</n0:Poczta>\n<n0:GLN>Token 26</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n<n0:AdresKoresp>\n<n0:AdresPol>\n<n0:KodKraju>String 27</n0:KodKraju>\n<n0:Wojewodztwo>Token 28</n0:Wojewodztwo>\n<n0:Powiat>Token 29</n0:Powiat>\n<n0:Gmina>Token 30</n0:Gmina>\n<n0:Ulica>Token 31</n0:Ulica>\n<n0:NrDomu>Token 32</n0:NrDomu>\n<n0:NrLokalu>Token 33</n0:NrLokalu>\n<n0:Miejscowosc>Token 34</n0:Miejscowosc>\n<n0:KodPocztowy>Token 35</n0:KodPocztowy>\n<n0:Poczta>Token 36</n0:Poczta>\n<n0:GLN>Token 37</n0:GLN>\n</n0:AdresPol>\n</n0:AdresKoresp>\n<n0:Email>Token 38</n0:Email>\n<n0:Telefon>Token 39</n0:Telefon>\n<n0:Telefon>Token 40</n0:Telefon>\n<n0:StatusInfoPodatnika>41</n0:StatusInfoPodatnika>\n</n0:Podmiot1>\n<n0:Podmiot2>\n<n0:PrefiksNabywcy>String 42</n0:PrefiksNabywcy>\n<n0:NrEORI>Token 43</n0:NrEORI>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 44</n0:NIP>\n<n0:ImiePierwsze>Token 45</n0:ImiePierwsze>\n<n0:Nazwisko>Token 46</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 47</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 48</n0:KodKraju>\n<n0:Wojewodztwo>Token 49</n0:Wojewodztwo>\n<n0:Powiat>Token 50</n0:Powiat>\n<n0:Gmina>Token 51</n0:Gmina>\n<n0:Ulica>Token 52</n0:Ulica>\n<n0:NrDomu>Token 53</n0:NrDomu>\n<n0:NrLokalu>Token 54</n0:NrLokalu>\n<n0:Miejscowosc>Token 55</n0:Miejscowosc>\n<n0:KodPocztowy>Token 56</n0:KodPocztowy>\n<n0:Poczta>Token 57</n0:Poczta>\n<n0:GLN>Token 58</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n<n0:AdresKoresp>\n<n0:AdresPol>\n<n0:KodKraju>String 59</n0:KodKraju>\n<n0:Wojewodztwo>Token 60</n0:Wojewodztwo>\n<n0:Powiat>Token 61</n0:Powiat>\n<n0:Gmina>Token 62</n0:Gmina>\n<n0:Ulica>Token 63</n0:Ulica>\n<n0:NrDomu>Token 64</n0:NrDomu>\n<n0:NrLokalu>Token 65</n0:NrLokalu>\n<n0:Miejscowosc>Token 66</n0:Miejscowosc>\n<n0:KodPocztowy>Token 67</n0:KodPocztowy>\n<n0:Poczta>Token 68</n0:Poczta>\n<n0:GLN>Token 69</n0:GLN>\n</n0:AdresPol>\n</n0:AdresKoresp>\n<n0:Email>Token 70</n0:Email>\n<n0:Telefon>Token 71</n0:Telefon>\n<n0:Telefon>Token 72</n0:Telefon>\n<n0:NrKlienta>Token 73</n0:NrKlienta>\n</n0:Podmiot2>\n<n0:Podmiot3>\n<n0:NrEORI>Token 74</n0:NrEORI>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 75</n0:NIP>\n<n0:ImiePierwsze>Token 76</n0:ImiePierwsze>\n<n0:Nazwisko>Token 77</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 78</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 79</n0:KodKraju>\n<n0:Wojewodztwo>Token 80</n0:Wojewodztwo>\n<n0:Powiat>Token 81</n0:Powiat>\n<n0:Gmina>Token 82</n0:Gmina>\n<n0:Ulica>Token 83</n0:Ulica>\n<n0:NrDomu>Token 84</n0:NrDomu>\n<n0:NrLokalu>Token 85</n0:NrLokalu>\n<n0:Miejscowosc>Token 86</n0:Miejscowosc>\n<n0:KodPocztowy>Token 87</n0:KodPocztowy>\n<n0:Poczta>Token 88</n0:Poczta>\n<n0:GLN>Token 89</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n<n0:AdresKoresp>\n<n0:AdresPol>\n<n0:KodKraju>String 90</n0:KodKraju>\n<n0:Wojewodztwo>Token 91</n0:Wojewodztwo>\n<n0:Powiat>Token 92</n0:Powiat>\n<n0:Gmina>Token 93</n0:Gmina>\n<n0:Ulica>Token 94</n0:Ulica>\n<n0:NrDomu>Token 95</n0:NrDomu>\n<n0:NrLokalu>Token 96</n0:NrLokalu>\n<n0:Miejscowosc>Token 97</n0:Miejscowosc>\n<n0:KodPocztowy>Token 98</n0:KodPocztowy>\n<n0:Poczta>Token 99</n0:Poczta>\n<n0:GLN>Token 100</n0:GLN>\n</n0:AdresPol>\n</n0:AdresKoresp>\n<n0:Email>Token 101</n0:Email>\n<n0:Telefon>Token 102</n0:Telefon>\n<n0:Telefon>Token 103</n0:Telefon>\n<n0:Rola>104</n0:Rola>\n<n0:Udzial>100</n0:Udzial>\n<n0:NrKlienta>Token 106</n0:NrKlienta>\n</n0:Podmiot3>\n<n0:Podmiot3>\n<n0:NrEORI>Token 107</n0:NrEORI>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 108</n0:NIP>\n<n0:ImiePierwsze>Token 109</n0:ImiePierwsze>\n<n0:Nazwisko>Token 110</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 111</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 112</n0:KodKraju>\n<n0:Wojewodztwo>Token 113</n0:Wojewodztwo>\n<n0:Powiat>Token 114</n0:Powiat>\n<n0:Gmina>Token 115</n0:Gmina>\n<n0:Ulica>Token 116</n0:Ulica>\n<n0:NrDomu>Token 117</n0:NrDomu>\n<n0:NrLokalu>Token 118</n0:NrLokalu>\n<n0:Miejscowosc>Token 119</n0:Miejscowosc>\n<n0:KodPocztowy>Token 120</n0:KodPocztowy>\n<n0:Poczta>Token 121</n0:Poczta>\n<n0:GLN>Token 122</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n<n0:AdresKoresp>\n<n0:AdresPol>\n<n0:KodKraju>String 123</n0:KodKraju>\n<n0:Wojewodztwo>Token 124</n0:Wojewodztwo>\n<n0:Powiat>Token 125</n0:Powiat>\n<n0:Gmina>Token 126</n0:Gmina>\n<n0:Ulica>Token 127</n0:Ulica>\n<n0:NrDomu>Token 128</n0:NrDomu>\n<n0:NrLokalu>Token 129</n0:NrLokalu>\n<n0:Miejscowosc>Token 130</n0:Miejscowosc>\n<n0:KodPocztowy>Token 131</n0:KodPocztowy>\n<n0:Poczta>Token 132</n0:Poczta>\n<n0:GLN>Token 133</n0:GLN>\n</n0:AdresPol>\n</n0:AdresKoresp>\n<n0:Email>Token 134</n0:Email>\n<n0:Telefon>Token 135</n0:Telefon>\n<n0:Telefon>Token 136</n0:Telefon>\n<n0:Rola>137</n0:Rola>\n<n0:Udzial>100</n0:Udzial>\n<n0:NrKlienta>Token 139</n0:NrKlienta>\n</n0:Podmiot3>\n<n0:PodmiotUpowazniony>\n<n0:NrEORI>Token 140</n0:NrEORI>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 141</n0:NIP>\n<n0:ImiePierwsze>Token 142</n0:ImiePierwsze>\n<n0:Nazwisko>Token 143</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 144</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 145</n0:KodKraju>\n<n0:Wojewodztwo>Token 146</n0:Wojewodztwo>\n<n0:Powiat>Token 147</n0:Powiat>\n<n0:Gmina>Token 148</n0:Gmina>\n<n0:Ulica>Token 149</n0:Ulica>\n<n0:NrDomu>Token 150</n0:NrDomu>\n<n0:NrLokalu>Token 151</n0:NrLokalu>\n<n0:Miejscowosc>Token 152</n0:Miejscowosc>\n<n0:KodPocztowy>Token 153</n0:KodPocztowy>\n<n0:Poczta>Token 154</n0:Poczta>\n<n0:GLN>Token 155</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n<n0:AdresKoresp>\n<n0:AdresPol>\n<n0:KodKraju>String 156</n0:KodKraju>\n<n0:Wojewodztwo>Token 157</n0:Wojewodztwo>\n<n0:Powiat>Token 158</n0:Powiat>\n<n0:Gmina>Token 159</n0:Gmina>\n<n0:Ulica>Token 160</n0:Ulica>\n<n0:NrDomu>Token 161</n0:NrDomu>\n<n0:NrLokalu>Token 162</n0:NrLokalu>\n<n0:Miejscowosc>Token 163</n0:Miejscowosc>\n<n0:KodPocztowy>Token 164</n0:KodPocztowy>\n<n0:Poczta>Token 165</n0:Poczta>\n<n0:GLN>Token 166</n0:GLN>\n</n0:AdresPol>\n</n0:AdresKoresp>\n<n0:EmailPU>Token 167</n0:EmailPU>\n<n0:TelefonPU>Token 168</n0:TelefonPU>\n<n0:TelefonPU>Token 169</n0:TelefonPU>\n<n0:RolaPU>170</n0:RolaPU>\n</n0:PodmiotUpowazniony>\n<n0:Fa>\n<n0:KodWaluty>String 171</n0:KodWaluty>\n<n0:P_1>1999-01-24</n0:P_1>\n<n0:P_1M>Token 172</n0:P_1M>\n<n0:P_2>Token 173</n0:P_2>\n<n0:WZ>Token 174</n0:WZ>\n<n0:WZ>Token 175</n0:WZ>\n<n0:P_6>1999-01-24</n0:P_6>\n<n0:P_13_1>176</n0:P_13_1>\n<n0:P_14_1>177</n0:P_14_1>\n<n0:P_14_1W>178</n0:P_14_1W>\n<n0:P_13_2>179</n0:P_13_2>\n<n0:P_14_2>180</n0:P_14_2>\n<n0:P_14_2W>181</n0:P_14_2W>\n<n0:P_13_3>182</n0:P_13_3>\n<n0:P_14_3>183</n0:P_14_3>\n<n0:P_14_3W>184</n0:P_14_3W>\n<n0:P_13_4>185</n0:P_13_4>\n<n0:P_14_4>186</n0:P_14_4>\n<n0:P_14_4W>187</n0:P_14_4W>\n<n0:P_13_5>188</n0:P_13_5>\n<n0:P_14_5>189</n0:P_14_5>\n<n0:P_13_6>190</n0:P_13_6>\n<n0:P_13_7>191</n0:P_13_7>\n<n0:P_15>192</n0:P_15>\n<n0:Adnotacje>\n<n0:P_16>127</n0:P_16>\n<n0:P_17>127</n0:P_17>\n<n0:P_18>127</n0:P_18>\n<n0:P_18A>127</n0:P_18A>\n<n0:P_19>127</n0:P_19>\n<n0:P_19A>Token 198</n0:P_19A>\n<n0:P_22>127</n0:P_22>\n<n0:P_22A>1999-01-24</n0:P_22A>\n<n0:P_22BMK>Token 200</n0:P_22BMK>\n<n0:P_22BMD>Token 201</n0:P_22BMD>\n<n0:P_22BK>Token 202</n0:P_22BK>\n<n0:P_22BNR>Token 203</n0:P_22BNR>\n<n0:P_22BRP>Token 204</n0:P_22BRP>\n<n0:P_22B>Token 205</n0:P_22B>\n<n0:P_22B1>Token 206</n0:P_22B1>\n<n0:P_22BT>Token 207</n0:P_22BT>\n<n0:P_23>127</n0:P_23>\n<n0:P_PMarzy>127</n0:P_PMarzy>\n<n0:P_PMarzy_2>127</n0:P_PMarzy_2>\n</n0:Adnotacje>\n<n0:RodzajFaktury>Token 211</n0:RodzajFaktury>\n<n0:PrzyczynaKorekty>Token 212</n0:PrzyczynaKorekty>\n<n0:TypKorekty>213</n0:TypKorekty>\n<n0:DaneFaKorygowanej>\n<n0:DataWystFaKorygowanej>1999-01-24</n0:DataWystFaKorygowanej>\n<n0:NrFaKorygowanej>Token 214</n0:NrFaKorygowanej>\n<n0:NrKSeFFaKorygowanej>Token 215</n0:NrKSeFFaKorygowanej>\n</n0:DaneFaKorygowanej>\n<n0:DaneFaKorygowanej>\n<n0:DataWystFaKorygowanej>1999-01-24</n0:DataWystFaKorygowanej>\n<n0:NrFaKorygowanej>Token 216</n0:NrFaKorygowanej>\n<n0:NrKSeFFaKorygowanej>Token 217</n0:NrKSeFFaKorygowanej>\n</n0:DaneFaKorygowanej>\n<n0:OkresFaKorygowanej>Token 218</n0:OkresFaKorygowanej>\n<n0:NrFaKorygowany>Token 219</n0:NrFaKorygowany>\n<n0:Podmiot1K>\n<n0:PrefiksPodatnika>String 220</n0:PrefiksPodatnika>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 221</n0:NIP>\n<n0:ImiePierwsze>Token 222</n0:ImiePierwsze>\n<n0:Nazwisko>Token 223</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 224</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 225</n0:KodKraju>\n<n0:Wojewodztwo>Token 226</n0:Wojewodztwo>\n<n0:Powiat>Token 227</n0:Powiat>\n<n0:Gmina>Token 228</n0:Gmina>\n<n0:Ulica>Token 229</n0:Ulica>\n<n0:NrDomu>Token 230</n0:NrDomu>\n<n0:NrLokalu>Token 231</n0:NrLokalu>\n<n0:Miejscowosc>Token 232</n0:Miejscowosc>\n<n0:KodPocztowy>Token 233</n0:KodPocztowy>\n<n0:Poczta>Token 234</n0:Poczta>\n<n0:GLN>Token 235</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n</n0:Podmiot1K>\n<n0:Podmiot2K>\n<n0:PrefiksNabywcy>String 236</n0:PrefiksNabywcy>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 237</n0:NIP>\n<n0:ImiePierwsze>Token 238</n0:ImiePierwsze>\n<n0:Nazwisko>Token 239</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 240</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 241</n0:KodKraju>\n<n0:Wojewodztwo>Token 242</n0:Wojewodztwo>\n<n0:Powiat>Token 243</n0:Powiat>\n<n0:Gmina>Token 244</n0:Gmina>\n<n0:Ulica>Token 245</n0:Ulica>\n<n0:NrDomu>Token 246</n0:NrDomu>\n<n0:NrLokalu>Token 247</n0:NrLokalu>\n<n0:Miejscowosc>Token 248</n0:Miejscowosc>\n<n0:KodPocztowy>Token 249</n0:KodPocztowy>\n<n0:Poczta>Token 250</n0:Poczta>\n<n0:GLN>Token 251</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n</n0:Podmiot2K>\n<n0:Podmiot2K>\n<n0:PrefiksNabywcy>String 252</n0:PrefiksNabywcy>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 253</n0:NIP>\n<n0:ImiePierwsze>Token 254</n0:ImiePierwsze>\n<n0:Nazwisko>Token 255</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 256</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:Adres>\n<n0:AdresPol>\n<n0:KodKraju>String 257</n0:KodKraju>\n<n0:Wojewodztwo>Token 258</n0:Wojewodztwo>\n<n0:Powiat>Token 259</n0:Powiat>\n<n0:Gmina>Token 260</n0:Gmina>\n<n0:Ulica>Token 261</n0:Ulica>\n<n0:NrDomu>Token 262</n0:NrDomu>\n<n0:NrLokalu>Token 263</n0:NrLokalu>\n<n0:Miejscowosc>Token 264</n0:Miejscowosc>\n<n0:KodPocztowy>Token 265</n0:KodPocztowy>\n<n0:Poczta>Token 266</n0:Poczta>\n<n0:GLN>Token 267</n0:GLN>\n</n0:AdresPol>\n</n0:Adres>\n</n0:Podmiot2K>\n<n0:FP>127</n0:FP>\n<n0:TP>127</n0:TP>\n<n0:DodatkowyOpis>\n<n0:Klucz>Token 270</n0:Klucz>\n<n0:Wartosc>Token 271</n0:Wartosc>\n</n0:DodatkowyOpis>\n<n0:DodatkowyOpis>\n<n0:Klucz>Token 272</n0:Klucz>\n<n0:Wartosc>Token 273</n0:Wartosc>\n</n0:DodatkowyOpis>\n<n0:NrFaZaliczkowej>Token 274</n0:NrFaZaliczkowej>\n<n0:NrFaZaliczkowej>Token 275</n0:NrFaZaliczkowej>\n<n0:ZwrotAkcyzy>127</n0:ZwrotAkcyzy>\n<n0:FaWiersze>\n<n0:LiczbaWierszyFaktury>277</n0:LiczbaWierszyFaktury>\n<n0:WartoscWierszyFaktury1>278</n0:WartoscWierszyFaktury1>\n<n0:FaWiersz>\n<n0:NrWierszaFa>279</n0:NrWierszaFa>\n<n0:UU_ID>Token 280</n0:UU_ID>\n<n0:P_6A>1999-01-24</n0:P_6A>\n<n0:P_7>Token 281</n0:P_7>\n<n0:GTIN>Token 282</n0:GTIN>\n<n0:PKWiU>Token 283</n0:PKWiU>\n<n0:CN>Token 284</n0:CN>\n<n0:PKOB>Token 285</n0:PKOB>\n<n0:DodatkoweInfo>Token 286</n0:DodatkoweInfo>\n<n0:P_8A>Token 287</n0:P_8A>\n<n0:P_8B>288</n0:P_8B>\n<n0:P_9A>289</n0:P_9A>\n<n0:P_9B>290</n0:P_9B>\n<n0:P_10>291</n0:P_10>\n<n0:P_11>292</n0:P_11>\n<n0:P_11A>293</n0:P_11A>\n<n0:P_12>Token 294</n0:P_12>\n<n0:P_12_XII>100</n0:P_12_XII>\n<n0:P_12_Procedura>296</n0:P_12_Procedura>\n<n0:KwotaAkcyzy>297</n0:KwotaAkcyzy>\n<n0:GTU>Token 298</n0:GTU>\n<n0:Procedura>Token 299</n0:Procedura>\n<n0:KursWaluty>300</n0:KursWaluty>\n</n0:FaWiersz>\n<n0:FaWiersz>\n<n0:NrWierszaFa>301</n0:NrWierszaFa>\n<n0:UU_ID>Token 302</n0:UU_ID>\n<n0:P_6A>1999-01-24</n0:P_6A>\n<n0:P_7>Token 303</n0:P_7>\n<n0:GTIN>Token 304</n0:GTIN>\n<n0:PKWiU>Token 305</n0:PKWiU>\n<n0:CN>Token 306</n0:CN>\n<n0:PKOB>Token 307</n0:PKOB>\n<n0:DodatkoweInfo>Token 308</n0:DodatkoweInfo>\n<n0:P_8A>Token 309</n0:P_8A>\n<n0:P_8B>310</n0:P_8B>\n<n0:P_9A>311</n0:P_9A>\n<n0:P_9B>312</n0:P_9B>\n<n0:P_10>313</n0:P_10>\n<n0:P_11>314</n0:P_11>\n<n0:P_11A>315</n0:P_11A>\n<n0:P_12>Token 316</n0:P_12>\n<n0:P_12_XII>100</n0:P_12_XII>\n<n0:P_12_Procedura>318</n0:P_12_Procedura>\n<n0:KwotaAkcyzy>319</n0:KwotaAkcyzy>\n<n0:GTU>Token 320</n0:GTU>\n<n0:Procedura>Token 321</n0:Procedura>\n<n0:KursWaluty>322</n0:KursWaluty>\n</n0:FaWiersz>\n</n0:FaWiersze>\n<n0:Rozliczenie>\n<n0:Obciazenia>\n<n0:Kwota>323</n0:Kwota>\n<n0:Powod>Token 324</n0:Powod>\n</n0:Obciazenia>\n<n0:Obciazenia>\n<n0:Kwota>325</n0:Kwota>\n<n0:Powod>Token 326</n0:Powod>\n</n0:Obciazenia>\n<n0:SumaObciazen>327</n0:SumaObciazen>\n<n0:Odliczenia>\n<n0:Kwota>328</n0:Kwota>\n<n0:Powod>Token 329</n0:Powod>\n</n0:Odliczenia>\n<n0:Odliczenia>\n<n0:Kwota>330</n0:Kwota>\n<n0:Powod>Token 331</n0:Powod>\n</n0:Odliczenia>\n<n0:SumaOdliczen>332</n0:SumaOdliczen>\n<n0:DoZaplaty>333</n0:DoZaplaty>\n</n0:Rozliczenie>\n<n0:Platnosc>\n<n0:Zaplacono>127</n0:Zaplacono>\n<n0:DataZaplaty>1999-01-24</n0:DataZaplaty>\n<n0:TerminyPlatnosci>\n<n0:TerminPlatnosci>1999-01-24</n0:TerminPlatnosci>\n<n0:TerminPlatnosciOpis>Token 335</n0:TerminPlatnosciOpis>\n</n0:TerminyPlatnosci>\n<n0:TerminyPlatnosci>\n<n0:TerminPlatnosci>1999-01-24</n0:TerminPlatnosci>\n<n0:TerminPlatnosciOpis>Token 336</n0:TerminPlatnosciOpis>\n</n0:TerminyPlatnosci>\n<n0:FormaPlatnosci>337</n0:FormaPlatnosci>\n<n0:RachunekBankowy>\n<n0:NrRBPL>String 338</n0:NrRBPL>\n<n0:RachunekWlasnyBanku>339</n0:RachunekWlasnyBanku>\n<n0:NazwaBanku>Token 340</n0:NazwaBanku>\n</n0:RachunekBankowy>\n<n0:RachunekBankowy>\n<n0:NrRBPL>String 341</n0:NrRBPL>\n<n0:RachunekWlasnyBanku>342</n0:RachunekWlasnyBanku>\n<n0:NazwaBanku>Token 343</n0:NazwaBanku>\n</n0:RachunekBankowy>\n<n0:RachunekBankowyFaktora>\n<n0:NrRBPL>String 344</n0:NrRBPL>\n<n0:RachunekWlasnyBanku>345</n0:RachunekWlasnyBanku>\n<n0:NazwaBanku>Token 346</n0:NazwaBanku>\n</n0:RachunekBankowyFaktora>\n<n0:RachunekBankowyFaktora>\n<n0:NrRBPL>String 347</n0:NrRBPL>\n<n0:RachunekWlasnyBanku>348</n0:RachunekWlasnyBanku>\n<n0:NazwaBanku>Token 349</n0:NazwaBanku>\n</n0:RachunekBankowyFaktora>\n<n0:Skonto>\n<n0:WarunkiSkonta>Token 350</n0:WarunkiSkonta>\n<n0:WysokoscSkonta>Token 351</n0:WysokoscSkonta>\n</n0:Skonto>\n</n0:Platnosc>\n<n0:WarunkiTransakcji>\n<n0:Umowy>\n<n0:DataUmowy>1999-01-24</n0:DataUmowy>\n<n0:NrUmowy>Token 352</n0:NrUmowy>\n</n0:Umowy>\n<n0:Umowy>\n<n0:DataUmowy>1999-01-24</n0:DataUmowy>\n<n0:NrUmowy>Token 353</n0:NrUmowy>\n</n0:Umowy>\n<n0:Zamowienia>\n<n0:DataZamowienia>1999-01-24</n0:DataZamowienia>\n<n0:NrZamowienia>Token 354</n0:NrZamowienia>\n</n0:Zamowienia>\n<n0:Zamowienia>\n<n0:DataZamowienia>1999-01-24</n0:DataZamowienia>\n<n0:NrZamowienia>Token 355</n0:NrZamowienia>\n</n0:Zamowienia>\n<n0:NrPartiiTowaru>Token 356</n0:NrPartiiTowaru>\n<n0:NrPartiiTowaru>Token 357</n0:NrPartiiTowaru>\n<n0:WarunkiDostawy>Token 358</n0:WarunkiDostawy>\n<n0:KursUmowny>359</n0:KursUmowny>\n<n0:WalutaUmowna>String 360</n0:WalutaUmowna>\n<n0:Transport>\n<n0:RodzajTransportu>361</n0:RodzajTransportu>\n<n0:Przewoznik>\n<n0:DaneIdentyfikacyjne>\n<n0:NIP>String 362</n0:NIP>\n<n0:ImiePierwsze>Token 363</n0:ImiePierwsze>\n<n0:Nazwisko>Token 364</n0:Nazwisko>\n<n0:NazwaHandlowa>Token 365</n0:NazwaHandlowa>\n</n0:DaneIdentyfikacyjne>\n<n0:AdresPrzewoznika>\n<n0:AdresPol>\n<n0:KodKraju>String 366</n0:KodKraju>\n<n0:Wojewodztwo>Token 367</n0:Wojewodztwo>\n<n0:Powiat>Token 368</n0:Powiat>\n<n0:Gmina>Token 369</n0:Gmina>\n<n0:Ulica>Token 370</n0:Ulica>\n<n0:NrDomu>Token 371</n0:NrDomu>\n<n0:NrLokalu>Token 372</n0:NrLokalu>\n<n0:Miejscowosc>Token 373</n0:Miejscowosc>\n<n0:KodPocztowy>Token 374</n0:KodPocztowy>\n<n0:Poczta>Token 375</n0:Poczta>\n<n0:GLN>Token 376</n0:GLN>\n</n0:AdresPol>\n</n0:AdresPrzewoznika>\n</n0:Przewoznik>\n<n0:NrZleceniaTransportu>Token 377</n0:NrZleceniaTransportu>\n<n0:OpisLadunku>378</n0:OpisLadunku>\n<n0:JednostkaOpakowania>Token 379</n0:JednostkaOpakowania>\n<n0:DataGodzRozpTransportu>1999-05-31T13:20:00Z</n0:DataGodzRozpTransportu>\n<n0:DataGodzZakTransportu>1999-05-31T13:20:00Z</n0:DataGodzZakTransportu>\n<n0:WysylkaZ>\n<n0:AdresPol>\n<n0:KodKraju>String 380</n0:KodKraju>\n<n0:Wojewodztwo>Token 381</n0:Wojewodztwo>\n<n0:Powiat>Token 382</n0:Powiat>\n<n0:Gmina>Token 383</n0:Gmina>\n<n0:Ulica>Token 384</n0:Ulica>\n<n0:NrDomu>Token 385</n0:NrDomu>\n<n0:NrLokalu>Token 386</n0:NrLokalu>\n<n0:Miejscowosc>Token 387</n0:Miejscowosc>\n<n0:KodPocztowy>Token 388</n0:KodPocztowy>\n<n0:Poczta>Token 389</n0:Poczta>\n<n0:GLN>Token 390</n0:GLN>\n</n0:AdresPol>\n</n0:WysylkaZ>\n<n0:WysylkaPrzez>\n<n0:AdresPol>\n<n0:KodKraju>String 391</n0:KodKraju>\n<n0:Wojewodztwo>Token 392</n0:Wojewodztwo>\n<n0:Powiat>Token 393</n0:Powiat>\n<n0:Gmina>Token 394</n0:Gmina>\n<n0:Ulica>Token 395</n0:Ulica>\n<n0:NrDomu>Token 396</n0:NrDomu>\n<n0:NrLokalu>Token 397</n0:NrLokalu>\n<n0:Miejscowosc>Token 398</n0:Miejscowosc>\n<n0:KodPocztowy>Token 399</n0:KodPocztowy>\n<n0:Poczta>Token 400</n0:Poczta>\n<n0:GLN>Token 401</n0:GLN>\n</n0:AdresPol>\n</n0:WysylkaPrzez>\n<n0:WysylkaPrzez>\n<n0:AdresPol>\n<n0:KodKraju>String 402</n0:KodKraju>\n<n0:Wojewodztwo>Token 403</n0:Wojewodztwo>\n<n0:Powiat>Token 404</n0:Powiat>\n<n0:Gmina>Token 405</n0:Gmina>\n<n0:Ulica>Token 406</n0:Ulica>\n<n0:NrDomu>Token 407</n0:NrDomu>\n<n0:NrLokalu>Token 408</n0:NrLokalu>\n<n0:Miejscowosc>Token 409</n0:Miejscowosc>\n<n0:KodPocztowy>Token 410</n0:KodPocztowy>\n<n0:Poczta>Token 411</n0:Poczta>\n<n0:GLN>Token 412</n0:GLN>\n</n0:AdresPol>\n</n0:WysylkaPrzez>\n<n0:WysylkaDo>\n<n0:AdresPol>\n<n0:KodKraju>String 413</n0:KodKraju>\n<n0:Wojewodztwo>Token 414</n0:Wojewodztwo>\n<n0:Powiat>Token 415</n0:Powiat>\n<n0:Gmina>Token 416</n0:Gmina>\n<n0:Ulica>Token 417</n0:Ulica>\n<n0:NrDomu>Token 418</n0:NrDomu>\n<n0:NrLokalu>Token 419</n0:NrLokalu>\n<n0:Miejscowosc>Token 420</n0:Miejscowosc>\n<n0:KodPocztowy>Token 421</n0:KodPocztowy>\n<n0:Poczta>Token 422</n0:Poczta>\n<n0:GLN>Token 423</n0:GLN>\n</n0:AdresPol>\n</n0:WysylkaDo>\n</n0:Transport>\n<n0:PodmiotPosredniczacy>127</n0:PodmiotPosredniczacy>\n</n0:WarunkiTransakcji>\n<n0:Zamowienie>\n<n0:LiczbaWierszyZamowienia>488</n0:LiczbaWierszyZamowienia>\n<n0:WartoscZamowienia>489</n0:WartoscZamowienia>\n<n0:ZamowienieWiersz>\n<n0:NrWierszaZam>490</n0:NrWierszaZam>\n<n0:UU_IDZ>Token 491</n0:UU_IDZ>\n<n0:P_7Z>Token 492</n0:P_7Z>\n<n0:GTINZ>Token 493</n0:GTINZ>\n<n0:PKWiUZ>Token 494</n0:PKWiUZ>\n<n0:CNZ>Token 495</n0:CNZ>\n<n0:PKOBZ>Token 496</n0:PKOBZ>\n<n0:DodatkoweInfoZ>Token 497</n0:DodatkoweInfoZ>\n<n0:P_8AZ>Token 498</n0:P_8AZ>\n<n0:P_8BZ>499</n0:P_8BZ>\n<n0:P_9AZ>500</n0:P_9AZ>\n<n0:P_11NettoZ>501</n0:P_11NettoZ>\n<n0:P_11VatZ>502</n0:P_11VatZ>\n<n0:P_12Z>Token 503</n0:P_12Z>\n<n0:P_12Z_XII>100</n0:P_12Z_XII>\n<n0:P_12Z_Procedura>505</n0:P_12Z_Procedura>\n<n0:GTUZ>Token 506</n0:GTUZ>\n<n0:ProceduraZ>Token 507</n0:ProceduraZ>\n<n0:KwotaAkcyzyZ>508</n0:KwotaAkcyzyZ>\n<n0:KursWalutyZ>509</n0:KursWalutyZ>\n</n0:ZamowienieWiersz>\n</n0:Zamowienie>\n</n0:Fa>\n<n0:Stopka>\n<n0:Informacje>\n<n0:StopkaFaktury>String 530</n0:StopkaFaktury>\n</n0:Informacje>\n<n0:Rejestry>\n<n0:PelnaNazwa>Token 532</n0:PelnaNazwa>\n<n0:KRS>String 533</n0:KRS>\n<n0:REGON>String 534</n0:REGON>\n<n0:BDO>Token 535</n0:BDO>\n</n0:Rejestry>\n</n0:Stopka>\n</n0:Faktura>\n<invoiceContent>String 540</invoiceContent>\n</invoice>\n</SendInvoiceType>\n";
+
+function ublXml(cc, credit){
+  const cfg = cc==='FR'
+    ? {cust:'urn:cen.eu:en16931:2017', cur:'EUR', rate:'20', pfx:'FA', s:{scheme:'0225',endpoint:'123456789',id:'SUP-001',street:'12 Rue de la Paix',city:'Paris',zip:'75002',vat:'FR12123456789',name:'Demo Fournisseur SAS',reg:'123456789',tel:'+33 1 23 45 67 89',mail:'factures@fournisseur.example'}, b:{scheme:'0225',endpoint:'987654321',id:'CUST-1000',street:'5 Avenue Victor Hugo',city:'Lyon',zip:'69002',vat:'FR45987654321',name:'Client Exemple SARL',reg:'987654321',tel:'+33 4 11 22 33 44',mail:'compta@client.example'}, iban:'FR7630006000011234567890189'}
+    : {cust:'urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0', cur:'EUR', rate:'19', pfx:'RE', s:{scheme:'EM',endpoint:'rechnung@lieferant.example',id:'SUP-001',street:'Hauptstrasse 1',city:'Berlin',zip:'10115',vat:'DE123456789',name:'Lieferant Demo GmbH',reg:'HRB 12345',tel:'+49 30 1234567',mail:'rechnung@lieferant.example'}, b:{scheme:'EM',endpoint:'eingang@kunde.example',id:'CUST-1000',street:'Marktplatz 7',city:'Hamburg',zip:'20095',vat:'DE987654321',name:'Kunde Beispiel AG',reg:'HRB 67890',tel:'+49 40 7654321',mail:'eingang@kunde.example'}, iban:'DE89370400440532013000'};
+  const R = credit?'CreditNote':'Invoice', L = credit?'CreditNoteLine':'InvoiceLine', Q = credit?'CreditedQuantity':'InvoicedQuantity';
+  const party = (role,p)=>`<cac:${role}><cac:Party><cbc:EndpointID schemeID="${p.scheme}">${p.endpoint}</cbc:EndpointID><cac:PartyIdentification><cbc:ID>${p.id}</cbc:ID></cac:PartyIdentification><cac:PostalAddress><cbc:StreetName>${p.street}</cbc:StreetName><cbc:CityName>${p.city}</cbc:CityName><cbc:PostalZone>${p.zip}</cbc:PostalZone><cac:Country><cbc:IdentificationCode>${cc}</cbc:IdentificationCode></cac:Country></cac:PostalAddress><cac:PartyTaxScheme><cbc:CompanyID>${p.vat}</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>${p.name}</cbc:RegistrationName><cbc:CompanyID>${p.reg}</cbc:CompanyID></cac:PartyLegalEntity><cac:Contact><cbc:Telephone>${p.tel}</cbc:Telephone><cbc:ElectronicMail>${p.mail}</cbc:ElectronicMail></cac:Contact></cac:Party></cac:${role}>`;
+  const line = (no,name,mat,qty,price)=>`<cac:${L}><cbc:ID>${no}</cbc:ID><cbc:${Q} unitCode="C62">${qty}</cbc:${Q}><cbc:LineExtensionAmount currencyID="${cfg.cur}">${(qty*price).toFixed(2)}</cbc:LineExtensionAmount><cac:Item><cbc:Name>${name}</cbc:Name><cac:SellersItemIdentification><cbc:ID>${mat}</cbc:ID></cac:SellersItemIdentification><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>${cfg.rate}</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID="${cfg.cur}">${price.toFixed(2)}</cbc:PriceAmount></cac:Price></cac:${L}>`;
+  const net = 1000, tax = net*Number(cfg.rate)/100;
+  return `<${R} xmlns="urn:oasis:names:specification:ubl:schema:xsd:${R}-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">`
+   + `<cbc:CustomizationID>${cfg.cust}</cbc:CustomizationID>`
+   + `<cbc:ID>${cfg.pfx}-2026-000${credit?'456':'123'}</cbc:ID><cbc:IssueDate>2026-10-27</cbc:IssueDate>`
+   + (credit?'':`<cbc:DueDate>2026-11-26</cbc:DueDate>`)
+   + (credit?`<cbc:CreditNoteTypeCode>381</cbc:CreditNoteTypeCode>`:`<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>`)
+   + `<cbc:Note>Sample note</cbc:Note><cbc:DocumentCurrencyCode>${cfg.cur}</cbc:DocumentCurrencyCode>`
+   + `<cbc:BuyerReference>${cc==='DE'?'04011000-12345-34':'PO-REF-778'}</cbc:BuyerReference>`
+   + `<cac:OrderReference><cbc:ID>4500012345</cbc:ID></cac:OrderReference>`
+   + (credit?`<cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>${cfg.pfx}-2026-000123</cbc:ID><cbc:IssueDate>2026-10-01</cbc:IssueDate></cac:InvoiceDocumentReference></cac:BillingReference>`:'')
+   + party('AccountingSupplierParty', cfg.s) + party('AccountingCustomerParty', cfg.b)
+   + `<cac:PaymentMeans><cbc:PaymentMeansCode>58</cbc:PaymentMeansCode><cac:PayeeFinancialAccount><cbc:ID>${cfg.iban}</cbc:ID></cac:PayeeFinancialAccount></cac:PaymentMeans>`
+   + `<cac:PaymentTerms><cbc:Note>30 days net</cbc:Note></cac:PaymentTerms>`
+   + `<cac:TaxTotal><cbc:TaxAmount currencyID="${cfg.cur}">${tax.toFixed(2)}</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID="${cfg.cur}">${net.toFixed(2)}</cbc:TaxableAmount><cbc:TaxAmount currencyID="${cfg.cur}">${tax.toFixed(2)}</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>${cfg.rate}</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal>`
+   + `<cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="${cfg.cur}">${net.toFixed(2)}</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="${cfg.cur}">${net.toFixed(2)}</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="${cfg.cur}">${(net+tax).toFixed(2)}</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="${cfg.cur}">${(net+tax).toFixed(2)}</cbc:PayableAmount></cac:LegalMonetaryTotal>`
+   + line(1,'Office chair','MAT-0001',6,100) + line(2,'Desk lamp','MAT-0002',8,50)
+   + `</${R}>`;
+}
+function templateXml(cc, doc){
+  if(cc==='PL') return PL_XML.replace('<n0:RodzajFaktury>Token 211','<n0:RodzajFaktury>'+(doc==='credit'?'KOR':'VAT'));
+  return ublXml(cc, doc==='credit');
+}
+
+/* ======================= XML model ======================= */
+function buildModel(xml, expandDepth){
+  const doc = new DOMParser().parseFromString(xml,'application/xml');
+  if(doc.getElementsByTagName('parsererror').length) throw new Error('XML parse error');
+  const nodes = {}; let seq = 0;
+  const expanded = new Set();
+  function walk(el, parent, depth){
+    const id = 'n'+(seq++);
+    const sib = parent ? [...el.parentNode.children].filter(c=>c.tagName===el.tagName) : [el];
+    const idx = sib.length>1 ? sib.indexOf(el)+1 : 0;
+    const n = {id, name:el.tagName, local:el.localName, prefix:el.prefix, depth, parent:parent?parent.id:null, children:[], idx, order:seq, isAttr:false, ns:[]};
+    n.path = (parent?parent.path:'') + '/' + el.tagName + (idx?`[${idx}]`:'');
+    nodes[id] = n;
+    for(const a of el.attributes){
+      if(a.name==='xmlns' || a.name.startsWith('xmlns:')){ n.ns.push([a.name,a.value]); continue; }
+      const aid = 'n'+(seq++);
+      nodes[aid] = {id:aid, name:'@'+a.name, local:a.localName, prefix:null, depth:depth+1, parent:id, children:[], idx:0, order:seq, isAttr:true, leaf:true, value:a.value, path:n.path+'/@'+a.name};
+      n.children.push(aid);
+    }
+    const kids = [...el.children];
+    if(!kids.length){ n.leaf = true; n.value = el.textContent.trim(); }
+    else kids.forEach(k => n.children.push(walk(k, n, depth+1)));
+    if(!n.leaf && depth < expandDepth) expanded.add(id);
+    return id;
+  }
+  const root = walk(doc.documentElement, null, 0);
+  // static leaf totals
+  (function tot(id){ const n=nodes[id]; n.total = (n.leaf?1:0) + n.children.reduce((s,c)=>s+tot(c),0); return n.total; })(root);
+  return {nodes, root, expanded};
+}
+
+/* ======================= State ======================= */
+const state = {country:null, doc:null, view:'home', selected:null, search:'', filter:'all', tab:'mapping', navCollapsed:false, savedAt:null};
+const models = {}, rules = {};
+let ruleSeq = 1;
+const key = () => state.country+'|'+state.doc;
+const country = () => COUNTRIES.find(c=>c.code===state.country);
+const docDef = () => DOCS.find(d=>d.id===state.doc);
+function model(){ const k=key(); if(!models[k]) models[k]=buildModel(templateXml(state.country,state.doc), state.country==='PL'?3:1); return models[k]; }
+function R(){ return rules[key()] || (rules[key()] = []); }
+const rulesFor = id => R().filter(r=>r.nodeId===id);
+const countryRuleCount = cc => Object.entries(rules).filter(([k])=>k.startsWith(cc+'|')).reduce((s,[,v])=>s+v.length,0);
+const docRuleCount = (cc,d) => (rules[cc+'|'+d]||[]).length;
+const ancestors = (n,m) => { const a=[]; let x=n.parent?m.nodes[n.parent]:null; while(x){a.push(x); x=x.parent?m.nodes[x.parent]:null;} return a; };
+
+/* ======================= Suggestions ======================= */
+function ctxOf(n,m){
+  for(const a of [n,...ancestors(n,m)]){
+    if(['Podmiot1','Podmiot1K','AccountingSupplierParty'].includes(a.local)) return 'seller';
+    if(['Podmiot2','Podmiot2K','AccountingCustomerParty'].includes(a.local)) return 'buyer';
+    if(['Podmiot3','PodmiotUpowazniony','Transport','Przewoznik'].includes(a.local)) return 'third';
+  }
+  return null;
+}
+const isLine = (n,m) => [n,...ancestors(n,m)].some(a=>LINE_NODES.includes(a.local));
+const lineNodeOf = (n,m) => [n,...ancestors(n,m)].find(a=>LINE_NODES.includes(a.local)) || null;
+function suggest(n, m, src){
+  if(!n || !n.leaf) return [];
+  const fi = src==='FI', sd = (a,b)=>fi?b:a, L = n.local, P = n.parent?m.nodes[n.parent].local:'', ctx = ctxOf(n,m), line = isLine(n,m);
+  const seller = ctx==='seller', buyer = ctx==='buyer';
+  if(ctx==='third') return [];
+  if(L==='ID'){
+    if(n.parent===m.root) return sd(['VBRK-VBELN','VBRK-XBLNR'],['BKPF-XBLNR','BKPF-BELNR']);
+    if(LINE_NODES.includes(P)) return sd(['VBRP-POSNR'],['BSEG-BUZEI']);
+    if(P==='OrderReference') return sd(['VBKD-BSTKD'],['BSEG-ZUONR']);
+    if(P==='InvoiceDocumentReference') return sd(['VBFA-VBELV'],['BKPF-XBLNR']);
+    if(P==='PayeeFinancialAccount') return ['T012K-BANKN'];
+    if(P==='SellersItemIdentification') return sd(['VBRP-MATNR'],[]);
+    if(P==='PartyIdentification') return buyer?['KNA1-KUNNR']:['T001-BUKRS'];
+    return [];
+  }
+  if(L==='NIP' || L==='CompanyID'){
+    if(P==='PartyLegalEntity') return buyer?['KNA1-STCD1']:seller?['T001-STCEG']:[];
+    return buyer?sd(['VBRK-STCEG','KNA1-STCEG'],['KNA1-STCEG']):seller?['T001-STCEG']:[];
+  }
+  if(['NazwaHandlowa','RegistrationName'].includes(L)) return buyer?['KNA1-NAME1']:seller?['ADRC-NAME1','T001-BUTXT']:[];
+  if(['KodKraju','IdentificationCode'].includes(L)) return buyer?['KNA1-LAND1','ADRC-COUNTRY']:seller?['T001-LAND1']:[];
+  const party = {Ulica:'ADRC-STREET',StreetName:'ADRC-STREET',NrDomu:'ADRC-HOUSE_NUM1',Miejscowosc:'ADRC-CITY1',CityName:'ADRC-CITY1',KodPocztowy:'ADRC-POST_CODE1',PostalZone:'ADRC-POST_CODE1',Wojewodztwo:'ADRC-REGION',Telefon:'ADRC-TEL_NUMBER',Telephone:'ADRC-TEL_NUMBER',Email:'ADR6-SMTP_ADDR',ElectronicMail:'ADR6-SMTP_ADDR',EndpointID:'ADR6-SMTP_ADDR',NrKlienta:'KNA1-KUNNR'};
+  if(party[L]) return (seller||buyer)?[party[L]]:[];
+  const cur = sd(['VBRK-WAERK'],['BKPF-WAERS']);
+  const T = {
+    KodWaluty:cur, DocumentCurrencyCode:cur, currencyID:cur,
+    P_1:sd(['VBRK-FKDAT'],['BKPF-BLDAT']), IssueDate:P==='InvoiceDocumentReference'?sd(['VBRK-FKDAT'],['BKPF-BLDAT']):sd(['VBRK-FKDAT'],['BKPF-BLDAT']),
+    P_6:sd(['VBRK-FKDAT'],['BKPF-BUDAT']), P_2:sd(['VBRK-VBELN','VBRK-XBLNR'],['BKPF-XBLNR','BKPF-BELNR']),
+    DueDate:['BSEG-ZFBDT'], TerminPlatnosci:['BSEG-ZFBDT'],
+    P_7:sd(['VBRP-ARKTX'],['BSEG-SGTXT']), Name:sd(['VBRP-ARKTX'],['BSEG-SGTXT']),
+    P_8A:sd(['VBRP-VRKME'],['BSEG-MEINS']), unitCode:sd(['VBRP-VRKME'],['BSEG-MEINS']),
+    P_8B:sd(['VBRP-FKIMG'],['BSEG-MENGE']), InvoicedQuantity:sd(['VBRP-FKIMG'],['BSEG-MENGE']), CreditedQuantity:sd(['VBRP-FKIMG'],['BSEG-MENGE']),
+    P_11:sd(['VBRP-NETWR'],['BSEG-WRBTR']),
+    LineExtensionAmount: line?sd(['VBRP-NETWR'],['BSEG-WRBTR']):sd(['VBRK-NETWR'],['BSET-FWBAS']),
+    P_12:sd(['VBRP-MWSKZ'],['BSEG-MWSKZ']), Percent:sd(['VBRP-MWSKZ'],['BSEG-MWSKZ']),
+    P_13_1:sd(['VBRK-NETWR'],['BSET-FWBAS']), TaxableAmount:sd(['VBRK-NETWR'],['BSET-FWBAS']), TaxExclusiveAmount:sd(['VBRK-NETWR'],['BSET-FWBAS']),
+    P_14_1:sd(['VBRK-MWSBK'],['BSET-FWSTE']), TaxAmount:sd(['VBRK-MWSBK'],['BSET-FWSTE']),
+    P_15:sd(['VBRK-NETWR'],['BSEG-WRBTR']), TaxInclusiveAmount:sd(['VBRK-NETWR'],['BSEG-WRBTR']), PayableAmount:sd(['VBRK-NETWR'],['BSEG-WRBTR']),
+    RodzajFaktury:sd(['VBRK-FKART'],['BKPF-BLART']), InvoiceTypeCode:sd(['VBRK-FKART'],['BKPF-BLART']), CreditNoteTypeCode:sd(['VBRK-FKART'],['BKPF-BLART']),
+    NrFaKorygowanej:sd(['VBFA-VBELV'],['BKPF-XBLNR']), NrZamowienia:sd(['VBKD-BSTKD'],['BSEG-ZUONR']), DataZamowienia:sd(['VBKD-BSTDK'],[]),
+    BuyerReference:sd(['VBKD-IHREZ'],['BSEG-ZUONR']), NrRBPL:['T012K-BANKN'], DataWytworzeniaFa:['SYST-DATUM'], SystemInfo:['SYST-SYSID'],
+    NrWierszaFa:sd(['VBRP-POSNR'],['BSEG-BUZEI']), Note:sd(['VBRK-XBLNR'],['BKPF-BKTXT']), PriceAmount:sd(['VBRP-NETWR'],['BSEG-WRBTR']),
+  };
+  return T[L] || [];
+}
+const DATE_FIELDS = ['P_1','P_6','P_6A','IssueDate','DueDate','TerminPlatnosci','DataZamowienia','DataWystFaKorygowanej','DataZaplaty'];
+const AMOUNT_RE = /^(P_11|P_13_\d|P_14_\d|P_15|.*Amount|Kwota.*|KursWaluty)$/;
+const VALMAP_FIELDS = ['RodzajFaktury','InvoiceTypeCode','CreditNoteTypeCode','P_12','Percent'];
+function prefillValmap(n){
+  const L = n.local;
+  if(L==='RodzajFaktury') return [{from:'F2',to:'VAT'},{from:'G2',to:'KOR'},{from:'L2',to:'VAT'}];
+  if(['InvoiceTypeCode','CreditNoteTypeCode'].includes(L)) return [{from:'F2',to:'380'},{from:'G2',to:'381'}];
+  if(['P_12','Percent'].includes(L)){
+    const r = {PL:[['A1','23'],['A2','8'],['A3','5']], FR:[['A1','20'],['A2','10'],['A3','5.5']], DE:[['A1','19'],['A2','7']]}[state.country];
+    return r.map(([from,to])=>({from,to}));
+  }
+  return [{from:'',to:''}];
+}
+function defaultCfg(n){
+  return {format: DATE_FIELDS.includes(n.local)?'date':AMOUNT_RE.test(n.local)?'dec2':'none', cond:'notInitial', param:'', severity:'E', msg:`${n.local} must not be empty`, transform:'valmap', valmap:prefillValmap(n), second:'', sep:' ', prefix:'', datefmt:'ts', constant:''};
+}
+
+/* ======================= Rule texts ======================= */
+const FORMATS = {none:'No formatting', date:'Date as YYYY-MM-DD', dec2:'Decimal, 2 places', condense:'Condense spaces', upper:'Upper case', alpha:'Remove leading zeros', vatpfx:'Remove country prefix from VAT ID'};
+const CONDS = {notInitial:'Is not empty', maxLen:'Maximum length', pattern:'Matches pattern (regex)', inList:'Value in list', ref:'Exists in table'};
+const TRANSFORMS = {valmap:'Value mapping', concat:'Concatenate with another field', sign:'Invert sign (credit notes)', prefix:'Add prefix', date:'Date to timestamp (ISO 8601)', round:'Round to 2 decimals'};
+function describe(r){
+  const c = r.cfg;
+  switch(r.type){
+    case 'map': return c.format==='none' ? 'Direct value' : FORMATS[c.format];
+    case 'constant': return `Always '${c.constant}'`;
+    case 'check': {
+      const p = c.cond==='notInitial'?'':` ${c.param}`;
+      return `${CONDS[c.cond]}${p}, ${c.severity==='E'?'error':'warning'}`;
+    }
+    case 'change': switch(c.transform){
+      case 'valmap': return c.valmap.filter(v=>v.from||v.to).map(v=>`${v.from} → ${v.to}`).join(', ') || 'Value mapping';
+      case 'concat': return `Concatenate with ${c.second||'?'}`;
+      case 'prefix': return `Prefix '${c.prefix}'`;
+      default: return TRANSFORMS[c.transform];
+    }
+  }
+}
+function previewText(n, r){
+  const tag = `<${n.name}>`, src = r.source || (r.type==='check'?'XML value':'?');
+  switch(r.type){
+    case 'map': return `${tag}  ←  ${src}${r.cfg.format!=='none'?`\n           ${FORMATS[r.cfg.format]}`:''}`;
+    case 'constant': return `${tag}  =  '${r.cfg.constant}'`;
+    case 'change': return `${tag}  ←  ${src}\n           ${describe(r)}`;
+    case 'check': return `CHECK ${src}: ${CONDS[r.cfg.cond]}${r.cfg.cond==='notInitial'?'':' '+r.cfg.param}\n   otherwise ${r.cfg.severity==='E'?'ERROR':'WARNING'} "${r.cfg.msg}"`;
+  }
+}
+
+/* ======================= Navigation ======================= */
+function renderNav(){
+  const el = $('#nav');
+  const item = c => {
+    const cnt = countryRuleCount(c.code);
+    return `<button class="nav-item ${state.country===c.code?'sel':''} ${c.planned?'disabled':''}" data-action="${c.planned?'planned':'country'}" data-code="${c.code}" title="${esc(c.name)}">
+      <span class="flag">${c.code}</span>
+      <span class="nav-text"><span class="nav-name">${esc(c.name)}</span><span class="nav-desc">${esc(c.short)}</span></span>
+      ${c.planned?'<span class="tag">Soon</span>':(cnt?`<span class="nav-count">${cnt}</span>`:'')}
+    </button>`;
+  };
+  el.innerHTML = `<div style="padding-top:8px"><button class="nav-item ${!state.country?'sel':''}" data-action="home" title="Overview"><span class="flag">${ic('home')}</span><span class="nav-text"><span class="nav-name">Overview</span></span></button></div>
+    <div class="nav-sec">Countries</div>${COUNTRIES.filter(c=>!c.planned).map(item).join('')}
+    <div class="nav-sec">Planned</div>${COUNTRIES.filter(c=>c.planned).map(item).join('')}
+    <div class="nav-foot"><button class="nav-item" data-action="collapseNav" title="Collapse"><span class="flag" style="background:none">${ic(state.navCollapsed?'chevR':'chevL')}</span><span class="nav-text"><span class="nav-name">Collapse menu</span></span></button></div>`;
+  el.classList.toggle('collapsed', state.navCollapsed);
+}
+
+function wizard(step){
+  const s = ['Country','Document type','Field mapping'];
+  return `<div class="wizard">${s.map((t,i)=>{
+    const cls = i+1<step?'done':i+1===step?'cur':'';
+    return `${i?`<div class="wline ${i+1<=step?'done':''}"></div>`:''}<div class="wstep ${cls}"><span class="wdot">${i+1<step?ic('check'):i+1}</span>${t}</div>`;
+  }).join('')}</div>`;
+}
+function crumbs(list){
+  return `<div class="crumbs">${list.map(([t,a,extra],i)=> (i?'<span>/</span>':'') + (a?`<a data-action="${a}" ${extra||''}>${esc(t)}</a>`:`<span>${esc(t)}</span>`)).join('')}</div>`;
+}
+
+/* ======================= Views ======================= */
+function render(){
+  renderNav();
+  const main = $('#main');
+  main.style.overflow = state.view==='ws' ? 'hidden' : 'auto';
+  if(state.view==='home') main.innerHTML = viewHome();
+  else if(state.view==='country') main.innerHTML = viewCountry();
+  else { main.innerHTML = viewWs(); refreshWs(); }
+}
+
+function viewHome(){
+  const avail = COUNTRIES.filter(c=>!c.planned);
+  return `<div class="page">
+    <section class="card hero">
+      <div>
+        <div class="eyebrow">B&amp;B eDocument Accelerator</div>
+        <h1>Map eDocument XML fields to SAP without starting from code</h1>
+        <p>Pick a country, choose the document type and click through the XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework.</p>
+        <div class="hero-actions">
+          <button class="btn btn-emph" data-action="country" data-code="PL">Start with Poland ${ic('arrow')}</button>
+          <button class="btn btn-def" data-action="country" data-code="FR">France</button>
+          <button class="btn btn-def" data-action="country" data-code="DE">Germany</button>
+        </div>
+      </div>
+    </section>
+    <h2 class="sec-title">How it works</h2>
+    <div class="steps-grid">
+      <div class="card stepc"><div class="n">1</div><h3>Select the country</h3><p>Each country brings its legal XML format, eDocument type and interface already configured.</p></div>
+      <div class="card stepc"><div class="n">2</div><h3>Choose the document type</h3><p>Invoice, Credit Note or Accounting Document. The SAP source tables change with the type (SD billing or FI).</p></div>
+      <div class="card stepc"><div class="n">3</div><h3>Define rules per XML field</h3><p>Click a field, pick the SAP field and choose what to do with it.</p>
+        <div class="pills"><span class="pill pill-map">${ic('map')}MAP</span><span class="pill pill-check">${ic('shield')}CHECK</span><span class="pill pill-change">${ic('swap')}CHANGE</span><span class="pill pill-constant">${ic('pin')}CONST</span></div></div>
+    </div>
+    <h2 class="sec-title">Countries</h2>
+    <div class="cgrid">${COUNTRIES.map(c=>`<div class="card ccard ${c.planned?'disabled':''}" data-action="${c.planned?'planned':'country'}" data-code="${c.code}">
+      <span class="flag">${c.code}</span><div style="flex:1;min-width:0"><div class="t">${esc(c.name)}</div><div class="d">${esc(c.short)}</div></div>
+      ${c.planned?'<span class="tag">Planned</span>':`<span class="cnt ${countryRuleCount(c.code)?'':'muted'}">${countryRuleCount(c.code)} rules</span>`}</div>`).join('')}</div>
+  </div>`;
+}
+
+function viewCountry(){
+  const c = country();
+  return `<div class="ohead">
+      ${crumbs([['Overview','home'],[c.name]])}
+      <div class="oh-row"><div class="oh-title"><span class="flag">${c.code}</span><div><h1>${esc(c.name)}</h1><div class="oh-sub">${esc(c.scenario)}</div></div></div></div>
+      <div class="oh-attrs">
+        <div class="attr"><div class="l">XML format</div><div class="v">${esc(c.schema)}</div></div>
+        <div class="attr"><div class="l">Interface</div><div class="v mono">${esc(c.iface)}</div></div>
+        <div class="attr"><div class="l">eDocument type</div><div class="v mono">${esc(c.edoc)}</div></div>
+        <div class="attr"><div class="l">Status</div><div class="v" style="color:var(--pos)">Available</div></div>
+      </div>
+      ${wizard(2)}
+    </div>
+    <div class="page">
+      <h2 class="sec-title" style="margin-top:4px">Choose a document type</h2>
+      <div class="tiles">${DOCS.map(d=>{
+        const k = c.code+'|'+d.id, cnt = docRuleCount(c.code,d.id);
+        return `<button class="card tile" data-action="doc" data-doc="${d.id}">
+          <span class="tile-ic">${ic(d.icon)}</span>
+          <div><h3>${d.label}</h3><p style="margin-top:4px">${d.desc}</p></div>
+          <dl><dt>SAP source</dt><dd>${d.source}</dd><dt>XML</dt><dd>${esc(c.code==='PL'?'KSeF FA(2), Faktura':d.id==='credit'?'UBL CreditNote':'UBL Invoice')}</dd></dl>
+          <div class="tile-f"><span class="${cnt?'':'muted'}">${cnt?`<b>${cnt}</b> rules defined`:'No rules yet'}</span><span style="color:var(--brand-h);display:flex;align-items:center;gap:4px;font-weight:600">Open ${ic('chevR')}</span></div>
+        </button>`;}).join('')}</div>
+      <div class="strip strip-info" style="margin-top:20px">${ic('info')}<div>Accounting documents use the same legal XML as invoices. Only the SAP source changes (BKPF / BSEG instead of VBRK / VBRP), so the field picker and suggestions adapt automatically.</div></div>
+    </div>`;
+}
+
+function stats(){
+  const m = model(), leaves = Object.values(m.nodes).filter(n=>n.leaf);
+  const filled = new Set(R().filter(r=>r.type!=='check').map(r=>r.nodeId));
+  return {total:leaves.length, filled:filled.size, checks:R().filter(r=>r.type==='check').length, rules:R().length};
+}
+
+function viewWs(){
+  const c = country(), d = docDef(), m = model();
+  const rootName = m.nodes[m.root].name;
+  return `<div class="ws">
+    <div class="ohead" id="ws-head"></div>
+    <div class="tabbar" id="tabbar"></div>
+    <div class="ws-content" id="ws-content"></div>
+    <div class="footer-bar" id="footer"></div>
+  </div>`;
+}
+function refreshWs(){ refreshHead(); refreshTabs(); refreshContent(); refreshFooter(); }
+
+function refreshHead(){
+  const c = country(), d = docDef(), m = model(), s = stats();
+  const pct = s.total ? Math.round(s.filled/s.total*100) : 0;
+  $('#ws-head').innerHTML = `
+    ${crumbs([['Overview','home'],[c.name,'country','data-code="'+c.code+'"'],[d.label]])}
+    <div class="oh-row">
+      <div class="oh-title"><span class="flag">${c.code}</span><div><h1>${d.label}</h1><div class="oh-sub">${esc(c.name)} · ${esc(c.schema)} · ${d.source} · eDocument type <span class="mono">${esc(c.edoc)}</span></div></div></div>
+      <div class="oh-kpi">
+        <div class="kpi"><div class="l">Fields filled</div><div class="v">${s.filled} <small>of ${s.total}</small></div><div class="progress"><i style="width:${pct}%"></i></div></div>
+        <div class="kpi"><div class="l">Checks</div><div class="v">${s.checks}</div></div>
+        <div class="kpi"><div class="l">Rules</div><div class="v">${s.rules}</div></div>
+      </div>
+    </div>
+`;
+}
+function refreshTabs(){
+  const t = [['mapping','Field Mapping','map'],['xml','XML Preview','xml'],['code','Code Preview','code']];
+  $('#tabbar').innerHTML = t.map(([id,l,i])=>`<button class="tab ${state.tab===id?'on':''}" data-action="tab" data-tab="${id}">${ic(i)}${l}${id==='mapping'&&R().length?`<span class="cnt">${R().length}</span>`:''}</button>`).join('');
+}
+function refreshContent(){
+  const el = $('#ws-content');
+  if(state.tab==='mapping'){
+    el.innerHTML = `<div class="ws-grid">
+      <section class="card pane">
+        <div class="pane-h"><h2>XML Structure</h2><span class="sub" id="tree-sub"></span></div>
+        <div class="pane-tools">
+          <label class="search">${ic('search')}<input id="tree-search" placeholder="Search XML fields" value="${esc(state.search)}"></label>
+          <div class="seg sm" role="group">${[['all','All'],['mapped','With rules'],['open','Open']].map(([f,l])=>`<button class="${state.filter===f?'on':''}" data-action="filter" data-f="${f}">${l}</button>`).join('')}</div>
+          <button class="btn btn-trans btn-sm btn-icon" data-action="expandAll" title="Expand all">${ic('expand')}</button>
+          <button class="btn btn-trans btn-sm btn-icon" data-action="collapseAll" title="Collapse all">${ic('collapse')}</button>
+          <button class="btn btn-def btn-sm" data-action="autoSuggest" title="Create suggested mappings for open fields">${ic('wand')}Auto-suggest</button>
+        </div>
+        <div class="pane-b" id="tree"></div>
+      </section>
+      <section class="card pane"><div class="pane-b" id="side"></div></section>
+    </div>`;
+    refreshTree(); refreshSide();
+  } else if(state.tab==='xml'){
+    el.innerHTML = `<section class="card codecard">
+      <div class="code-h"><h2>XML Preview</h2><span class="muted" style="font-size:13px">Highlighted lines already have a rule. Click one to open it in the mapping.</span></div>
+      <div class="code" id="xmlview">${xmlHtml()}</div></section>`;
+  } else {
+    const code = genAbap();
+    el.innerHTML = `<section class="card codecard">
+      <div class="code-h"><h2>ABAP Preview</h2><span class="pill pill-auto">Mock</span>
+        <span class="muted" style="font-size:13px;flex:1">Illustrative output. The real generator will follow the CCIR Clean ABAP conventions.</span>
+        ${code?`<button class="btn btn-def btn-sm" data-action="copyCode">${ic('copy')}Copy</button>`:''}</div>
+      ${code?`<pre class="code dark" id="codeview">${code.split('\n').map(l=>`<div class="cl"><span>${hlAbap(l)||' '}</span></div>`).join('')}</pre>`
+        : `<div class="empty"><div class="ill">${ic('code')}</div><h4>Nothing to generate yet</h4><p>Define at least one rule in the Field Mapping tab, then come back here.</p></div>`}
+    </section>`;
+  }
+}
+function refreshFooter(){
+  const s = stats();
+  $('#footer').innerHTML = `<span class="st"><i class="${state.savedAt?'ok':''}"></i>${state.savedAt?`Draft saved at ${state.savedAt}`:'Draft, not saved'}</span>
+    <span class="st sp">${s.rules} rules · ${s.checks} checks</span>
+    <button class="btn btn-trans" data-action="save">${ic('save')}Save Draft</button>
+    <button class="btn btn-emph" data-action="generate">${ic('code')}Generate Code</button>`;
+}
+
+/* ======================= Tree ======================= */
+const filtering = () => state.search.trim() || state.filter!=='all';
+function visibleRows(m){
+  const q = state.search.trim().toLowerCase(), f = state.filter;
+  let keep = null;
+  if(filtering()){
+    keep = new Set();
+    for(const n of Object.values(m.nodes)){
+      if(!n.leaf) continue;
+      const has = rulesFor(n.id).length>0;
+      if(f==='mapped' && !has) continue;
+      if(f==='open' && has) continue;
+      if(q && !(n.local.toLowerCase().includes(q) || (n.value||'').toLowerCase().includes(q) || rulesFor(n.id).some(r=>(r.source||'').toLowerCase().includes(q)))) continue;
+      keep.add(n.id); ancestors(n,m).forEach(a=>keep.add(a.id));
+    }
+  }
+  const rows = [];
+  (function walk(id){
+    if(keep && !keep.has(id)) return;
+    const n = m.nodes[id]; rows.push(n);
+    if(keep || m.expanded.has(id)) n.children.forEach(walk);
+  })(m.root);
+  return rows;
+}
+function mappedCounts(m){
+  const cnt = {};
+  for(const id of new Set(R().map(r=>r.nodeId))){
+    const n = m.nodes[id]; if(!n) continue;
+    ancestors(n,m).forEach(a=>cnt[a.id]=(cnt[a.id]||0)+1);
+  }
+  return cnt;
+}
+function rowHtml(n, m, counts){
+  const kids = n.children.length>0, open = filtering() || m.expanded.has(n.id), rs = rulesFor(n.id);
+  const srcRule = rs.find(r=>r.source && r.type!=='check') || rs.find(r=>r.source);
+  const badges = n.leaf
+    ? (srcRule?`<span class="tsrc">${srcRule.source}</span>`:'') + rs.map(r=>`<span class="pill pill-${r.type}">${TYPES[r.type].short}</span>`).join('')
+    : `<span class="cnt ${counts[n.id]?'':'muted'}">${counts[n.id]?counts[n.id]+'/':''}${n.total}</span>`;
+  return `<div class="trow ${state.selected===n.id?'sel':''} ${n.leaf?'leaf':'grp'} ${rs.length?'has':''}" data-action="select" data-id="${n.id}" style="--d:${n.depth}">
+    <span class="twist ${open?'open':''}" ${kids?`data-action="toggle" data-id="${n.id}"`:''}>${kids?ic('chevR'):''}</span>
+    <span class="tic ${n.isAttr?'attr':n.leaf?'leafic':'grpic'}">${n.isAttr?'@':n.leaf?ic('field'):ic('folder')}</span>
+    <span class="tname">${n.prefix?`<span class="pfx">${esc(n.prefix)}:</span>`:''}${esc(n.local)}${n.idx?`<span class="idx">[${n.idx}]</span>`:''}</span>
+    ${n.leaf?`<span class="tval">${esc(n.value)}</span>`:'<span style="flex:1"></span>'}
+    <span class="tbadges">${badges}</span>
+    ${n.leaf?`<button class="tadd" data-action="addRule" data-id="${n.id}" title="Add rule">${ic('plus')}</button>`:''}
+  </div>`;
+}
+function refreshTree(){
+  const el = $('#tree'); if(!el) return;
+  const m = model(), rows = visibleRows(m), counts = mappedCounts(m);
+  el.innerHTML = rows.length ? rows.map(n=>rowHtml(n,m,counts)).join('') : `<div class="tree-empty">No XML fields match the current filter.</div>`;
+  const s = stats();
+  $('#tree-sub').textContent = `${s.total} fields · ${s.filled} filled`;
+}
+
+/* ======================= Side panel ======================= */
+function refreshSide(){
+  const el = $('#side'); if(!el) return;
+  const m = model(), n = state.selected ? m.nodes[state.selected] : null, src = docDef().src;
+  let top = '';generate
+  if(!n){
+    top = `<div class="fd"><div class="strip strip-info">${ic('info')}<div>Select a field in the XML structure to define how it is filled. Use <b>+</b> on a row, or double-click it, to add a rule directly.</div></div></div>`;
+  } else if(!n.leaf){
+    top = `<div class="fd"><div class="fd-top"><span class="fd-ic" style="color:#e9730c;background:#fff3e6">${ic('folder')}</span><div style="min-width:0"><div class="fd-name">${esc(n.local)}${n.idx?` [${n.idx}]`:''}</div><div class="fd-path">${esc(n.path)}</div></div></div>
+      <div class="fd-grid"><div><div class="l">Node type</div><div class="v">Group</div></div><div><div class="l">Fields inside</div><div class="v">${n.total}</div></div><div><div class="l">With rules</div><div class="v">${mappedCounts(m)[n.id]||0}</div></div></div>
+      <div class="strip strip-info">${ic('info')}<div>This is a group node. Expand it and pick one of its fields to define a rule.</div></div></div>`;
+  } else {
+    const rs = rulesFor(n.id), sg = suggest(n,m,src), line = isLine(n,m);
+    top = `<div class="fd">
+      <div class="fd-top"><span class="fd-ic">${n.isAttr?'<b>@</b>':ic('field')}</span><div style="min-width:0"><div class="fd-name">${esc(n.isAttr?n.name:n.local)}</div><div class="fd-path">${esc(n.path)}</div></div></div>
+      <div class="fd-grid">
+        <div><div class="l">Sample value</div><div class="v mono">${esc(n.value)||'<span class="muted">empty</span>'}</div></div>
+        <div><div class="l">Kind</div><div class="v">${n.isAttr?'Attribute':'Element'}${line?', line item':''}</div></div>
+        <div><div class="l">Rules</div><div class="v">${rs.length}</div></div>
+      </div>
+      ${sg.length?`<div class="fd-sugg">${ic('wand').replace('<svg','<svg style="width:14px;height:14px;color:var(--brand)"')}Suggested:${sg.map(s=>`<button class="chip" data-action="quickMap" data-f="${s}" title="${esc(fieldDesc(s))}">${s}</button>`).join('')}</div>`:''}
+      <div class="fd-actions">
+        <button class="btn btn-emph" data-action="openDlg" data-type="map">${ic('map')}Map value</button>
+        <button class="btn btn-def" data-action="openDlg" data-type="check">${ic('shield')}Add check</button>
+        <button class="btn btn-def" data-action="openDlg" data-type="change">${ic('swap')}Change value</button>
+        <button class="btn btn-trans" data-action="openDlg" data-type="constant">${ic('pin')}Constant</button>
+      </div>
+      ${rs.length?`<div class="nrules">${rs.map(r=>`<div class="nrule"><span class="pill pill-${r.type}">${ic(TYPES[r.type].icon)}${TYPES[r.type].short}</span><div class="d">${r.source?`<span class="s">${r.source}</span> · `:''}${esc(describe(r))}</div>
+        <button class="btn btn-trans btn-sm btn-icon" data-action="editRule" data-rid="${r.id}" title="Edit">${ic('edit')}</button><button class="btn btn-trans btn-sm btn-icon btn-neg" data-action="delRule" data-rid="${r.id}" title="Delete">${ic('trash')}</button></div>`).join('')}</div>`:''}
+    </div>`;
+  }
+  const all = sortedRules(m);
+  const list = all.length ? `<table class="tbl"><thead><tr><th>XML field</th><th>Rule</th><th>SAP source / details</th><th></th></tr></thead><tbody>
+    ${all.map(r=>{const x=m.nodes[r.nodeId]; return `<tr class="rr ${state.selected===r.nodeId?'sel':''}" data-action="gotoNode" data-id="${r.nodeId}">
+      <td><div class="fn">${esc(x.isAttr?x.name:x.local)}${x.idx?`[${x.idx}]`:''}</div><div class="fp" title="${esc(x.path)}">${esc(shortPath(x.path))}</div></td>
+      <td><span class="pill pill-${r.type}">${TYPES[r.type].short}</span>${r.auto?' <span class="pill pill-auto">auto</span>':''}</td>
+      <td><div class="src">${r.source||'<span class="muted">-</span>'}</div><div class="det">${esc(describe(r))}</div></td>
+      <td class="act"><button class="btn btn-trans btn-sm btn-icon" data-action="editRule" data-rid="${r.id}" title="Edit">${ic('edit')}</button><button class="btn btn-trans btn-sm btn-icon btn-neg" data-action="delRule" data-rid="${r.id}" title="Delete">${ic('trash')}</button></td></tr>`;}).join('')}
+    </tbody></table>`
+    : `<div class="empty"><div class="ill">${ic('map')}</div><h4>No rules yet</h4><p>Pick a field on the left and choose Map value, Check or Change value. Or use <b>Auto-suggest</b> to prefill the obvious ones.</p></div>`;
+  el.innerHTML = top + `<div class="rules-h"><h3>All rules (${all.length})</h3>${all.length?`<button class="btn btn-trans btn-sm btn-neg" style="margin-left:auto" data-action="clearRules">${ic('trash')}Clear all</button>`:''}</div>` + list;
+}
+const shortPath = p => { const s = p.split('/').filter(Boolean); return (s.length>3?'… /':'/') + s.slice(-3).join('/'); };
+function sortedRules(m){ return [...R()].sort((a,b)=> m.nodes[a.nodeId].order - m.nodes[b.nodeId].order || TYPE_ORDER[a.type]-TYPE_ORDER[b.type]); }
+
+/* ======================= Dialog ======================= */
+let dlg = null;
+function openDialog(nodeId, type='map', ruleId=null, presetSource=null){
+  const m = model(), n = m.nodes[nodeId], sg = suggest(n,m,docDef().src);
+  const r = ruleId ? R().find(x=>x.id===ruleId) : null;
+  dlg = r
+    ? {nodeId, type:r.type, source:r.source, cfg:JSON.parse(JSON.stringify(r.cfg)), editId:r.id}
+    : {nodeId, type, source: type==='constant'?null:(presetSource||sg[0]||null), cfg:defaultCfg(n), editId:null};
+  if(!r && type==='change' && !VALMAP_FIELDS.includes(n.local) && /^(Kwota|P_1[1-5]|.*Amount)/.test(n.local)) dlg.cfg.transform='sign';
+  dlg.q = ''; dlg.error = ''; dlg.open = new Set(dlg.source?[dlg.source.split('-')[0]]:[]);
+  renderDialog();
+}
+function closeDialog(){ dlg = null; $('#dlg').innerHTML = ''; }
+function renderDialog(){
+  if(!dlg) return;
+  const m = model(), n = m.nodes[dlg.nodeId], sg = suggest(n,m,docDef().src);
+  const catScroll = $('#dlg-cat')?.scrollTop || 0, formScroll = $('#dlg-form')?.scrollTop || 0;
+  $('#dlg').innerHTML = `<div class="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-label="Define rule">
+    <header class="dlg-h"><div class="dlg-title">${ic('xml')}${dlg.editId?'Edit':'Define'} rule for <span class="mono" style="font-size:14px">&lt;${esc(n.name)}&gt;</span></div>
+      <button class="btn btn-trans btn-icon" data-action="dlgClose" title="Close">${ic('close')}</button></header>
+    <div class="dlg-sub">${esc(n.path)}</div>
+    <div class="dlg-body">
+      <aside class="dlg-tree">
+        <div class="dlg-tree-h">${ic('table').replace('<svg','<svg style="width:15px;height:15px;color:var(--brand)"')}SAP source fields <span>· ${docDef().source}</span></div>
+        <label class="search">${ic('search')}<input id="dlg-search" placeholder="Search table, field or description" value="${esc(dlg.q)}"></label>
+        <div id="dlg-sugg">${suggHtml(sg)}</div>
+        <div class="cat" id="dlg-cat">${catalogHtml(sg)}</div>
+      </aside>
+      <section class="dlg-form" id="dlg-form">${formHtml(n)}</section>
+    </div>
+    <footer class="dlg-f"><span class="dlg-hint">Tip: double-click a field on the left to pick it and apply in one go.</span>
+      <button class="btn btn-emph" data-action="dlgApply">${ic('check')}${dlg.editId?'Save Rule':'Apply Rule'}</button>
+      <button class="btn btn-trans" data-action="dlgClose">Cancel</button></footer>
+  </div></div>`;
+  $('#dlg-cat').scrollTop = catScroll; $('#dlg-form').scrollTop = formScroll;
+}
+function suggHtml(sg){
+  if(!sg.length || dlg.type==='constant') return '';
+  return `<div class="sugg"><div class="sugg-l">Suggested for this field</div>${sg.map(s=>`<button class="chip ${dlg.source===s?'on':''}" data-action="pickField" data-f="${s}" title="${esc(fieldDesc(s))}">${ic('wand')}${s}</button>`).join('')}</div>`;
+}
+function catalogHtml(sg){
+  const q = dlg.q.trim().toLowerCase();
+  return CAT_GROUPS[docDef().src].map(([g,tabs])=>{
+    const body = tabs.map(t=>{
+      const T = CATALOG[t];
+      const tMatch = !q || t.toLowerCase().includes(q) || T.d.toLowerCase().includes(q);
+      const fields = T.f.filter(([f,d])=> tMatch || f.toLowerCase().includes(q) || d.toLowerCase().includes(q));
+      if(q && !fields.length) return '';
+      const open = q ? true : dlg.open.has(t);
+      return `<div class="cat-t" data-action="toggleTable" data-t="${t}"><span class="twist ${open?'open':''}">${ic('chevR')}</span><span class="tic">${ic('table')}</span><b>${t}</b><span class="d">${esc(T.d)}</span></div>`
+        + (open ? fields.map(([f,d])=>{ const full=t+'-'+f; return `<div class="cat-f ${dlg.source===full?'sel':''}" data-action="pickField" data-f="${full}"><span class="mono">${f}</span><span class="d">${esc(d)}</span>${sg.includes(full)?`<span class="sg" title="Suggested">${ic('wand')}</span>`:''}</div>`; }).join('') : '');
+    }).join('');
+    return body ? `<div class="cat-g">${g}</div>${body}` : '';
+  }).join('') || `<div class="tree-empty">No SAP field matches "${esc(dlg.q)}".</div>`;
+}
+function formHtml(n){
+  const c = dlg.cfg, t = dlg.type;
+  const sel = (key, opts) => `<select class="input" data-cfg="${key}">${Object.entries(opts).map(([k,v])=>`<option value="${k}" ${c[key]===k?'selected':''}>${esc(v)}</option>`).join('')}</select>`;
+  const inp = (key, ph='') => `<input class="input" data-cfg="${key}" value="${esc(c[key])}" placeholder="${esc(ph)}">`;
+  let spec = '';
+  if(t==='map'){
+    spec = `<div class="frow"><label>Output format</label>${sel('format',FORMATS)}</div>`;
+  } else if(t==='check'){
+    const ph = {maxLen:'e.g. 10', pattern:'e.g. ^[0-9]{10}$', inList:'e.g. PLN,EUR,USD', ref:'e.g. T005-LAND1'}[c.cond];
+    spec = `<div class="g2"><div class="frow"><label>Condition</label>${sel('cond',CONDS)}</div>
+      <div class="frow"><label>Parameter</label>${c.cond==='notInitial'?'<div class="ro muted" style="font-size:13px">Not needed</div>':inp('param',ph)}</div></div>
+      <div class="frow"><label>When the check fails</label><div class="seg"><button class="${c.severity==='E'?'on':''}" data-action="dlgSev" data-s="E">Error, stop the eDocument</button><button class="${c.severity==='W'?'on':''}" data-action="dlgSev" data-s="W">Warning only</button></div></div>
+      <div class="frow"><label>Message text</label>${inp('msg','Message shown in the eDocument Cockpit')}</div>`;
+  } else if(t==='change'){
+    let p = '';
+    if(c.transform==='valmap') p = `<div class="frow"><label>Value mapping</label><div class="vm">
+        <div class="vm-r vm-h"><span>SAP value</span><span></span><span>XML value</span><span></span></div>
+        ${c.valmap.map((v,i)=>`<div class="vm-r"><input class="input mono" data-vm="${i}" data-vk="from" value="${esc(v.from)}" placeholder="e.g. F2"><span class="arr">${ic('arrow')}</span><input class="input mono" data-vm="${i}" data-vk="to" value="${esc(v.to)}" placeholder="e.g. VAT"><button class="btn btn-trans btn-sm btn-icon btn-neg" data-action="vmDel" data-i="${i}" title="Remove">${ic('trash')}</button></div>`).join('')}
+      </div><button class="btn btn-trans btn-sm" style="margin-top:6px" data-action="vmAdd">${ic('plus')}Add value</button></div>`;
+    else if(c.transform==='concat') p = `<div class="g2"><div class="frow"><label>Second field</label>${inp('second','e.g. ADRC-HOUSE_NUM1')}</div><div class="frow"><label>Separator</label>${inp('sep','space')}</div></div>`;
+    else if(c.transform==='prefix') p = `<div class="frow"><label>Prefix</label>${inp('prefix','e.g. PL')}</div>`;
+    spec = `<div class="frow"><label>Transformation</label>${sel('transform',TRANSFORMS)}</div>${p}`;
+  } else {
+    spec = `<div class="frow"><label>Constant value <span class="req">*</span></label>${inp('constant','Value written to the XML')}</div>`;
+  }
+  const srcRow = t==='constant' ? '' : `<div class="frow"><label>SAP source field ${t==='check'?'<span class="muted" style="font-weight:400">(optional, leave empty to check the XML value)</span>':'<span class="req">*</span>'}</label>
+    <div class="vh">${dlg.source?`<span class="token">${ic('table').replace('<svg','<svg style="width:14px;height:14px"')}${dlg.source}<small>${esc(fieldDesc(dlg.source))}</small><button data-action="clearSource" title="Remove">${ic('close')}</button></span>`
+      :`<span class="ph">${t==='check'?'The check will run on the value written to the XML':'Pick a field from the list on the left'}</span>`}</div></div>`;
+  return `<div class="frow"><label>What should happen with this field?</label>
+      <div class="seg">${Object.entries(TYPES).map(([k,v])=>`<button class="${t===k?'on':''}" data-action="dlgType" data-t="${k}">${ic(v.icon)}${v.label}</button>`).join('')}</div>
+      <div class="type-help">${TYPES[t].help}</div></div>
+    <div class="frow"><label>XML target</label><div class="ro"><span class="mono">&lt;${esc(n.name)}&gt;</span><span class="muted" style="font-size:12.5px">sample: ${esc(n.value)||'empty'}</span></div></div>
+    ${srcRow}${spec}
+    <div class="preview"><div class="preview-l">Preview</div><code id="dlg-prev">${esc(previewText(n,dlg))}</code></div>
+    ${dlg.error?`<div class="strip strip-neg">${ic('info')}<div>${esc(dlg.error)}</div></div>`:''}`;
+}
+function updatePreview(){ const el=$('#dlg-prev'); if(el && dlg) el.textContent = previewText(model().nodes[dlg.nodeId], dlg); }
+function applyDialog(){
+  const n = model().nodes[dlg.nodeId], c = dlg.cfg;
+  if((dlg.type==='map'||dlg.type==='change') && !dlg.source) dlg.error = 'Pick the SAP source field on the left first.';
+  else if(dlg.type==='constant' && !c.constant.trim()) dlg.error = 'Enter the constant value.';
+  else if(dlg.type==='check' && c.cond!=='notInitial' && !c.param.trim()) dlg.error = 'Enter the parameter for this condition.';
+  else if(dlg.type==='change' && c.transform==='concat' && !/^[A-Z0-9_]+-[A-Z0-9_]+$/i.test(c.second.trim())) dlg.error = 'Second field must look like TABLE-FIELD, for example ADRC-HOUSE_NUM1.';
+  else dlg.error = '';
+  if(dlg.error){ renderDialog(); return; }
+  if(dlg.type==='constant') dlg.source = null;
+  if(dlg.type==='change' && c.transform==='concat') c.second = c.second.trim().toUpperCase();
+  const rule = {id: dlg.editId || 'r'+(ruleSeq++), nodeId:dlg.nodeId, type:dlg.type, source:dlg.source, cfg:JSON.parse(JSON.stringify(c))};
+  const list = R(), i = list.findIndex(r=>r.id===rule.id);
+  if(i>=0) list[i] = rule; else list.push(rule);
+  const edited = !!dlg.editId;
+  closeDialog(); state.selected = rule.nodeId; state.savedAt = null;
+  refreshAfterRules();
+  toast(`${TYPES[rule.type].label} rule ${edited?'updated':'added'} for <${n.local}>`);
+}
+function refreshAfterRules(){ renderNav(); refreshHead(); refreshTabs(); if(state.tab==='mapping'){ refreshTree(); refreshSide(); } else refreshContent(); refreshFooter(); }
+
+/* ======================= Auto-suggest ======================= */
+function autoSuggest(){
+  const m = model(), src = docDef().src; let added = 0;
+  for(const n of Object.values(m.nodes)){
+    if(!n.leaf || rulesFor(n.id).length) continue;
+    if([n,...ancestors(n,m)].some(a=>a.idx>1)) continue; // only first occurrence of repeated blocks
+    const sg = suggest(n,m,src); if(!sg.length) continue;
+    const cfg = defaultCfg(n), vm = VALMAP_FIELDS.includes(n.local);
+    R().push({id:'r'+(ruleSeq++), nodeId:n.id, type:vm?'change':'map', source:sg[0], cfg, auto:true});
+    added++;
+  }
+  state.savedAt = null;
+  refreshAfterRules();
+  toast(added ? `${added} suggested rules added. Review them in the rules list.` : 'No new suggestions, every known field already has a rule.');
+}
+
+/* ======================= XML preview ======================= */
+function xmlHtml(){
+  const m = model(), out = [];
+  const attrs = n => n.children.map(id=>m.nodes[id]).filter(c=>c.isAttr).map(a=>` <span class="xa">${esc(a.name.slice(1))}</span>=<span class="xv">"${esc(a.value)}"</span>`).join('');
+  const ns = n => n.ns.map(([k,v])=>` <span class="xa">${esc(k)}</span>=<span class="xv">"${esc(v)}"</span>`).join('');
+  const notes = rs => rs.length ? `<span class="xnote">${rs.map(r=>`<span class="pill pill-${r.type}">${TYPES[r.type].short}${r.source?' '+r.source:''}</span>`).join('')}</span>` : '';
+  (function walk(id, ind){
+    const n = m.nodes[id]; if(n.isAttr) return;
+    const pad = '  '.repeat(ind), kids = n.children.map(i=>m.nodes[i]).filter(c=>!c.isAttr);
+    const rs = [...rulesFor(id), ...n.children.filter(i=>m.nodes[i].isAttr).flatMap(rulesFor)];
+    const open = `<span class="xt">&lt;${esc(n.name)}</span>${ns(n)}${attrs(n)}<span class="xt">&gt;</span>`;
+    if(!kids.length) out.push(`<div class="xl ${rs.length?'mapped':''}" ${rs.length?`data-action="gotoNode" data-id="${id}"`:''}><span>${pad}${open}<span class="xx">${esc(n.value)}</span><span class="xt">&lt;/${esc(n.name)}&gt;</span></span>${notes(rs)}</div>`);
+    else { out.push(`<div class="xl"><span>${pad}${open}</span></div>`); kids.forEach(k=>walk(k.id, ind+1)); out.push(`<div class="xl"><span>${pad}<span class="xt">&lt;/${esc(n.name)}&gt;</span></span></div>`); }
+  })(m.root, 0);
+  return out.join('');
+}
+
+/* ======================= ABAP mock generator ======================= */
+const snake = s => s.replace(/^@/,'').replace(/([a-z0-9])([A-Z])/g,'$1_$2').replace(/[^A-Za-z0-9_]/g,'_').toLowerCase();
+const q = s => String(s??'').replace(/'/g,"''");
+const alias = f => { const [t,fl] = f.split('-'); return `ls_${t.toLowerCase()}-${fl.toLowerCase()}`; };
+function genAbap(){
+  const c = country(), d = docDef(), m = model(), rs = sortedRules(m);
+  if(!rs.length) return null;
+  const seg = n => snake(n.local) + (n.idx?`[ ${n.idx} ]`:'');
+  const pathFrom = (n, stop) => { const parts=[]; let x=n; while(x && x.id!==stop){ parts.unshift(seg(x)); x = x.parent?m.nodes[x.parent]:null; } return parts.join('-'); };
+  const itemTab = ITEM_TABLE[d.src];
+  const header = [], lines = {}, used = new Set(), headerUsed = new Set();
+  const fmt = (x, f) => ({none:x, date:`|{ ${x} DATE = ISO }|`, dec2:`|{ ${x} DECIMALS = 2 }|`, condense:`condense( ${x} )`, upper:`to_upper( ${x} )`, alpha:`|{ ${x} ALPHA = OUT }|`, vatpfx:`substring( val = ${x} off = 2 )`}[f] || x);
+  function value(r){
+    const x = r.source ? alias(r.source) : '';
+    if(r.type==='map') return fmt(x, r.cfg.format);
+    if(r.type==='constant') return `'${q(r.cfg.constant)}'`;
+    const c = r.cfg;
+    switch(c.transform){
+      case 'valmap': return [`SWITCH #( ${x}`, ...c.valmap.filter(v=>v.from).map(v=>`  WHEN '${q(v.from)}' THEN '${q(v.to)}'`), `  ELSE ${x} )`].join('\n');
+      case 'concat': return `|{ ${x} }${c.sep}{ ${alias(c.second)} }|`;
+      case 'sign': return `${x} * -1`;
+      case 'prefix': return `|${c.prefix}{ ${x} }|`;
+      case 'date': return `|{ ${x} DATE = ISO }T00:00:00Z|`;
+      case 'round': return `round( val = ${x} dec = 2 )`;
+    }
+  }
+  function checkCode(r, tgt){
+    const x = r.source ? alias(r.source) : tgt, c = r.cfg, out = [];
+    let cond;
+    if(c.cond==='notInitial') cond = `${x} IS INITIAL`;
+    else if(c.cond==='maxLen') cond = `strlen( ${x} ) > ${parseInt(c.param,10)||0}`;
+    else if(c.cond==='pattern') cond = `NOT matches( val = ${x} regex = '${q(c.param)}' )`;
+    else if(c.cond==='inList') cond = `NOT ( ${c.param.split(',').map(v=>`${x} = '${q(v.trim())}'`).join(' OR ')} )`;
+    else { const [t,f='KEY'] = c.param.toUpperCase().split('-'); out.push(`SELECT SINGLE @abap_true FROM ${t.toLowerCase()} WHERE ${f.toLowerCase()} = @${x} INTO @DATA(lv_found).`); cond = `lv_found = abap_false`; }
+    out.push(`IF ${cond}.`, `  add_message( iv_type = '${c.severity}' iv_text = '${q(c.msg)}' ).`, `ENDIF.`);
+    return out;
+  }
+  for(const r of rs){
+    const n = m.nodes[r.nodeId], ln = lineNodeOf(n,m);
+    const tables = [r.source, r.type==='change'&&r.cfg.transform==='concat'?r.cfg.second:null].filter(Boolean).map(s=>s.split('-')[0]);
+    tables.forEach(t=>used.add(t));
+    let tgt, bucket;
+    if(ln){
+      const k = pathFrom(ln, m.root).replace(/\[ \d+ \]/g,'');
+      bucket = (lines[k] = lines[k] || {node:ln, out:[]}).out;
+      tgt = `<ls_line>-${pathFrom(n, ln.id)}`;
+      tables.filter(t=>t!==itemTab).forEach(t=>headerUsed.add(t));
+    } else {
+      bucket = header; tgt = `cs_output_data-${pathFrom(n, m.root)}`;
+      tables.forEach(t=>headerUsed.add(t));
+    }
+    bucket.push(`" <${n.name}>  ${TYPES[r.type].label}${r.source?' from '+r.source:''}`);
+    if(r.type==='check') bucket.push(...checkCode(r, tgt));
+    else { const v = value(r).split('\n'), padN = tgt.length + 3; bucket.push(`${tgt} = ${v[0]}`, ...v.slice(1).map(l=>' '.repeat(padN)+l)); bucket[bucket.length-1] += '.'; }
+    bucket.push('');
+  }
+  const out = [
+    `" ----------------------------------------------------------------`,
+    `" Generated by B&B eDocument Accelerator (mock preview)`,
+    `" Country ........: ${c.name} (${c.code})`,
+    `" Document .......: ${d.label}, source ${d.source}`,
+    `" eDocument type .: ${c.edoc} / interface ${c.iface}`,
+    `" Rules ..........: ${rs.length}`,
+    `" ----------------------------------------------------------------`,
+    `METHOD if_edoc_adaptor~set_output_data.`, ``];
+  const ind = l => l ? '  '+l : '';
+  [...headerUsed].sort().forEach(t=> out.push(ind(`DATA(ls_${t.toLowerCase()}) = read_${t.toLowerCase()}( io_source ).`)));
+  if(headerUsed.size) out.push('');
+  if(header.length){ out.push(ind(`" ===== Header =====`)); header.forEach(l=>out.push(ind(l))); }
+  let first = true;
+  for(const [k, g] of Object.entries(lines)){
+    const itemVar = `ls_${itemTab.toLowerCase()}`, decl = (first && !headerUsed.has(itemTab)) ? `DATA(${itemVar})` : itemVar;
+    first = false;
+    out.push(ind(`" ===== Line items: ${g.node.local} =====`));
+    out.push(ind(`LOOP AT read_${itemTab.toLowerCase()}_items( io_source ) INTO ${decl}.`));
+    out.push(ind(`  INSERT INITIAL LINE INTO TABLE cs_output_data-${k} ASSIGNING FIELD-SYMBOL(<ls_line>).`));
+    out.push('');
+    g.out.forEach(l=>out.push(l?'    '+l:''));
+    out.push(ind(`ENDLOOP.`), '');
+  }
+  out.push(`ENDMETHOD.`);
+  return out.join('\n');
+}
+const KW = /\b(METHOD|ENDMETHOD|DATA|IF|ENDIF|LOOP|AT|INTO|ENDLOOP|INSERT|INITIAL|LINE|TABLE|ASSIGNING|FIELD-SYMBOL|SWITCH|WHEN|THEN|ELSE|IS|NOT|OR|AND|SELECT|SINGLE|FROM|WHERE|DATE|ISO|DECIMALS|ALPHA|OUT|abap_true|abap_false)\b/g;
+function hlAbap(line){
+  if(/^\s*"/.test(line)) return `<span class="c-cm">${esc(line)}</span>`;
+  return line.split(/('(?:[^']|'')*'|\|[^|]*\|)/).map((p,i)=> i%2 ? `<span class="c-str">${esc(p)}</span>` : esc(p).replace(KW,'<span class="c-kw">$1</span>').replace(/(^|[\s(])(\d+)(?=[\s).]|$)/g,'$1<span class="c-num">$2</span>')).join('');
+}
+
+/* ======================= Toast ======================= */
+let toastT;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+
+/* ======================= Events ======================= */
+function expandTo(id){ const m=model(); ancestors(m.nodes[id],m).forEach(a=>m.expanded.add(a.id)); }
+function scrollToRow(id){ const el = document.querySelector(`.trow[data-id="${id}"]`); if(el) el.scrollIntoView({block:'nearest'}); }
+
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('overlay')){ closeDialog(); return; }
+  const a = e.target.closest('[data-action]'); if(!a) return;
+  const ds = a.dataset, m = state.view==='ws' ? model() : null;
+  switch(ds.action){
+    case 'home': state.view='home'; state.country=null; state.doc=null; render(); break;
+    case 'country': state.country=ds.code; state.doc=null; state.view='country'; render(); break;
+    case 'planned': toast(`${COUNTRIES.find(c=>c.code===ds.code).name} is planned for a future release.`); break;
+    case 'collapseNav': state.navCollapsed=!state.navCollapsed; renderNav(); break;
+    case 'doc': state.doc=ds.doc; state.view='ws'; state.tab='mapping'; state.selected=null; state.search=''; state.filter='all'; render(); break;
+    case 'tab': state.tab=ds.tab; refreshTabs(); refreshContent(); break;
+    case 'toggle': { const ex=m.expanded; ex.has(ds.id)?ex.delete(ds.id):ex.add(ds.id); refreshTree(); break; }
+    case 'select': state.selected=ds.id; refreshTree(); refreshSide(); break;
+    case 'addRule': state.selected=ds.id; refreshTree(); refreshSide(); openDialog(ds.id,'map'); break;
+    case 'openDlg': openDialog(state.selected, ds.type); break;
+    case 'quickMap': openDialog(state.selected, 'map', null, ds.f); break;
+    case 'editRule': { const r=R().find(x=>x.id===ds.rid); state.selected=r.nodeId; openDialog(r.nodeId, r.type, r.id); break; }
+    case 'delRule': { const i=R().findIndex(x=>x.id===ds.rid); R().splice(i,1); state.savedAt=null; refreshAfterRules(); toast('Rule deleted.'); break; }
+    case 'clearRules': R().length=0; state.savedAt=null; refreshAfterRules(); toast('All rules removed for this document type.'); break;
+    case 'gotoNode': state.selected=ds.id; if(state.tab!=='mapping'){ state.tab='mapping'; refreshTabs(); refreshContent(); } expandTo(ds.id); refreshTree(); refreshSide(); scrollToRow(ds.id); break;
+    case 'filter': state.filter=ds.f; refreshContent(); break;
+    case 'expandAll': Object.values(m.nodes).forEach(n=>{ if(n.children.length) m.expanded.add(n.id); }); refreshTree(); break;
+    case 'collapseAll': m.expanded.clear(); m.expanded.add(m.root); refreshTree(); break;
+    case 'autoSuggest': autoSuggest(); break;
+    case 'save': state.savedAt=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); refreshFooter(); toast('Draft saved (in this browser session only).'); break;
+    case 'generate': state.tab='code'; refreshTabs(); refreshContent(); toast(R().length?'ABAP preview generated.':'Add at least one rule first.'); break;
+    case 'copyCode': { const code=genAbap(); try{ navigator.clipboard.writeText(code).then(()=>toast('Code copied to clipboard.'),()=>toast('Copy is blocked here, select the code manually.')); }catch(err){ toast('Copy is blocked here, select the code manually.'); } break; }
+    // dialog
+    case 'dlgClose': closeDialog(); break;
+    case 'dlgApply': applyDialog(); break;
+    case 'dlgType': dlg.type=ds.t; dlg.error=''; if(ds.t!=='constant' && !dlg.source){ const sg=suggest(model().nodes[dlg.nodeId],model(),docDef().src); if(sg[0] && ds.t!=='check'){ dlg.source=sg[0]; dlg.open.add(sg[0].split('-')[0]); } } renderDialog(); break;
+    case 'dlgSev': dlg.cfg.severity=ds.s; renderDialog(); break;
+    case 'toggleTable': dlg.open.has(ds.t)?dlg.open.delete(ds.t):dlg.open.add(ds.t); $('#dlg-cat').innerHTML=catalogHtml(suggest(model().nodes[dlg.nodeId],model(),docDef().src)); break;
+    case 'pickField': if(dlg.type==='constant') dlg.type='map'; dlg.source=ds.f; dlg.error=''; dlg.open.add(ds.f.split('-')[0]); renderDialog(); break;
+    case 'clearSource': dlg.source=null; renderDialog(); break;
+    case 'vmAdd': dlg.cfg.valmap.push({from:'',to:''}); renderDialog(); break;
+    case 'vmDel': dlg.cfg.valmap.splice(+ds.i,1); if(!dlg.cfg.valmap.length) dlg.cfg.valmap.push({from:'',to:''}); renderDialog(); break;
+  }
+});
+document.addEventListener('dblclick', e=>{
+  const row = e.target.closest('.trow.leaf');
+  if(row && !e.target.closest('.tadd')){ state.selected=row.dataset.id; refreshTree(); refreshSide(); openDialog(row.dataset.id,'map'); return; }
+  const f = e.target.closest('.cat-f');
+  if(f && dlg){ if(dlg.type==='constant'||dlg.type==='check') dlg.type='map'; dlg.source=f.dataset.f; applyDialog(); }
+});
+document.addEventListener('input', e=>{
+  const t = e.target;
+  if(t.id==='tree-search'){ state.search=t.value; refreshTree(); return; }
+  if(t.id==='dlg-search'){ dlg.q=t.value; $('#dlg-cat').innerHTML=catalogHtml(suggest(model().nodes[dlg.nodeId],model(),docDef().src)); return; }
+  if(!dlg) return;
+  if(t.dataset.cfg && t.tagName!=='SELECT'){ dlg.cfg[t.dataset.cfg]=t.value; updatePreview(); }
+  if(t.dataset.vm!==undefined){ dlg.cfg.valmap[+t.dataset.vm][t.dataset.vk]=t.value; updatePreview(); }
+});
+document.addEventListener('change', e=>{
+  const t = e.target;
+  if(dlg && t.tagName==='SELECT' && t.dataset.cfg){ dlg.cfg[t.dataset.cfg]=t.value; if(t.dataset.cfg==='cond') dlg.cfg.param=''; renderDialog(); }
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && dlg) closeDialog(); });
+
+render();
+</script>
+</body>
+</html>
