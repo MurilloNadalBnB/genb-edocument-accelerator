@@ -1,4 +1,4 @@
-# B&B eDocument Accelerator: Mapping Workbench (mock)
+# GENB eDocument Accelerator: Mapping Workbench (mock)
 
 Protótipo navegável, com visual **SAP Fiori (Horizon)**, de um produto que ainda não existe. A ideia: o consultor mapeia, de forma visual, cada campo do XML legal de um país (SAP DRC / eDocument) para um campo SAP, define validações e transformações, e a ferramenta gera o código ABAP.
 
@@ -14,11 +14,14 @@ Protótipo navegável, com visual **SAP Fiori (Horizon)**, de um produto que ain
 npx serve .            # ou: python3 -m http.server 8080
 ```
 
-Abra `http://localhost:3000` (ou `:8080`). Precisa de internet, porque o OpenUI5 vem do CDN da SAP (`sdk.openui5.org`, versão LTS 1.148.9 fixada no `index.html`).
+Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a mesma dos apps Fiori Elements no desktop. Para comparar com **Cozy**, use `?density=cozy` na URL, por exemplo `index.html?density=cozy#/country/PL/invoice`. Precisa de internet, porque o OpenUI5 vem do CDN da SAP (`sdk.openui5.org`, versão LTS 1.148.9 fixada no `index.html`).
 
 ## O que tem na demo
 
-- **Shell bar Fiori** com logo, busca, notificações, product switch e um perfil fictício (*Jordan Lee*), com troca para o tema escuro (Horizon Evening).
+- **Cabeçalho no padrão do Work Zone / Launchpad:**
+  - logo da B&B, título *GENB eDocument Accelerator* e menu do app *Mapping Workbench*;
+  - busca, troca de tema (Horizon Morning / Evening), notificações e product switch;
+  - perfil fictício (*Jordan Lee*).
 - **Overview:** resumo do produto, os 3 passos e os países (França, Polônia e Alemanha disponíveis; Itália, Espanha, Bélgica e Portugal planejados).
 - **País:** formato XML, interface, eDocument type e os 3 tipos de documento (Invoice, Credit Note, Accounting Document).
 - **Workspace:**
@@ -37,7 +40,7 @@ Abra `http://localhost:3000` (ou `:8080`). Precisa de internet, porque o OpenUI5
 5. Selecionar `RodzajFaktury` e mostrar o **Change value** com o value mapping (F2 → VAT, G2 → KOR).
 6. Abrir a aba **XML Preview**. Clicar numa linha destacada leva de volta ao campo.
 7. Clicar em **Generate Code** e rolar o ABAP.
-8. *(Opcional)* No perfil (JL), ligar o tema escuro. Voltar para a Overview e mostrar o contador de regras no tile da Polônia.
+8. *(Opcional)* Clicar no ícone de paleta, no cabeçalho, para ligar o tema escuro. Voltar para a Overview e mostrar o contador de regras no tile da Polônia.
 
 URLs diretas, úteis para começar uma tomada: `#/country/PL`, `#/country/PL/invoice`, `#/country/FR/credit`, `#/country/DE/fi`.
 

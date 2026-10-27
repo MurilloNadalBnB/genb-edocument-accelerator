@@ -2,34 +2,51 @@
 	controllerName="bnb.edoc.controller.App"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
-	xmlns:f="sap.f"
 	xmlns:tnt="sap.tnt"
 	displayBlock="true"
 	height="100%">
 	<tnt:ToolPage id="toolPage" sideExpanded="{app>/sideExpanded}">
 		<tnt:header>
-			<f:ShellBar
-				id="shellBar"
-				title="B&amp;B eDocument Accelerator"
-				secondTitle="Mapping Workbench"
-				homeIcon="webapp/img/logo.svg"
-				homeIconTooltip="Overview"
-				showMenuButton="true"
-				showNotifications="true"
-				showProductSwitcher="true"
-				notificationsNumber="{app>/unreadCount}"
-				homeIconPressed=".onHome"
-				menuButtonPressed=".onToggleSide"
-				notificationsPressed=".onNotifications"
-				productSwitcherPressed=".onProductSwitcher"
-				avatarPressed=".onAvatar">
-				<f:searchManager>
-					<f:SearchManager placeholder="Search countries, fields, rules" search=".onShellSearch"/>
-				</f:searchManager>
-				<f:profile>
-					<Avatar initials="{app>/user/initials}" tooltip="{app>/user/name}"/>
-				</f:profile>
-			</f:ShellBar>
+			<!-- Same layout as the Work Zone / Launchpad shell header: back, logo, site title | app title, search, actions, avatar -->
+			<tnt:ToolHeader id="shellBar">
+				<Button icon="sap-icon://menu2" type="Transparent" tooltip="Menu" press=".onToggleSide">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Button>
+				<Button icon="sap-icon://nav-back" type="Transparent" tooltip="Back" enabled="{app>/canGoBack}" press=".onBack">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Button>
+				<Image id="logo" src="webapp/img/logo.svg" height="1.875rem" alt="B&amp;B" tooltip="Overview" press=".onHome" class="sapUiTinyMarginBeginEnd">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Image>
+				<Link text="GENB eDocument Accelerator" press=".onHome" class="edocShellTitle">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Link>
+				<ToolbarSeparator/>
+				<MenuButton text="Mapping Workbench" type="Transparent" class="edocShellApp">
+					<menu>
+						<Menu itemSelected=".onAppMenu">
+							<MenuItem text="Overview" icon="sap-icon://home" key="home"/>
+							<MenuItem text="France" icon="sap-icon://flag" key="FR" startsSection="true"/>
+							<MenuItem text="Poland" icon="sap-icon://flag" key="PL"/>
+							<MenuItem text="Germany" icon="sap-icon://flag" key="DE"/>
+						</Menu>
+					</menu>
+				</MenuButton>
+				<ToolbarSpacer/>
+				<SearchField width="24rem" placeholder="Search" search=".onShellSearch">
+					<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
+				</SearchField>
+				<Button icon="sap-icon://palette" type="Transparent" tooltip="Theme (Horizon Morning / Evening)" press=".onThemeToggle"/>
+				<Button icon="sap-icon://bell" type="Transparent" tooltip="Notifications" press=".onNotifications">
+					<customData>
+						<BadgeCustomData key="badge" value="{app>/unreadCount}" visible="{= !!${app>/unreadCount} }"/>
+					</customData>
+				</Button>
+				<Button icon="sap-icon://grid" type="Transparent" tooltip="My Products" press=".onProductSwitcher"/>
+				<Avatar initials="{app>/user/initials}" tooltip="{app>/user/name}" displaySize="XS" press=".onAvatar" class="sapUiTinyMarginBegin">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Avatar>
+			</tnt:ToolHeader>
 		</tnt:header>
 		<tnt:sideContent>
 			<tnt:SideNavigation id="sideNav" itemPress=".onNavPress">

@@ -4,9 +4,10 @@
 	xmlns="sap.m"
 	xmlns:f="sap.f"
 	xmlns:card="sap.f.cards"
+	xmlns:l="sap.ui.layout"
 	xmlns:core="sap.ui.core"
 	height="100%">
-	<f:DynamicPage id="homePage" toggleHeaderOnTitleClick="false" class="edocPage">
+	<f:DynamicPage id="homePage" toggleHeaderOnTitleClick="false">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
@@ -18,58 +19,60 @@
 				<f:snappedContent>
 					<Text text="Welcome back, {app>/user/name}"/>
 				</f:snappedContent>
+				<f:actions>
+					<Button text="Start with Poland" type="Emphasized" press=".onCountry">
+						<customData><core:CustomData key="code" value="PL"/></customData>
+					</Button>
+				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
+		<f:header>
+			<f:DynamicPageHeader pinnable="false">
+				<VBox>
+					<Title text="Map eDocument XML fields to SAP without starting from code" level="H2" titleStyle="H4" wrapping="true"/>
+					<Text class="sapUiTinyMarginTop" text="Pick a country, choose the document type and click through the XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework."/>
+				</VBox>
+			</f:DynamicPageHeader>
+		</f:header>
 		<f:content>
 			<VBox class="sapUiResponsiveContentPadding">
-				<!-- Hero -->
-				<HBox class="edocHero" wrap="Wrap" alignItems="Center">
-					<VBox class="edocHeroText">
-						<Text text="B&amp;B eDocument Accelerator" class="edocEyebrow"/>
-						<Title text="Map eDocument XML fields to SAP without starting from code" level="H1" titleStyle="H2" wrapping="true"/>
-						<Text class="sapUiSmallMarginTop" text="Pick a country, choose the document type and click through the XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework."/>
-						<HBox class="sapUiMediumMarginTop" wrap="Wrap">
-							<Button text="Start with Poland" icon="sap-icon://navigation-right-arrow" iconFirst="false" type="Emphasized" press=".onCountry" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
-								<customData><core:CustomData key="code" value="PL"/></customData>
-							</Button>
-							<Button text="France" press=".onCountry" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
-								<customData><core:CustomData key="code" value="FR"/></customData>
-							</Button>
-							<Button text="Germany" press=".onCountry" class="sapUiTinyMarginBottom">
-								<customData><core:CustomData key="code" value="DE"/></customData>
-							</Button>
-						</HBox>
-					</VBox>
-					<HBox class="edocHeroKpis" wrap="Wrap">
-						<VBox class="edocKpiBox">
-							<Label text="Countries live"/>
-							<ObjectNumber number="{home>/available}" unit="of {home>/countries}" class="edocKpiNumber"/>
-						</VBox>
-						<VBox class="edocKpiBox">
-							<Label text="Rules defined"/>
-							<ObjectNumber number="{home>/totalRules}" class="edocKpiNumber"/>
-						</VBox>
-						<VBox class="edocKpiBox">
-							<Label text="Document types"/>
-							<ObjectNumber number="3" unit="per country" class="edocKpiNumber"/>
-						</VBox>
-					</HBox>
+				<!-- At a glance -->
+				<Title text="At a glance" level="H3" class="sapUiSmallMarginBottom"/>
+				<HBox wrap="Wrap">
+					<GenericTile header="Countries live" subheader="eDocument scenarios" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+						<customData><core:CustomData key="code" value="PL"/></customData>
+						<TileContent footer="{home>/planned} more planned">
+							<NumericContent value="{home>/available}" scale="of {home>/countries}" icon="sap-icon://world" withMargin="false"/>
+						</TileContent>
+					</GenericTile>
+					<GenericTile header="Rules defined" subheader="All countries" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+						<customData><core:CustomData key="code" value="PL"/></customData>
+						<TileContent footer="In this session">
+							<NumericContent value="{home>/totalRules}" icon="sap-icon://chain-link" valueColor="{= ${home>/totalRules} ? 'Good' : 'Neutral' }" withMargin="false"/>
+						</TileContent>
+					</GenericTile>
+					<GenericTile header="Document types" subheader="Per country" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+						<customData><core:CustomData key="code" value="PL"/></customData>
+						<TileContent footer="Invoice, Credit Note, FI">
+							<NumericContent value="3" icon="sap-icon://documents" withMargin="false"/>
+						</TileContent>
+					</GenericTile>
 				</HBox>
 
 				<!-- How it works -->
 				<Title text="How it works" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
-				<FlexBox wrap="Wrap" renderType="Bare" class="edocCardGrid">
-					<f:Card class="edocStepCard">
+				<l:Grid defaultSpan="XL4 L4 M6 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd">
+					<f:Card>
 						<f:header>
 							<card:Header title="1. Select the country" subtitle="Each country brings its legal XML format, eDocument type and interface already configured." subtitleMaxLines="3" iconSrc="sap-icon://world" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
-					<f:Card class="edocStepCard">
+					<f:Card>
 						<f:header>
 							<card:Header title="2. Choose the document type" subtitle="Invoice, Credit Note or Accounting Document. The SAP source tables change with the type (SD billing or FI)." subtitleMaxLines="3" iconSrc="sap-icon://document" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
-					<f:Card class="edocStepCard">
+					<f:Card>
 						<f:header>
 							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
 						</f:header>
@@ -82,16 +85,16 @@
 							</HBox>
 						</f:content>
 					</f:Card>
-				</FlexBox>
+				</l:Grid>
 
 				<!-- Countries -->
 				<Title text="Countries" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
-				<FlexBox wrap="Wrap" items="{home>/list}">
+				<HBox wrap="Wrap" items="{home>/list}">
 					<GenericTile
 						header="{home>name}"
 						subheader="{home>short}"
 						press=".onTile"
-						class="sapUiTinyMarginEnd sapUiTinyMarginBottom edocTile">
+						class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 						<TileContent footer="{= ${home>planned} ? 'Planned' : 'Available' }">
 							<NumericContent
 								value="{= ${home>planned} ? '–' : String(${home>rules}) }"
@@ -101,7 +104,7 @@
 								withMargin="false"/>
 						</TileContent>
 					</GenericTile>
-				</FlexBox>
+				</HBox>
 			</VBox>
 		</f:content>
 	</f:DynamicPage>

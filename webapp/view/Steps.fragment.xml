@@ -1,19 +1,10 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<!-- 3-step progress indicator, step 2 active: Country > Document type > Field mapping -->
-	<HBox class="edocSteps" alignItems="Center" wrap="Wrap">
-		<HBox alignItems="Center" class="edocStep edocStepDone">
-			<core:Icon src="sap-icon://accept" class="edocStepDot"/>
-			<Text text="Country"/>
-		</HBox>
-		<HBox class="edocStepLine edocStepLineDone"/>
-		<HBox alignItems="Center" class="edocStep edocStepCurrent">
-			<Text text="2" class="edocStepDot"/>
-			<Text text="Document type"/>
-		</HBox>
-		<HBox class="edocStepLine"/>
-		<HBox alignItems="Center" class="edocStep">
-			<Text text="3" class="edocStepDot"/>
-			<Text text="Field mapping"/>
-		</HBox>
+	<!-- 3-step progress, step 2 active: Country > Document type > Field mapping -->
+	<HBox alignItems="Center" wrap="Wrap" class="sapUiSmallMarginTop">
+		<ObjectStatus text="1. Country" icon="sap-icon://sys-enter-2" state="Success" class="sapUiSmallMarginEnd"/>
+		<core:Icon src="sap-icon://slim-arrow-right" class="sapUiSmallMarginEnd"/>
+		<ObjectStatus text="2. Document type" icon="sap-icon://edit" state="Information" active="false" inverted="true" class="sapUiSmallMarginEnd"/>
+		<core:Icon src="sap-icon://slim-arrow-right" class="sapUiSmallMarginEnd"/>
+		<ObjectStatus text="3. Field mapping" icon="sap-icon://circle-task" state="None"/>
 	</HBox>
 </core:FragmentDefinition>

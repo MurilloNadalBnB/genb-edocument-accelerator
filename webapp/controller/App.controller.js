@@ -41,13 +41,38 @@ sap.ui.define([
 
 		_onThemeApplied: function () {
 			const bDark = Theming.getTheme().includes("dark");
-			this.byId("shellBar").setHomeIcon(bDark ? "webapp/img/logo-dark.svg" : "webapp/img/logo.svg");
+			this.byId("logo").setSrc(bDark ? "webapp/img/logo-dark.svg" : "webapp/img/logo.svg");
 			this.getOwnerComponent().getModel("app").setProperty("/darkMode", bDark);
 		},
 
 		_onRouteMatched: function (oEvent) {
-			const sCode = oEvent.getParameter("arguments").code;
-			this.byId("sideNav").setSelectedKey(sCode || "home");
+			const oArgs = oEvent.getParameter("arguments");
+			this._oArgs = oArgs;
+			this.byId("sideNav").setSelectedKey(oArgs.code || "home");
+			this.getOwnerComponent().getModel("app").setProperty("/canGoBack", !!oArgs.code);
+		},
+
+		/** Back goes one level up: workspace > country > overview */
+		onBack: function () {
+			const oArgs = this._oArgs || {};
+			if (oArgs.doc) {
+				this._router.navTo("country", {code: oArgs.code});
+			} else {
+				this._router.navTo("home");
+			}
+		},
+
+		onAppMenu: function (oEvent) {
+			const sKey = oEvent.getParameter("item").getKey();
+			if (sKey === "home") {
+				this._router.navTo("home");
+			} else {
+				this._router.navTo("country", {code: sKey});
+			}
+		},
+
+		onThemeToggle: function () {
+			Theming.setTheme(Theming.getTheme().includes("dark") ? "sap_horizon" : "sap_horizon_dark");
 		},
 
 		onHome: function () {
@@ -94,7 +119,7 @@ sap.ui.define([
 
 		/* ---------- Profile ---------- */
 		onAvatar: function (oEvent) {
-			const oSource = oEvent.getParameter("avatar") || oEvent.getSource();
+			const oSource = oEvent.getSource();
 			if (!this._oProfile) {
 				const oModel = this.getView().getModel("app");
 				this._oProfile = new ResponsivePopover({
@@ -108,9 +133,9 @@ sap.ui.define([
 								new Avatar({initials: "{app>/user/initials}", displaySize: "L"}),
 								new Title({text: "{app>/user/name}", level: "H4"}).addStyleClass("sapUiSmallMarginTop"),
 								new Text({text: "{app>/user/role}"}),
-								new Text({text: "{app>/user/email}"}).addStyleClass("edocMuted")
+								new Label({text: "{app>/user/email}"})
 							]
-						}).addStyleClass("sapUiSmallMargin edocProfileHead"),
+						}).addStyleClass("sapUiSmallMargin"),
 						new List({
 							items: [
 								new CustomListItem({
@@ -124,7 +149,7 @@ sap.ui.define([
 									}).addStyleClass("sapUiSmallMarginBeginEnd")
 								}),
 								new StandardListItem({title: "My Settings", icon: "sap-icon://action-settings", type: "Active", press: this.onNotInMock.bind(this)}),
-								new StandardListItem({title: "About", icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show("B&B eDocument Accelerator, product preview (mock data).")}),
+								new StandardListItem({title: "About", icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show("GENB eDocument Accelerator, product preview (mock data).")}),
 								new StandardListItem({title: "Sign Out", icon: "sap-icon://log", type: "Active", press: () => MessageToast.show("This is a demo, there is nothing to sign out from.")})
 							]
 						})
@@ -142,7 +167,7 @@ sap.ui.define([
 
 		/* ---------- Notifications ---------- */
 		onNotifications: function (oEvent) {
-			const oSource = oEvent.getParameter("button");
+			const oSource = oEvent.getSource();
 			if (!this._oNotif) {
 				const oModel = this.getView().getModel("app");
 				this._oNotif = new ResponsivePopover({
@@ -196,7 +221,7 @@ sap.ui.define([
 
 		/* ---------- Product switch ---------- */
 		onProductSwitcher: function (oEvent) {
-			const oSource = oEvent.getParameter("button");
+			const oSource = oEvent.getSource();
 			if (!this._oProducts) {
 				this._oProducts = new ResponsivePopover({
 					showHeader: false,

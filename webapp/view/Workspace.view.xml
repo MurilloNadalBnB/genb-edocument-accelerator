@@ -9,7 +9,7 @@
 	xmlns:rm="sap.ui.table.rowmodes"
 	xmlns:ce="sap.ui.codeeditor"
 	height="100%">
-	<f:DynamicPage id="wsPage" fitContent="true" showFooter="true" headerExpanded="true" class="edocPage edocWs">
+	<f:DynamicPage id="wsPage" fitContent="true" showFooter="true" headerExpanded="true">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:breadcrumbs>
@@ -37,27 +37,27 @@
 		</f:title>
 		<f:header>
 			<f:DynamicPageHeader pinnable="true">
-				<HBox wrap="Wrap" alignItems="Start" class="edocKpis">
-					<VBox class="edocKpi edocKpiWide">
+				<HBox wrap="Wrap" alignItems="Start">
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="Fields filled"/>
 						<HBox alignItems="Baseline">
-							<ObjectNumber number="{ws>/stats/filled}" unit="of {ws>/stats/total} · {ws>/stats/pct}%" class="edocKpiNumber"/>
+							<ObjectNumber number="{ws>/stats/filled}" unit="of {ws>/stats/total} · {ws>/stats/pct}%" class="sapMObjectNumberLarge"/>
 						</HBox>
-						<ProgressIndicator percentValue="{ws>/stats/pct}" displayValue="{ws>/stats/pct}%" showValue="false" state="None" width="12rem" class="edocProgress"/>
+						<ProgressIndicator percentValue="{ws>/stats/pct}" displayValue="{ws>/stats/pct}%" showValue="false" state="None" width="12rem"/>
 					</VBox>
-					<VBox class="edocKpi">
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="Checks"/>
-						<ObjectNumber number="{ws>/stats/checks}" class="edocKpiNumber"/>
+						<ObjectNumber number="{ws>/stats/checks}" class="sapMObjectNumberLarge"/>
 					</VBox>
-					<VBox class="edocKpi">
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="Rules"/>
-						<ObjectNumber number="{ws>/stats/rules}" class="edocKpiNumber"/>
+						<ObjectNumber number="{ws>/stats/rules}" class="sapMObjectNumberLarge"/>
 					</VBox>
-					<VBox class="edocKpi">
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="eDocument type"/>
-						<Text text="{ws>/edoc}" class="edocMono"/>
+						<Text text="{ws>/edoc}"/>
 					</VBox>
-					<VBox class="edocKpi">
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="SAP source"/>
 						<Text text="{ws>/source}"/>
 					</VBox>
@@ -71,26 +71,25 @@
 				select=".onTab"
 				expandable="false"
 				stretchContentHeight="true"
-				applyContentPadding="false"
+				applyContentPadding="true"
 				headerMode="Inline"
 				headerBackgroundDesign="Transparent"
-				backgroundDesign="Transparent"
-				class="edocTabs">
+				backgroundDesign="Transparent">
 				<items>
 					<!-- ================= Field Mapping ================= -->
 					<IconTabFilter key="mapping" text="Field Mapping" count="{= ${ws>/stats/rules} || '' }">
-						<l:Splitter height="100%" width="100%" class="edocSplit">
+						<l:Splitter height="100%" width="100%">
 							<!-- XML tree -->
-							<VBox height="100%" renderType="Bare" class="edocPane">
+							<VBox height="100%" renderType="Bare">
 								<layoutData><l:SplitterLayoutData size="58%" minSize="420"/></layoutData>
-								<OverflowToolbar style="Clear" class="edocPaneToolbar">
+								<OverflowToolbar style="Clear">
 									<Title text="XML Structure" level="H4"/>
-									<Text text="{ws>/treeSub}" class="edocMuted"/>
+									<Label text="{ws>/treeSub}"/>
 									<ToolbarSpacer/>
 									<Button icon="sap-icon://expand-group" type="Transparent" tooltip="Expand all" press=".onExpandAll"/>
 									<Button icon="sap-icon://collapse-group" type="Transparent" tooltip="Collapse all" press=".onCollapseAll"/>
 								</OverflowToolbar>
-								<Toolbar style="Clear" class="edocPaneToolbar edocPaneToolbar2">
+								<Toolbar style="Clear">
 									<SearchField value="{ws>/search}" liveChange=".onTreeSearch" placeholder="Search XML fields, sample values or SAP fields">
 										<layoutData><ToolbarLayoutData shrinkable="true" minWidth="10rem"/></layoutData>
 									</SearchField>
@@ -110,40 +109,39 @@
 									rowSelectionChange=".onRowSelect"
 									columnHeaderVisible="true"
 									enableColumnReordering="false"
-									noData="No XML fields match the current filter."
-									class="edocTree">
+									noData="No XML fields match the current filter.">
 									<t:layoutData><FlexItemData growFactor="1" minHeight="0"/></t:layoutData>
 									<t:rowMode><rm:Auto minRowCount="6"/></t:rowMode>
 									<t:columns>
 										<t:Column width="40%" minWidth="220">
 											<Label text="XML element"/>
 											<t:template>
-												<HBox alignItems="Center" renderType="Bare" class="edocNodeCell">
+												<HBox alignItems="Center" renderType="Bare">
 													<core:Icon src="{ws>icon}" color="{ws>iconColor}" class="sapUiTinyMarginEnd"/>
-													<Text text="{ws>prefix}" visible="{= !!${ws>prefix} }" class="edocPrefix" wrapping="false"/>
+													<Label text="{ws>prefix}" visible="{= !!${ws>prefix} }" wrapping="false"/>
 													<Text text="{ws>local}" wrapping="false" visible="{= !!${ws>leaf} }"/>
-													<Text text="{ws>local}" wrapping="false" visible="{= !${ws>leaf} }" class="edocBold"/>
-													<Text text="[{ws>idx}]" visible="{= ${ws>idx} > 0 }" class="edocIdx" wrapping="false"/>
+													<Title text="{ws>local}" wrapping="false" visible="{= !${ws>leaf} }" titleStyle="H6"/>
+													<Label text="[{ws>idx}]" visible="{= ${ws>idx} > 0 }" wrapping="false" class="sapUiTinyMarginBegin"/>
 												</HBox>
 											</t:template>
 										</t:Column>
 										<t:Column width="22%">
 											<Label text="Sample value"/>
 											<t:template>
-												<Text text="{ws>value}" wrapping="false" class="edocMuted edocMono"/>
+												<Text text="{ws>value}" wrapping="false"/>
 											</t:template>
 										</t:Column>
 										<t:Column width="16%">
 											<Label text="SAP source"/>
 											<t:template>
-												<Text text="{ws>source}" wrapping="false" class="edocSource"/>
+												<ObjectStatus text="{ws>source}" state="Information"/>
 											</t:template>
 										</t:Column>
 										<t:Column>
 											<Label text="Rules"/>
 											<t:template>
 												<HBox alignItems="Center" renderType="Bare" wrap="NoWrap">
-													<Text text="{ws>countText}" visible="{= !${ws>leaf} }" class="edocCount"/>
+													<Label text="{ws>countText}" visible="{= !${ws>leaf} }" class="sapUiTinyMarginEnd"/>
 													<HBox items="{path: 'ws>pills', templateShareable: false}" renderType="Bare">
 														<ObjectStatus text="{ws>text}" state="{ws>state}" inverted="true" class="sapUiTinyMarginEnd"/>
 													</HBox>
@@ -160,7 +158,7 @@
 							</VBox>
 
 							<!-- Side panel -->
-							<ScrollContainer height="100%" vertical="true" horizontal="false" class="edocPane edocSide">
+							<ScrollContainer height="100%" vertical="true" horizontal="false">
 								<layoutData><l:SplitterLayoutData size="auto" minSize="360"/></layoutData>
 								<VBox class="sapUiSmallMargin">
 									<!-- nothing selected -->
@@ -168,30 +166,30 @@
 										text="Select a field in the XML structure to define how it is filled. Use + on a row, or double-click it, to add a rule directly."/>
 
 									<!-- group or leaf -->
-									<VBox visible="{= ${ws>/sel/kind} !== 'none' }" class="edocFieldCard">
+									<Panel visible="{= ${ws>/sel/kind} !== 'none' }">
 										<HBox alignItems="Center">
 											<Avatar src="{= ${ws>/sel/kind} === 'group' ? 'sap-icon://folder-blank' : ${ws>/sel/isAttr} ? 'sap-icon://tag' : 'sap-icon://form' }"
 												displayShape="Square" displaySize="S"
 												backgroundColor="{= ${ws>/sel/kind} === 'group' ? 'Accent1' : 'Accent6' }" class="sapUiSmallMarginEnd"/>
 											<VBox>
 												<Title text="{ws>/sel/name}" level="H3" wrapping="true"/>
-												<Text text="{ws>/sel/path}" class="edocMono edocMuted edocSmall"/>
+												<Label text="{ws>/sel/path}" wrapping="true"/>
 											</VBox>
 										</HBox>
-										<HBox wrap="Wrap" class="sapUiSmallMarginTop edocAttrs">
-											<VBox class="edocAttr" visible="{= ${ws>/sel/kind} === 'leaf' }">
+										<HBox wrap="Wrap" class="sapUiSmallMarginTop">
+											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom" visible="{= ${ws>/sel/kind} === 'leaf' }">
 												<Label text="Sample value"/>
-												<Text text="{= ${ws>/sel/value} || 'empty' }" class="edocMono"/>
+												<Text text="{= ${ws>/sel/value} || 'empty' }"/>
 											</VBox>
-											<VBox class="edocAttr">
+											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 												<Label text="Kind"/>
 												<Text text="{ws>/sel/kindText}"/>
 											</VBox>
-											<VBox class="edocAttr" visible="{= ${ws>/sel/kind} === 'group' }">
+											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom" visible="{= ${ws>/sel/kind} === 'group' }">
 												<Label text="Fields inside"/>
 												<Text text="{ws>/sel/total}"/>
 											</VBox>
-											<VBox class="edocAttr">
+											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 												<Label text="{= ${ws>/sel/kind} === 'group' ? 'With rules' : 'Rules' }"/>
 												<Text text="{ws>/sel/ruleCount}"/>
 											</VBox>
@@ -204,7 +202,7 @@
 												<core:Icon src="sap-icon://lightbulb" color="Default" class="sapUiTinyMarginEnd"/>
 												<Label text="Suggested:" class="sapUiTinyMarginEnd"/>
 												<HBox items="{ws>/sel/suggestions}" wrap="Wrap" renderType="Bare">
-													<Button text="{ws>f}" tooltip="{ws>desc}" press=".onQuickMap" class="sapUiTinyMarginEnd edocChip"/>
+													<Button text="{ws>f}" tooltip="{ws>desc}" press=".onQuickMap" class="sapUiTinyMarginEnd"/>
 												</HBox>
 											</HBox>
 											<HBox wrap="Wrap" class="sapUiSmallMarginTop">
@@ -221,14 +219,14 @@
 													<customData><core:CustomData key="type" value="constant"/></customData>
 												</Button>
 											</HBox>
-											<List items="{ws>/sel/rules}" visible="{= ${ws>/sel/rules}.length > 0 }" showSeparators="Inner" class="sapUiTinyMarginTop edocFieldRules">
+											<List items="{ws>/sel/rules}" visible="{= ${ws>/sel/rules}.length > 0 }" showSeparators="Inner" class="sapUiTinyMarginTop">
 												<CustomListItem>
 													<HBox alignItems="Center" class="sapUiTinyMargin">
 														<ObjectStatus text="{ws>short}" icon="{ws>icon}" state="{ws>state}" inverted="true" class="sapUiSmallMarginEnd"/>
 														<VBox width="100%">
 															<layoutData><FlexItemData growFactor="1"/></layoutData>
-															<Text text="{ws>source}" visible="{= !!${ws>source} }" class="edocSource"/>
-															<Text text="{ws>desc}" class="edocSmall"/>
+															<ObjectStatus text="{ws>source}" visible="{= !!${ws>source} }" state="Information"/>
+															<Text text="{ws>desc}"/>
 														</VBox>
 														<Button icon="sap-icon://edit" type="Transparent" tooltip="Edit" press=".onEditRule"/>
 														<Button icon="sap-icon://delete" type="Transparent" tooltip="Delete" press=".onDeleteRule"/>
@@ -236,7 +234,7 @@
 												</CustomListItem>
 											</List>
 										</VBox>
-									</VBox>
+									</Panel>
 
 									<!-- All rules -->
 									<OverflowToolbar style="Clear" class="sapUiSmallMarginTop">
@@ -253,8 +251,7 @@
 									<Table
 										items="{ws>/allRules}"
 										visible="{= ${ws>/allRules}.length > 0 }"
-										sticky="ColumnHeaders"
-										class="edocRulesTable">
+										sticky="ColumnHeaders">
 										<columns>
 											<Column width="34%"><Text text="XML field"/></Column>
 											<Column width="22%"><Text text="Rule"/></Column>
@@ -270,8 +267,8 @@
 														<ObjectStatus text="auto" visible="{ws>auto}" state="Indication10" inverted="true"/>
 													</HBox>
 													<VBox>
-														<Text text="{= ${ws>source} || '-' }" class="edocSource"/>
-														<Text text="{ws>desc}" class="edocSmall edocMuted"/>
+														<ObjectStatus text="{= ${ws>source} || '-' }" state="{= ${ws>source} ? 'Information' : 'None' }"/>
+														<Label text="{ws>desc}" wrapping="true"/>
 													</VBox>
 													<HBox justifyContent="End" renderType="Bare">
 														<Button icon="sap-icon://edit" type="Transparent" tooltip="Edit" press=".onEditRule"/>
@@ -288,12 +285,12 @@
 
 					<!-- ================= XML Preview ================= -->
 					<IconTabFilter key="xml" text="XML Preview">
-						<VBox height="100%" renderType="Bare" class="edocPane edocCodePane">
-							<OverflowToolbar style="Clear" class="edocPaneToolbar">
+						<VBox height="100%" renderType="Bare">
+							<OverflowToolbar style="Clear">
 								<Title text="XML Preview" level="H4"/>
-								<Text text="Highlighted lines already have a rule. Click one to open it in the mapping." class="edocMuted"/>
+								<Label text="Highlighted lines already have a rule. Click one to open it in the mapping."/>
 							</OverflowToolbar>
-							<ScrollContainer vertical="true" horizontal="true" height="100%" class="edocXmlScroll">
+							<ScrollContainer vertical="true" horizontal="true" height="100%">
 								<layoutData><FlexItemData growFactor="1" minHeight="0"/></layoutData>
 								<core:HTML id="xmlHtml" content="{ws>/xmlHtml}" sanitizeContent="false" preferDOM="false"/>
 							</ScrollContainer>
@@ -302,11 +299,11 @@
 
 					<!-- ================= Code Preview ================= -->
 					<IconTabFilter key="code" text="Code Preview">
-						<VBox height="100%" renderType="Bare" class="edocPane edocCodePane">
-							<OverflowToolbar style="Clear" class="edocPaneToolbar">
+						<VBox height="100%" renderType="Bare">
+							<OverflowToolbar style="Clear">
 								<Title text="ABAP Preview" level="H4"/>
 								<ObjectStatus text="Mock" state="Indication10" inverted="true"/>
-								<Text text="Illustrative output. The real generator will follow the project's Clean ABAP conventions." class="edocMuted"/>
+								<Label text="Illustrative output. The real generator will follow the project's Clean ABAP conventions."/>
 								<ToolbarSpacer/>
 								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode"/>
 							</OverflowToolbar>
@@ -322,8 +319,7 @@
 								editable="false"
 								value="{ws>/abap}"
 								height="100%"
-								lineNumbers="true"
-								class="edocCode">
+								lineNumbers="true">
 								<ce:layoutData><FlexItemData growFactor="1" minHeight="0"/></ce:layoutData>
 							</ce:CodeEditor>
 						</VBox>
@@ -337,7 +333,7 @@
 					text="{= ${ws>/savedAt} ? 'Draft saved at ' + ${ws>/savedAt} : 'Draft, not saved' }"
 					state="{= ${ws>/savedAt} ? 'Success' : 'Warning' }"
 					icon="{= ${ws>/savedAt} ? 'sap-icon://sys-enter-2' : 'sap-icon://edit' }"/>
-				<Text text="{ws>/stats/rules} rules · {ws>/stats/checks} checks" class="edocMuted sapUiSmallMarginBegin"/>
+				<Text text="{ws>/stats/rules} rules · {ws>/stats/checks} checks" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
 				<Button text="Save Draft" press=".onSave"/>
 				<Button text="Generate Code" type="Emphasized" icon="sap-icon://syntax" press=".onGenerate"/>

@@ -5,7 +5,7 @@
 	xmlns:f="sap.f"
 	xmlns:core="sap.ui.core"
 	height="100%">
-	<f:DynamicPage id="countryPage" class="edocPage">
+	<f:DynamicPage id="countryPage">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:breadcrumbs>
@@ -30,20 +30,20 @@
 		<f:header>
 			<f:DynamicPageHeader pinnable="false">
 				<VBox>
-					<HBox wrap="Wrap" class="edocAttrs">
-						<VBox class="edocAttr">
+					<HBox wrap="Wrap">
+						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 							<Label text="XML format"/>
 							<Text text="{c>/schema}"/>
 						</VBox>
-						<VBox class="edocAttr">
+						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 							<Label text="Interface"/>
-							<Text text="{c>/iface}" class="edocMono"/>
+							<Text text="{c>/iface}"/>
 						</VBox>
-						<VBox class="edocAttr">
+						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 							<Label text="eDocument type"/>
-							<Text text="{c>/edoc}" class="edocMono"/>
+							<Text text="{c>/edoc}"/>
 						</VBox>
-						<VBox class="edocAttr">
+						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 							<Label text="Status"/>
 							<ObjectStatus text="Available" state="Success" icon="sap-icon://sys-enter-2"/>
 						</VBox>
@@ -61,7 +61,7 @@
 						subheader="{c>desc}"
 						frameType="TwoByOne"
 						press=".onDoc"
-						class="sapUiSmallMarginEnd sapUiSmallMarginBottom edocDocTile">
+						class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
 						<TileContent footer="SAP source: {c>source}">
 							<NumericContent value="{= String(${c>rules}) }" scale="{= ${c>rules} === 1 ? 'rule' : 'rules' }" icon="{c>icon}" valueColor="{= ${c>rules} ? 'Good' : 'Neutral' }" withMargin="false"/>
 						</TileContent>

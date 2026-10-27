@@ -14,28 +14,30 @@
 		horizontalScrolling="false"
 		class="edocDialog">
 		<subHeader>
-			<OverflowToolbar style="Clear" class="edocDlgSub">
-				<Text text="{dlg>/path}" class="edocMono edocMuted edocSmall" wrapping="false"/>
+			<OverflowToolbar style="Clear">
+				<Label text="{dlg>/path}" wrapping="false"/>
 			</OverflowToolbar>
 		</subHeader>
 		<content>
 			<l:Splitter height="100%" width="100%">
 				<!-- SAP source catalog -->
-				<VBox height="100%" renderType="Bare" class="edocDlgLeft">
+				<VBox height="100%" renderType="Bare">
 					<layoutData><l:SplitterLayoutData size="24rem" minSize="280"/></layoutData>
 					<HBox alignItems="Center" class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
-						<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd edocBrand"/>
+						<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd"/>
 						<Title text="SAP source fields" level="H5"/>
-						<Text text="· {dlg>/sourceLabel}" class="edocMuted edocSmall sapUiTinyMarginBegin" wrapping="false"/>
+						<Label text="· {dlg>/sourceLabel}" class="sapUiTinyMarginBegin" wrapping="false"/>
 					</HBox>
-					<SearchField value="{dlg>/q}" liveChange=".onDlgSearch" placeholder="Search table, field or description" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop edocDlgSearch"/>
-					<VBox visible="{= ${dlg>/suggestions}.length > 0 &amp;&amp; ${dlg>/type} !== 'constant' }" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop edocSugg">
+					<VBox class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop">
+						<SearchField value="{dlg>/q}" liveChange=".onDlgSearch" placeholder="Search table, field or description"/>
+					</VBox>
+					<VBox visible="{= ${dlg>/suggestions}.length > 0 &amp;&amp; ${dlg>/type} !== 'constant' }" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop">
 						<Label text="Suggested for this field"/>
 						<HBox items="{dlg>/suggestions}" wrap="Wrap" renderType="Bare">
 							<ToggleButton text="{dlg>f}" tooltip="{dlg>desc}" icon="sap-icon://lightbulb" pressed="{dlg>selected}" press=".onDlgPickSuggestion" class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
 						</HBox>
 					</VBox>
-					<ScrollContainer vertical="true" height="100%" class="sapUiSmallMarginTop edocCatScroll">
+					<ScrollContainer vertical="true" height="100%" class="sapUiSmallMarginTop">
 						<layoutData><FlexItemData growFactor="1" minHeight="0"/></layoutData>
 						<Tree
 							id="catalogTree"
@@ -44,14 +46,13 @@
 							includeItemInSelection="true"
 							itemPress=".onCatalogPress"
 							updateFinished=".onCatalogUpdated"
-							noDataText="No SAP field matches your search."
-							class="edocCatalog">
+							noDataText="No SAP field matches your search.">
 							<CustomTreeItem type="Active">
-								<HBox alignItems="Center" renderType="Bare" class="edocCatItem">
-									<core:Icon src="{dlg>icon}" class="sapUiTinyMarginEnd edocBrand" visible="{= ${dlg>kind} !== 'field' }"/>
-									<Text text="{dlg>text}" wrapping="false" class="edocCatKey"/>
-									<Text text="{dlg>desc}" wrapping="false" class="edocMuted edocSmall sapUiTinyMarginBegin"/>
-									<core:Icon src="sap-icon://lightbulb" visible="{= !!${dlg>suggested} }" tooltip="Suggested" class="sapUiTinyMarginBegin edocBrand"/>
+								<HBox alignItems="Center" renderType="Bare">
+									<core:Icon src="{dlg>icon}" class="sapUiTinyMarginEnd" visible="{= ${dlg>kind} !== 'field' }"/>
+									<Text text="{dlg>text}" wrapping="false"/>
+									<Label text="{dlg>desc}" wrapping="false" class="sapUiTinyMarginBegin"/>
+									<core:Icon src="sap-icon://lightbulb" visible="{= !!${dlg>suggested} }" tooltip="Suggested" color="Default" class="sapUiTinyMarginBegin"/>
 								</HBox>
 							</CustomTreeItem>
 						</Tree>
@@ -61,7 +62,7 @@
 				<!-- Rule form -->
 				<ScrollContainer height="100%" vertical="true" horizontal="false">
 					<layoutData><l:SplitterLayoutData size="auto" minSize="380"/></layoutData>
-					<VBox class="sapUiSmallMargin edocDlgForm">
+					<VBox class="sapUiSmallMargin">
 						<Label text="What should happen with this field?" design="Bold"/>
 						<SegmentedButton selectedKey="{dlg>/type}" selectionChange=".onDlgType" width="100%" class="sapUiTinyMarginTop">
 							<items>
@@ -71,27 +72,21 @@
 								<SegmentedButtonItem key="constant" text="Constant" icon="sap-icon://pushpin-off"/>
 							</items>
 						</SegmentedButton>
-						<Text text="{dlg>/typeHelp}" class="edocMuted edocSmall sapUiTinyMarginTop"/>
+						<Label text="{dlg>/typeHelp}" wrapping="true" class="sapUiTinyMarginTop"/>
 
 						<Label text="XML target" class="sapUiSmallMarginTop"/>
-						<HBox alignItems="Center" class="edocReadonly">
-							<Text text="&lt;{dlg>/nodeName}&gt;" class="edocMono"/>
-							<Text text="sample: {= ${dlg>/nodeValue} || 'empty' }" class="edocMuted edocSmall sapUiSmallMarginBegin"/>
-						</HBox>
+						<Input value="&lt;{dlg>/nodeName}&gt;" description="{= 'sample: ' + (${dlg>/nodeValue} || 'empty') }" fieldWidth="60%" editable="false"/>
 
 						<!-- SAP source -->
 						<VBox visible="{= ${dlg>/type} !== 'constant' }">
 							<Label text="{= ${dlg>/type} === 'check' ? 'SAP source field (optional, leave empty to check the XML value)' : 'SAP source field' }"
 								required="{= ${dlg>/type} !== 'check' }" class="sapUiSmallMarginTop"/>
-							<HBox alignItems="Center" class="edocReadonly" visible="{= !!${dlg>/source} }">
-								<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd edocBrand"/>
-								<ObjectIdentifier title="{dlg>/source}" text="{dlg>/sourceDesc}">
+							<HBox alignItems="Center">
+								<Input value="{dlg>/source}" description="{dlg>/sourceDesc}" fieldWidth="40%" editable="false"
+									placeholder="{= ${dlg>/type} === 'check' ? 'The check will run on the value written to the XML' : 'Pick a field from the list on the left' }">
 									<layoutData><FlexItemData growFactor="1"/></layoutData>
-								</ObjectIdentifier>
-								<Button icon="sap-icon://decline" type="Transparent" tooltip="Remove" press=".onDlgClearSource"/>
-							</HBox>
-							<HBox class="edocReadonly edocPlaceholder" visible="{= !${dlg>/source} }">
-								<Text text="{= ${dlg>/type} === 'check' ? 'The check will run on the value written to the XML' : 'Pick a field from the list on the left' }" class="edocMuted"/>
+								</Input>
+								<Button icon="sap-icon://decline" type="Transparent" tooltip="Remove" visible="{= !!${dlg>/source} }" press=".onDlgClearSource" class="sapUiTinyMarginBegin"/>
 							</HBox>
 						</VBox>
 
@@ -115,7 +110,7 @@
 								<VBox width="50%">
 									<Label text="Parameter" class="sapUiSmallMarginTop"/>
 									<Input value="{dlg>/cfg/param}" placeholder="{dlg>/paramPlaceholder}" valueLiveUpdate="true" visible="{= ${dlg>/cfg/cond} !== 'notInitial' }"/>
-									<HBox class="edocReadonly" visible="{= ${dlg>/cfg/cond} === 'notInitial' }"><Text text="Not needed" class="edocMuted"/></HBox>
+									<Input value="Not needed" editable="false" visible="{= ${dlg>/cfg/cond} === 'notInitial' }"/>
 								</VBox>
 							</HBox>
 							<Label text="When the check fails" class="sapUiSmallMarginTop"/>
@@ -137,7 +132,7 @@
 							</Select>
 							<VBox visible="{= ${dlg>/cfg/transform} === 'valmap' }">
 								<Label text="Value mapping" class="sapUiSmallMarginTop"/>
-								<Table items="{dlg>/cfg/valmap}" class="edocValmap">
+								<Table items="{dlg>/cfg/valmap}">
 									<columns>
 										<Column><Text text="SAP value"/></Column>
 										<Column width="2.5rem" hAlign="Center"/>
@@ -147,9 +142,9 @@
 									<items>
 										<ColumnListItem>
 											<cells>
-												<Input value="{dlg>from}" placeholder="e.g. F2" valueLiveUpdate="true" class="edocMonoInput"/>
+												<Input value="{dlg>from}" placeholder="e.g. F2" valueLiveUpdate="true"/>
 												<core:Icon src="sap-icon://arrow-right"/>
-												<Input value="{dlg>to}" placeholder="e.g. VAT" valueLiveUpdate="true" class="edocMonoInput"/>
+												<Input value="{dlg>to}" placeholder="e.g. VAT" valueLiveUpdate="true"/>
 												<Button icon="sap-icon://delete" type="Transparent" tooltip="Remove" press=".onVmDelete"/>
 											</cells>
 										</ColumnListItem>
@@ -180,10 +175,9 @@
 						</VBox>
 
 						<!-- Preview -->
-						<VBox class="edocPreview sapUiSmallMarginTop">
-							<Label text="Preview"/>
+						<Panel headerText="Preview" class="sapUiSmallMarginTop">
 							<Text text="{dlg>/preview}" renderWhitespace="true" class="edocMono"/>
-						</VBox>
+						</Panel>
 						<MessageStrip visible="{= !!${dlg>/error} }" text="{dlg>/error}" type="Error" showIcon="true" class="sapUiSmallMarginTop"/>
 					</VBox>
 				</ScrollContainer>
@@ -191,7 +185,7 @@
 		</content>
 		<footer>
 			<OverflowToolbar>
-				<Text text="Tip: double-click a field on the left to pick it and apply in one go." class="edocMuted edocSmall"/>
+				<Label text="Tip: double-click a field on the left to pick it and apply in one go."/>
 				<ToolbarSpacer/>
 				<Button text="{dlg>/saveText}" type="Emphasized" press=".onDlgApply"/>
 				<Button text="Cancel" press=".onDlgClose"/>

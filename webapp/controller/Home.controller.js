@@ -18,6 +18,7 @@ sap.ui.define([
 				list: aList,
 				countries: aList.length,
 				available: aList.filter(c => !c.planned).length,
+				planned: aList.filter(c => c.planned).length,
 				totalRules: aList.reduce((s, c) => s + c.rules, 0)
 			});
 		},

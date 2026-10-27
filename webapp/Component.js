@@ -13,6 +13,11 @@ sap.ui.define([
 		init: function () {
 			UIComponent.prototype.init.apply(this, arguments);
 
+			// Compact by default (same as Fiori Elements on desktop); ?density=cozy to compare
+			const bCozy = new URLSearchParams(window.location.search).get("density") === "cozy";
+			document.body.classList.toggle("sapUiSizeCompact", !bCozy);
+			document.body.classList.toggle("sapUiSizeCozy", bCozy);
+
 			// Fictional demo profile shown in the shell bar
 			this.setModel(new JSONModel({
 				user: {
@@ -23,6 +28,7 @@ sap.ui.define([
 					company: "B&B Enterprise Solutions (demo)"
 				},
 				sideExpanded: true,
+				canGoBack: false,
 				unreadCount: "2",
 				darkMode: false,
 				notifications: [
