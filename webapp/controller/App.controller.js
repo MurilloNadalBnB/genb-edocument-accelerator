@@ -35,6 +35,14 @@ sap.ui.define([
 		onInit: function () {
 			this._router = this.getOwnerComponent().getRouter();
 			this._router.attachRouteMatched(this._onRouteMatched, this);
+			// B&B logo is black line art, use the white variant on dark themes
+			Theming.attachApplied(this._onThemeApplied.bind(this));
+		},
+
+		_onThemeApplied: function () {
+			const bDark = Theming.getTheme().includes("dark");
+			this.byId("shellBar").setHomeIcon(bDark ? "webapp/img/logo-dark.svg" : "webapp/img/logo.svg");
+			this.getOwnerComponent().getModel("app").setProperty("/darkMode", bDark);
 		},
 
 		_onRouteMatched: function (oEvent) {
