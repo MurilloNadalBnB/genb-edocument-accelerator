@@ -32,12 +32,19 @@ sap.ui.define([
 			this._open(oEvent.getSource().getBindingContext("home").getProperty("code"));
 		},
 
-		onAskJoule: function (oEvent) {
+		onAskAi: function (oEvent) {
 			const sPrompt = oEvent.getSource().data("prompt");
 			if (sPrompt) {
-				this.getOwnerComponent().getEventBus().publish("edoc", "joule", {prompt: sPrompt});
+				this.getOwnerComponent().getEventBus().publish("edoc", "ai", {prompt: sPrompt});
 			} else {
-				this.getOwnerComponent().getEventBus().publish("edoc", "jouleOpen");
+				this.getOwnerComponent().getEventBus().publish("edoc", "aiOpen");
+			}
+		},
+
+		onEngineSwitch: function (oEvent) {
+			const oCtx = oEvent.getSource().getBindingContext("app");
+			if (!this.getOwnerComponent().setEngine(oCtx.getProperty("key"), oEvent.getParameter("state"))) {
+				MessageToast.show("Keep at least one AI engine on.");
 			}
 		},
 

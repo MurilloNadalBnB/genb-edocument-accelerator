@@ -10,35 +10,35 @@ sap.ui.define([
 	// partner: master data table of the business partner (KNA1 customer, LFA1 supplier)
 	const COUNTRIES = [
 		{code: "FR", name: "France", short: "2026 reform, UBL + e-reporting", scenario: "B2B e-invoicing and e-reporting reform through a certified platform (PA)", focus: true, docs: [
-			{id: "customer-invoice", label: "Customer Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "FR_B2BINV", iface: "FR_UBL_INVOICE", schema: "UBL 2.1 Invoice, EN 16931 (CIUS FR)", sample: "fr/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor", "fields"],
+			{id: "customer-invoice", label: "Customer Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "FR_B2BINV", iface: "FR_UBL_INVOICE", schema: "UBL 2.1 Invoice, EN 16931 (CIUS FR)", format: "UBL 2.1", sample: "fr/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor", "fields"],
 				desc: "Domestic B2B invoices from SD billing, sent to the certified platform.", source: "SD billing (VBRK / VBRP)"},
-			{id: "supplier-invoice", label: "Supplier Invoice", icon: "sap-icon://inbox", src: "MM", dir: "in", company: "buyer", partner: "LFA1", sourceType: "INV_VERIF", edoc: "FR_B2BINV", iface: "FR_UBL_INBOUND", schema: "UBL 2.1 Invoice, EN 16931 (received)", sample: "fr/supplier-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["inbound"],
+			{id: "supplier-invoice", label: "Supplier Invoice", icon: "sap-icon://inbox", src: "MM", dir: "in", company: "buyer", partner: "LFA1", sourceType: "INV_VERIF", edoc: "FR_B2BINV", iface: "FR_UBL_INBOUND", schema: "UBL 2.1 Invoice, EN 16931 (received)", format: "UBL 2.1", sample: "fr/supplier-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["inbound"],
 				desc: "Incoming invoices received from the platform and posted in invoice verification (MIRO).", source: "MM invoice verification (RBKP / RSEG / EKKO)"},
-			{id: "self-billing", label: "Self-billing Invoice", icon: "sap-icon://sales-order", src: "MM", dir: "out", company: "buyer", partner: "LFA1", sourceType: "INV_VERIF", edoc: "FR_B2BINV", iface: "FR_UBL_INVOICE", schema: "UBL 2.1 Invoice, type 389 (autofacturation)", sample: "fr/self-billing.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor"],
+			{id: "self-billing", label: "Self-billing Invoice", icon: "sap-icon://sales-order", src: "MM", dir: "out", company: "buyer", partner: "LFA1", sourceType: "INV_VERIF", edoc: "FR_B2BINV", iface: "FR_UBL_INVOICE", schema: "UBL 2.1 Invoice, type 389 (autofacturation)", format: "UBL 2.1", sample: "fr/self-billing.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor"],
 				desc: "Invoices issued on behalf of suppliers from evaluated receipt settlement (MRRL).", source: "MM self-billing, ERS (RBKP / RSEG)"},
-			{id: "e-reporting", label: "E-reporting", icon: "sap-icon://official-service", src: "FI", dir: "out", company: "buyer", partner: "LFA1", sourceType: "EDOC_LIST", edoc: "FR_EREP", iface: "FR_EREPORTING", schema: "E-reporting report, international B2B purchases", sample: "fr/e-reporting.xml", lines: ["Invoice"], depth: 2, objects: ["adaptor"],
+			{id: "e-reporting", label: "E-reporting", icon: "sap-icon://official-service", src: "FI", dir: "out", company: "buyer", partner: "LFA1", sourceType: "EDOC_LIST", edoc: "FR_EREP", iface: "FR_EREPORTING", schema: "E-reporting report, international B2B purchases", format: "E-reporting XML", sample: "fr/e-reporting.xml", lines: ["Invoice"], depth: 2, objects: ["adaptor"],
 				desc: "Purchases from foreign suppliers reported to the tax authority, built from FI and MM invoices.", source: "FI / MM invoices (BKPF / BSEG / BSET)"}
 		]},
 		{code: "DE", name: "Germany", short: "XRechnung, Peppol, ZUGFeRD", scenario: "B2B e-invoicing mandate: XRechnung over Peppol and EN 16931 CII by e-mail", focus: true, docs: [
-			{id: "xrechnung-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_INV", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL in a Peppol SBD", sample: "de/xrechnung-invoice.xml", lines: ["InvoiceLine"], depth: 2, objects: ["adaptor"],
+			{id: "xrechnung-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_INV", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL in a Peppol SBD", format: "XRechnung UBL (Peppol)", sample: "de/xrechnung-invoice.xml", lines: ["InvoiceLine"], depth: 2, objects: ["adaptor"],
 				desc: "SD invoices sent over Peppol, with the billing PDF attached.", source: "SD billing (VBRK / VBRP)"},
-			{id: "xrechnung-credit", label: "Credit Note (Peppol)", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_CRE", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL CreditNote in a Peppol SBD", sample: "de/xrechnung-credit.xml", lines: ["CreditNoteLine"], depth: 2, objects: ["adaptor"],
+			{id: "xrechnung-credit", label: "Credit Note (Peppol)", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_CRE", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL CreditNote in a Peppol SBD", format: "XRechnung UBL (Peppol)", sample: "de/xrechnung-credit.xml", lines: ["CreditNoteLine"], depth: 2, objects: ["adaptor"],
 				desc: "SD credit memos that reference the original invoice.", source: "SD billing (VBRK / VBRP / VBFA)"},
-			{id: "cii-email", label: "FI Invoice by E-mail", icon: "sap-icon://email", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "DE_CII", iface: "DE_CII_EMAIL", schema: "EN 16931 CII (Cross Industry Invoice)", sample: "de/zugferd-email.xml", lines: ["IncludedSupplyChainTradeLineItem"], depth: 2, objects: ["adaptor", "email"],
+			{id: "cii-email", label: "FI Invoice by E-mail", icon: "sap-icon://email", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "DE_CII", iface: "DE_CII_EMAIL", schema: "EN 16931 CII (Cross Industry Invoice)", format: "EN 16931 CII", sample: "de/zugferd-email.xml", lines: ["IncludedSupplyChainTradeLineItem"], depth: 2, objects: ["adaptor", "email"],
 				desc: "Invoices posted in FI (FB70) and e-mailed to the customer as CII XML.", source: "FI document (BKPF / BSEG / BSET)"}
 		]},
 		{code: "MX", name: "Mexico", short: "CFDI 4.0, Pagos 2.0", scenario: "CFDI 4.0 clearance through a PAC, with the payment complement (Complemento de Pagos 2.0)", focus: true, docs: [
-			{id: "cfdi-invoice", label: "CFDI Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "MX_INVOICE", iface: "MX_CFDI_40", schema: "CFDI 4.0 Comprobante (Anexo 20)", sample: "mx/cfdi-invoice.xml", lines: ["Concepto"], depth: 1, objects: ["adaptor", "fields", "ui"],
+			{id: "cfdi-invoice", label: "CFDI Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "MX_INVOICE", iface: "MX_CFDI_40", schema: "CFDI 4.0 Comprobante (Anexo 20)", format: "CFDI 4.0", sample: "mx/cfdi-invoice.xml", lines: ["Concepto"], depth: 1, objects: ["adaptor", "fields", "ui"],
 				desc: "SD invoices (Ingreso) stamped by the PAC.", source: "SD billing (VBRK / VBRP)"},
-			{id: "cfdi-payment", label: "Payment Complement", icon: "sap-icon://payment-approval", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "MX_PAYMENT", iface: "MX_CFDI_PAGOS20", schema: "CFDI 4.0 Pago with Pagos 2.0 complement", sample: "mx/cfdi-payment.xml", lines: ["DoctoRelacionado"], depth: 2, objects: ["adaptor", "ui"],
+			{id: "cfdi-payment", label: "Payment Complement", icon: "sap-icon://payment-approval", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "MX_PAYMENT", iface: "MX_CFDI_PAGOS20", schema: "CFDI 4.0 Pago with Pagos 2.0 complement", format: "CFDI 4.0 + Pagos 2.0", sample: "mx/cfdi-payment.xml", lines: ["DoctoRelacionado"], depth: 2, objects: ["adaptor", "ui"],
 				desc: "Incoming payments that settle PPD invoices.", source: "FI clearing (BKPF / BSEG / BSAD)"}
 		]},
 		{code: "PL", name: "Poland", short: "KSeF, FA(2)", scenario: "KSeF national e-invoicing system, structure FA(2)", docs: [
-			{id: "invoice", label: "Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
+			{id: "invoice", label: "Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
 				desc: "Outgoing billing documents created in SD billing.", source: "SD billing (VBRK / VBRP)"},
-			{id: "credit", label: "Credit Note", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", schema: "KSeF FA(2), KOR", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
+			{id: "credit", label: "Credit Note", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2), KOR", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
 				desc: "Billing credit memos that correct a previous invoice.", source: "SD billing (VBRK / VBRP / VBFA)"},
-			{id: "fi", label: "Accounting Document", icon: "sap-icon://accounting-document-verification", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
+			{id: "fi", label: "Accounting Document", icon: "sap-icon://accounting-document-verification", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
 				desc: "FI invoices and credit memos posted directly in accounting (FB70 / FB75).", source: "FI document (BKPF / BSEG / BSET)"}
 		]},
 		{code: "BE", name: "Belgium", short: "Peppol BIS 3.0", planned: true},
@@ -83,6 +83,7 @@ sap.ui.define([
 		BNKA: {d: "Bank Master Record", f: [["SWIFT", "SWIFT/BIC"]]},
 		EDOCUMENT: {d: "eDocument", f: [["EDOC_GUID", "eDocument GUID"], ["PROCESS", "eDocument Process"], ["EDOC_TYPE", "eDocument Type"], ["PROC_STATUS", "Process Status"], ["SOURCE_TYPE", "Source Type"], ["SOURCE_KEY", "Source Key"], ["LAND", "Country"]]},
 		EDOMXINVOICE: {d: "eDocument Mexico: Invoice", f: [["UUID", "Fiscal Folio (UUID)"]]},
+		TLINE: {d: "Texts (READ_TEXT)", f: [["TDID", "Text ID"], ["TDLINE", "Text Line"]]},
 		SYST: {d: "ABAP System Fields", f: [["DATUM", "Current Date"], ["UZEIT", "Current Time"], ["SYSID", "System ID"]]}
 	};
 	const CAT_BASE = {
@@ -90,7 +91,7 @@ sap.ui.define([
 		FI: [["Accounting", ["BKPF", "BSEG", "BSET", "BSAD", "SKAT"]], ["Partner", ["KNA1", "LFA1", "ADRC", "ADR6"]], ["Company", ["T001", "T001Z", "T012K", "TIBAN", "BNKA"]]],
 		MM: [["Invoice verification", ["RBKP", "RSEG"]], ["Purchasing", ["EKKO", "EKPO"]], ["Material", ["MARA"]], ["Partner", ["LFA1", "ADRC", "ADR6", "TIBAN", "BNKA"]], ["Company", ["T001", "T001Z"]]]
 	};
-	const catGroups = (cc, d) => [...CAT_BASE[d.src], ["Framework", cc === "MX" ? ["EDOCUMENT", "EDOMXINVOICE", "SYST"] : ["EDOCUMENT", "SYST"]]];
+	const catGroups = (cc, d) => [...CAT_BASE[d.src], ["Texts", ["TLINE"]], ["Framework", cc === "MX" ? ["EDOCUMENT", "EDOMXINVOICE", "SYST"] : ["EDOCUMENT", "SYST"]]];
 	const HEAD_TABLE = {SD: "VBRK", FI: "BKPF", MM: "RBKP"};
 	const ITEM_TABLE = {SD: "VBRP", FI: "BSEG", MM: "RSEG"};
 	const SRC_VAR = {SD: "is_sd_invoice", FI: "is_fi_invoice", MM: "is_mm_invoice"};
@@ -128,6 +129,8 @@ sap.ui.define([
 	}
 
 	/* ======================= XML model ======================= */
+	// Repeated elements (invoice lines, notes, payment means...) become ONE node that stands for the list:
+	// the structure is the union of all occurrences in the sample, "count" is the most found under one parent.
 	function buildModel(xml, expandDepth) {
 		const doc = new DOMParser().parseFromString(xml, "application/xml");
 		if (doc.getElementsByTagName("parsererror").length) {
@@ -135,32 +138,40 @@ sap.ui.define([
 		}
 		const nodes = {};
 		let seq = 0;
-		function walk(el, parent, depth) {
-			const id = "n" + (seq++);
-			const sib = parent ? [...el.parentNode.children].filter(c => c.tagName === el.tagName) : [el];
-			const idx = sib.length > 1 ? sib.indexOf(el) + 1 : 0;
-			const n = {id, name: el.tagName, local: el.localName, prefix: el.prefix, depth, parent: parent ? parent.id : null, children: [], idx, order: seq, isAttr: false, ns: []};
-			n.path = (parent ? parent.path : "") + "/" + el.tagName + (idx ? `[${idx}]` : "");
+		function walk(els, parent, depth, count) {
+			const el = els[0], id = "n" + (seq++);
+			const n = {id, name: el.tagName, local: el.localName, prefix: el.prefix, depth, parent: parent ? parent.id : null, children: [], idx: 0, count, order: seq, isAttr: false, ns: []};
+			n.path = (parent ? parent.path : "") + "/" + el.tagName;
 			nodes[id] = n;
-			for (const a of el.attributes) {
+			const attrs = new Map();
+			els.forEach(e => [...e.attributes].forEach(a => attrs.has(a.name) || attrs.set(a.name, a)));
+			for (const a of attrs.values()) {
 				if (a.name === "xmlns" || a.name.startsWith("xmlns:")) {
 					n.ns.push([a.name, a.value]);
 					continue;
 				}
 				const aid = "n" + (seq++);
-				nodes[aid] = {id: aid, name: "@" + a.name, local: a.localName, prefix: null, depth: depth + 1, parent: id, children: [], idx: 0, order: seq, isAttr: true, leaf: true, value: a.value, path: n.path + "/@" + a.name};
+				nodes[aid] = {id: aid, name: "@" + a.name, local: a.localName, prefix: null, depth: depth + 1, parent: id, children: [], idx: 0, count: 1, order: seq, isAttr: true, leaf: true, value: a.value, path: n.path + "/@" + a.name};
 				n.children.push(aid);
 			}
-			const kids = [...el.children];
-			if (!kids.length) {
+			const groups = new Map(), maxPer = {};
+			for (const e of els) {
+				const per = {};
+				for (const k of e.children) {
+					(groups.get(k.tagName) || groups.set(k.tagName, []).get(k.tagName)).push(k);
+					per[k.tagName] = (per[k.tagName] || 0) + 1;
+				}
+				Object.entries(per).forEach(([tag, c]) => { maxPer[tag] = Math.max(maxPer[tag] || 0, c); });
+			}
+			if (!groups.size) {
 				n.leaf = true;
-				n.value = el.textContent.trim();
+				n.value = els.map(e => e.textContent.trim()).find(Boolean) || "";
 			} else {
-				kids.forEach(k => n.children.push(walk(k, n, depth + 1)));
+				groups.forEach((g, tag) => n.children.push(walk(g, n, depth + 1, maxPer[tag])));
 			}
 			return id;
 		}
-		const root = walk(doc.documentElement, null, 0);
+		const root = walk([doc.documentElement], null, 0, 1);
 		(function tot(id) { const n = nodes[id]; n.total = (n.leaf ? 1 : 0) + n.children.reduce((s, c) => s + tot(c), 0); return n.total; })(root);
 		return {nodes, root, expandDepth};
 	}
@@ -340,7 +351,7 @@ sap.ui.define([
 		if (L === "Name" && (line || P === "Item" || P === "Product" || P === "SpecifiedTradeProduct")) { return pick("lineText"); }
 		if (L === "TypeCode") { return P === "ExchangedDocument" || P === "Invoice" ? pick("docType") : []; }
 		if (L === "Note" && P === "PaymentTerms") { return pick("terms"); }
-		if (L === "Note") { return src === "SD" ? ["VBRK-XBLNR"] : ["BKPF-BKTXT"]; }
+		if (L === "Note") { return ["TLINE-TDLINE"]; }
 		if (L === "Code" && P === "TaxCategory") { return pick("taxCode"); }
 		if (L === "Percent" && m.nodes[m.root].local === "Report") { return ["BSET-KBETR"]; }
 		if (L === "LineExtensionAmount") { return line ? pick("lineNet") : pick("netTotal"); }
@@ -362,7 +373,6 @@ sap.ui.define([
 		if (!n.value) { return null; }
 		if (CONST_NAMES.includes(n.local)) { return n.value; }
 		if (P === "TaxScheme" && n.local === "ID") { return n.value; }
-		if (n.local === "Note" && /^#(AAB|PMT|PMD)#/.test(n.value)) { return n.value; } // French mandatory payment mentions
 		if (["BusinessProcessSpecifiedDocumentContextParameter", "GuidelineSpecifiedDocumentContextParameter"].includes(P)) { return n.value; }
 		if (n.local === "TypeCode" && P === "ApplicableTradeTax") { return n.value; }
 		return null;
@@ -464,7 +474,6 @@ sap.ui.define([
 		let added = 0;
 		for (const n of Object.values(m.nodes)) {
 			if (!n.leaf || R.some(r => r.nodeId === n.id)) { continue; }
-			if ([n, ...ancestors(n, m)].some(a => a.idx > 1)) { continue; } // only first occurrence of repeated blocks
 			const cfg = defaultCfg(n, cc, d), sConst = constantOf(n, m);
 			if (sConst !== null && d.dir === "in") {
 				// inbound: only the format identifiers are worth validating
@@ -519,6 +528,9 @@ sap.ui.define([
 				kids.forEach(k => walk(k.id, ind + 1));
 				out.push(`<div class="xl"><span>${pad}<span class="xt">&lt;/${esc(n.name)}&gt;</span></span></div>`);
 			}
+			if (n.count > 1) {
+				out.push(`<div class="xl"><span>${pad}<span class="xc">&lt;!-- repeats 1..n, ${n.count} in this sample --&gt;</span></span></div>`);
+			}
 		})(m.root, 0);
 		return out.join("");
 	}
@@ -533,7 +545,7 @@ sap.ui.define([
 		const c = country(cc), d = docDef(cc, doc), m = model(cc, doc), rs = sortedRules(cc, doc);
 		if (!rs.length) { return null; }
 		const bIn = d.dir === "in", srcVar = SRC_VAR[d.src], itemTab = ITEM_TABLE[d.src], sfx = d.src.toLowerCase();
-		const seg = n => snake(n.local) + (n.idx ? `[ ${n.idx} ]` : "");
+		const seg = n => snake(n.local);
 		const pathFrom = (n, stop) => { const parts = []; let x = n; while (x && x.id !== stop) { parts.unshift(seg(x)); x = x.parent ? m.nodes[x.parent] : null; } return parts.join("-"); };
 		const helpers = new Set(), vmaps = [], LINE_TABS = ["MARA", "EKPO", "SKAT", "BSAD", "EDOMXINVOICE"];
 		let lineHelpers = null; // helper reads of the line loop being generated
@@ -611,6 +623,11 @@ sap.ui.define([
 			}
 			const tgt = bIn ? sap : xml, src = bIn ? xml : sap;
 			const v = value(r, n, src).split("\n"), padN = tgt.length + 3;
+			if (!bIn && n.count > 1 && !ln) {
+				// repeated element outside the line items, e.g. one Note per text line
+				bucket.push(note, `APPEND ${v.join(" ")} TO ${tgt}.`, "");
+				continue;
+			}
 			bucket.push(note, `${tgt} = ${v[0]}`, ...v.slice(1).map(l => " ".repeat(padN) + l));
 			bucket[bucket.length - 1] += ".";
 			bucket.push("");

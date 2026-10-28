@@ -24,15 +24,15 @@ sap.ui.define([
 	"sap/m/ObjectAttribute",
 	"sap/ui/core/Fragment",
 	"../model/engine",
-	"../model/joule"
+	"../model/assistant"
 ], function (Controller, Theming, MessageToast, ResponsivePopover, VBox, HBox, Avatar, Title, Text, List,
 	StandardListItem, CustomListItem, Switch, Label, Button, NotificationListItem, ProductSwitch, ProductSwitchItem,
-	MenuItem, Dialog, ObjectListItem, ObjectStatus, ObjectAttribute, Fragment, engine, joule) {
+	MenuItem, Dialog, ObjectListItem, ObjectStatus, ObjectAttribute, Fragment, engine, assistant) {
 	"use strict";
 
 	const PRODUCTS = [
 		{title: "Mapping Workbench", subTitle: "Current app", icon: "sap-icon://chain-link"},
-		{title: "Joule", subTitle: "Your agents + DRC knowledge", icon: "sap-icon://da-2"},
+		{title: "AI Assistant", subTitle: "Joule, Generative AI Hub, GENB AI", icon: "sap-icon://ai"},
 		{title: "B&B Service Desk", subTitle: "Implementation requests", icon: "sap-icon://collaborate"},
 		{title: "eDocument Cockpit", subTitle: "Monitor eDocuments", icon: "sap-icon://monitor-payments"},
 		{title: "Rule Library", subTitle: "Reusable rule sets", icon: "sap-icon://course-book"},
@@ -53,69 +53,80 @@ sap.ui.define([
 			engine.COUNTRIES.filter(c => !c.planned).forEach((c, i) => oMenu.addItem(new MenuItem({text: c.name, icon: "sap-icon://flag", key: c.code, startsSection: i === 0})));
 
 			const oApp = this.getOwnerComponent().getModel("app");
-			oApp.setProperty("/joule/prompts", joule.prompts.map(text => ({text})));
-			// Other views open Joule with a question about the field they show
+			oApp.setProperty("/ai/prompts", assistant.prompts.map(text => ({text})));
+			// Other views open the assistant with a question about the field they show
 			const oBus = this.getOwnerComponent().getEventBus();
-			oBus.subscribe("edoc", "joule", (sChannel, sEvent, oData) => this._askJoule(oData.prompt, oData.ctx));
-			oBus.subscribe("edoc", "jouleOpen", () => this._getJoule().then(oPanel => oPanel.isOpen() || oPanel.openBy(this.byId("jouleBtn"))));
+			oBus.subscribe("edoc", "ai", (sChannel, sEvent, oData) => this._askAi(oData.prompt, oData.ctx));
+			oBus.subscribe("edoc", "aiOpen", () => this._getAi().then(oPanel => oPanel.isOpen() || oPanel.openBy(this.byId("aiBtn"))));
 			oBus.subscribe("edoc", "requests", this.onRequests, this);
 		},
 
-		/* ---------- Joule ---------- */
-		_getJoule: function () {
-			if (!this._pJoule) {
-				this._pJoule = Fragment.load({id: this.getView().getId(), name: "bnb.edoc.view.JoulePanel", controller: this}).then(oPanel => {
+		/* ---------- AI assistant ---------- */
+		_getAi: function () {
+			if (!this._pAi) {
+				this._pAi = Fragment.load({id: this.getView().getId(), name: "bnb.edoc.view.AssistantPanel", controller: this}).then(oPanel => {
 					this.getView().addDependent(oPanel);
 					return oPanel;
 				});
 			}
-			return this._pJoule;
+			return this._pAi;
 		},
 
-		onJoule: function () {
-			this._getJoule().then(oPanel => oPanel.isOpen() ? oPanel.close() : oPanel.openBy(this.byId("jouleBtn")));
+		onAi: function () {
+			this._getAi().then(oPanel => oPanel.isOpen() ? oPanel.close() : oPanel.openBy(this.byId("aiBtn")));
 		},
 
-		onJouleClose: function () {
-			this._getJoule().then(oPanel => oPanel.close());
+		onAiClose: function () {
+			this._getAi().then(oPanel => oPanel.close());
 		},
 
-		onJouleReset: function () {
-			this.getView().getModel("app").setProperty("/joule/messages", []);
+		onAiReset: function () {
+			this.getView().getModel("app").setProperty("/ai/messages", []);
 		},
 
-		onJoulePost: function (oEvent) {
-			this._askJoule(oEvent.getParameter("value"));
+		onAiPost: function (oEvent) {
+			this._askAi(oEvent.getParameter("value"));
 		},
 
-		onJoulePrompt: function (oEvent) {
-			this._askJoule(oEvent.getSource().getText());
+		onAiPrompt: function (oEvent) {
+			this._askAi(oEvent.getSource().getText());
 		},
 
-		/** Show the question, then a canned answer after a short "thinking" delay. */
-		_askJoule: function (sPrompt, oCtx) {
-			const oModel = this.getView().getModel("app"), aMsgs = oModel.getProperty("/joule/messages");
-			this._getJoule().then(oPanel => {
+		onEngineToggle: function (oEvent) {
+			const oCtx = oEvent.getSource().getBindingContext("app");
+			if (!this.getOwnerComponent().setEngine(oCtx.getProperty("key"), oEvent.getParameter("pressed"))) {
+				MessageToast.show("Keep at least one AI engine on.");
+			}
+		},
+
+		/** Show the question, then the answer of the engines switched on, after a short "thinking" delay. */
+		_askAi: function (sPrompt, oCtx) {
+			const oModel = this.getView().getModel("app"), aMsgs = oModel.getProperty("/ai/messages");
+			const aEngines = oModel.getProperty("/ai/engines").filter(e => e.enabled);
+			this._getAi().then(oPanel => {
 				if (!oPanel.isOpen()) {
-					oPanel.openBy(this.byId("jouleBtn"));
+					oPanel.openBy(this.byId("aiBtn"));
 				}
 				aMsgs.push({from: "user", text: sPrompt});
-				oModel.setProperty("/joule/messages", aMsgs);
-				oModel.setProperty("/joule/busy", true);
-				this._scrollJoule();
+				oModel.setProperty("/ai/messages", aMsgs);
+				oModel.setProperty("/ai/busy", true);
+				this._scrollAi();
 				setTimeout(() => {
-					const oAnswer = joule.answer(sPrompt, oCtx);
-					aMsgs.push({from: "joule", html: oAnswer.html, sources: oAnswer.sources});
-					oModel.setProperty("/joule/messages", aMsgs);
-					oModel.setProperty("/joule/busy", false);
-					this._scrollJoule();
+					const aParts = assistant.answer(sPrompt, oCtx, aEngines.map(e => e.key)).map(p => {
+						const oEngine = aEngines.find(e => e.key === p.engine);
+						return {name: oEngine.name, icon: oEngine.icon, initials: oEngine.initials, color: oEngine.color, html: p.html};
+					});
+					aMsgs.push({from: "ai", parts: aParts});
+					oModel.setProperty("/ai/messages", aMsgs);
+					oModel.setProperty("/ai/busy", false);
+					this._scrollAi();
 				}, 900);
 			});
 		},
 
-		_scrollJoule: function () {
+		_scrollAi: function () {
 			setTimeout(() => {
-				const oScroll = this.byId("jouleScroll"), el = oScroll && oScroll.getDomRef("scroll");
+				const oScroll = this.byId("aiScroll"), el = oScroll && oScroll.getDomRef("scroll");
 				if (el) {
 					oScroll.scrollTo(0, el.scrollHeight, 200);
 				}
@@ -212,8 +223,8 @@ sap.ui.define([
 				MessageToast.show(`${oCountry.name} is planned for a future release.`);
 			} else if (oCountry) {
 				this._router.navTo("country", {code: sKey});
-			} else if (sKey === "joule") {
-				this.onJoule();
+			} else if (sKey === "available" || sKey === "planned") {
+				return; // group nodes only expand or collapse
 			} else if (sKey === "requests") {
 				this.onRequests();
 			} else {
@@ -354,8 +365,8 @@ sap.ui.define([
 						change: function (e) {
 							const sTitle = e.getParameter("itemPressed").getTitle();
 							this._oProducts.close();
-							if (sTitle === "Joule") {
-								this.onJoule();
+							if (sTitle === "AI Assistant") {
+								this.onAi();
 							} else if (sTitle === "B&B Service Desk") {
 								this.onRequests();
 							} else if (sTitle !== "Mapping Workbench") {

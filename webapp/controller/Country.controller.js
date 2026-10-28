@@ -21,7 +21,7 @@ sap.ui.define([
 			}
 			const uniq = a => [...new Set(a)].join(", ");
 			this.getView().getModel("c").setData(Object.assign({}, oCountry, {
-				formats: uniq(oCountry.docs.map(d => d.schema.split(",")[0].replace(/ (Invoice|CreditNote|Comprobante)$/, ""))),
+				formats: uniq(oCountry.docs.map(d => d.format)),
 				edocs: uniq(oCountry.docs.map(d => d.edoc)),
 				docs: oCountry.docs.map(d => Object.assign({}, d, {
 					rules: engine.docRuleCount(sCode, d.id),

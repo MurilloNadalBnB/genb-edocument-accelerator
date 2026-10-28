@@ -19,12 +19,6 @@
 				<f:snappedContent>
 					<Text text="Welcome back, {app>/user/name}"/>
 				</f:snappedContent>
-				<f:actions>
-					<Button text="Ask Joule" icon="sap-icon://da-2" press=".onAskJoule"/>
-					<Button text="Start with France" type="Emphasized" press=".onCountry">
-						<customData><core:CustomData key="code" value="FR"/></customData>
-					</Button>
-				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
 		<f:header>
@@ -37,42 +31,46 @@
 		</f:header>
 		<f:content>
 			<VBox class="sapUiResponsiveContentPadding">
-				<!-- Joule: reuse the customer's Joule investment -->
+				<!-- AI: Joule, SAP Generative AI Hub and GENB AI, alone or together -->
 				<f:Card class="sapUiMediumMarginBottom">
 					<f:header>
 						<card:Header
-							title="Works with your Joule"
-							subtitle="Already subscribed to Joule? The accelerator reuses your Joule agents, knowledge bases and document grounding, and adds the DRC knowledge B&amp;B gathered in live projects."
+							title="Your AI, your choice"
+							subtitle="Work with Joule, the SAP Generative AI Hub, GENB AI, or any combination. Reuse what you already have at SAP and add the DRC knowledge B&amp;B gathered in live projects."
 							subtitleMaxLines="3"
-							iconSrc="sap-icon://da-2"
+							iconSrc="sap-icon://ai"
 							iconBackgroundColor="Accent7"
-							statusText="Connected"/>
+							statusText="{app>/ai/activeText}"/>
 					</f:header>
 					<f:content>
-						<l:Grid defaultSpan="XL4 L4 M12 S12" hSpacing="2" vSpacing="1" containerQuery="true" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
-							<VBox>
-								<Label text="Your Joule agents" design="Bold"/>
-								<VBox items="{app>/joule/agents}" class="sapUiTinyMarginTop">
-									<ObjectStatus title="{app>name}" text="{app>desc}" icon="sap-icon://robot" state="Indication05" class="sapUiTinyMarginBottom"/>
+						<VBox width="100%" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
+							<l:Grid content="{app>/ai/engines}" defaultSpan="XL4 L4 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd edocEngines">
+								<VBox class="edocEngine">
+									<HBox alignItems="Center" justifyContent="SpaceBetween">
+										<HBox alignItems="Center">
+											<Avatar src="{app>icon}" initials="{app>initials}" imageFitType="Contain" displaySize="S" displayShape="Square" backgroundColor="{app>color}" class="sapUiSmallMarginEnd"/>
+											<VBox>
+												<Title text="{app>name}" level="H5"/>
+												<Label text="{app>by}"/>
+											</VBox>
+										</HBox>
+										<Switch state="{app>enabled}" change=".onEngineSwitch" tooltip="Use {app>name}"/>
+									</HBox>
+									<ObjectStatus text="{app>status}" icon="sap-icon://connected" state="{= ${app>enabled} ? 'Success' : 'None' }" class="sapUiSmallMarginTop"/>
+									<Text text="{app>desc}" class="sapUiTinyMarginTop"/>
+									<VBox items="{path: 'app>items', templateShareable: false}" class="sapUiTinyMarginTop">
+										<ObjectStatus text="{app>text}" icon="{app>icon}" state="Indication05" class="sapUiTinyMarginTop"/>
+									</VBox>
 								</VBox>
-							</VBox>
-							<VBox>
-								<Label text="Your knowledge bases" design="Bold"/>
-								<VBox items="{app>/joule/knowledge}" class="sapUiTinyMarginTop">
-									<ObjectStatus title="{app>name}" text="{app>desc}" icon="sap-icon://course-book" state="Indication05" class="sapUiTinyMarginBottom"/>
-								</VBox>
-							</VBox>
-							<VBox>
-								<Label text="Added by B&amp;B" design="Bold"/>
-								<ObjectStatus title="{app>/joule/bnb/name}" text="{app>/joule/bnb/desc}" icon="sap-icon://official-service" state="Indication04" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
-								<HBox wrap="Wrap">
-									<Button text="Ask Joule" icon="sap-icon://da-2" type="Emphasized" press=".onAskJoule" class="sapUiTinyMarginEnd"/>
-									<Button text="Check my master data" press=".onAskJoule">
-										<customData><core:CustomData key="prompt" value="Which customers are missing a SIREN?"/></customData>
-									</Button>
-								</HBox>
-							</VBox>
-						</l:Grid>
+							</l:Grid>
+							<HBox wrap="Wrap" alignItems="Center" class="sapUiSmallMarginTop">
+								<Button text="AI Assistant" icon="sap-icon://ai" type="Emphasized" press=".onAskAi" class="sapUiTinyMarginEnd"/>
+								<Button text="Check my master data" press=".onAskAi" class="sapUiTinyMarginEnd">
+									<customData><core:CustomData key="prompt" value="Which customers are missing a SIREN?"/></customData>
+								</Button>
+								<Label text="Switch engines off to see what each one adds to the answer."/>
+							</HBox>
+						</VBox>
 					</f:content>
 				</f:Card>
 
@@ -119,7 +117,7 @@
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it. Joule explains any field." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
+							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it. The AI assistant explains any field." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
 						</f:header>
 						<f:content>
 							<HBox wrap="Wrap" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">

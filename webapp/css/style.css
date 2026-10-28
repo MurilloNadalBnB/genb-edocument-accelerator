@@ -44,10 +44,17 @@
 .edocPill-change { background: var(--sapIndicationColor_7_Background); color: var(--sapIndicationColor_7_TextColor); }
 .edocPill-constant { background: var(--sapIndicationColor_4_Background); color: var(--sapIndicationColor_4_TextColor); }
 
-/* Joule panel: chat bubbles */
-.edocJouleMsg { padding: .5rem .75rem; margin: .375rem 0; border-radius: var(--sapPopover_BorderCornerRadius, .75rem); max-width: 92%; }
-.edocJouleUser { align-self: flex-end; background: var(--sapButton_Emphasized_Background); }
-.edocJouleUser .sapMText { color: var(--sapButton_Emphasized_TextColor); }
-.edocJouleBot { align-self: flex-start; background: var(--sapGroup_ContentBackground); border: 1px solid var(--sapGroup_ContentBorderColor); }
-.edocJouleBot .sapMFT ul { margin: .25rem 0; padding-left: 1.25rem; }
-.edocJouleBot .sapMFT p { margin: .25rem 0; }
+/* AI assistant: chat bubbles, one part per AI engine */
+.edocAiMsg { padding: .5rem .75rem; margin: .375rem 0; border-radius: var(--sapPopover_BorderCornerRadius, .75rem); max-width: 92%; }
+.edocAiUser { align-self: flex-end; background: var(--sapButton_Emphasized_Background); }
+.edocAiUser .sapMText { color: var(--sapButton_Emphasized_TextColor); }
+.edocAiBot { align-self: flex-start; background: var(--sapGroup_ContentBackground); border: 1px solid var(--sapGroup_ContentBorderColor); }
+.edocAiBot .sapMFT ul { margin: .25rem 0; padding-left: 1.25rem; }
+.edocAiBot .sapMFT p { margin: .25rem 0; }
+.edocXml .xc { color: var(--sapContent_LabelColor); font-style: italic; }
+.edocAiPart + .edocAiPart { margin-top: .5rem; padding-top: .5rem; border-top: 1px solid var(--sapGroup_ContentBorderColor); }
+
+/* Overview: one box per AI engine */
+.edocEngine { height: 100%; box-sizing: border-box; padding: .75rem 1rem; border: 1px solid var(--sapGroup_ContentBorderColor); border-radius: var(--sapElement_BorderCornerRadius); }
+/* same height for the three engine boxes (the grid cells float by default) */
+.edocEngines { display: flex; flex-wrap: wrap; }

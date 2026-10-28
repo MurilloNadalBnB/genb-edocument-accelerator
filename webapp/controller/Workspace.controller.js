@@ -144,6 +144,7 @@ sap.ui.define([
 					local: n.isAttr ? "@" + n.local : n.local,
 					prefix: n.prefix ? n.prefix + ":" : "",
 					idx: n.idx,
+					listText: n.count > 1 ? `1..n · ${n.count} in sample` : "",
 					value: n.leaf ? n.value : "",
 					leaf: !!n.leaf,
 					icon: n.isAttr ? "sap-icon://tag" : n.leaf ? "sap-icon://form" : "sap-icon://folder-blank",
@@ -302,7 +303,7 @@ sap.ui.define([
 			if (!n) {
 				sel = {kind: "none", suggestions: [], rules: []};
 			} else if (!n.leaf) {
-				sel = {kind: "group", name: n.local + (n.idx ? ` [${n.idx}]` : ""), path: n.path, kindText: "Group", total: n.total, ruleCount: engine.mappedCounts(this._cc, this._doc)[n.id] || 0, suggestions: [], rules: []};
+				sel = {kind: "group", name: n.local, path: n.path, kindText: n.count > 1 ? `Repeating group (1..n, ${n.count} in sample)` : "Group", total: n.total, ruleCount: engine.mappedCounts(this._cc, this._doc)[n.id] || 0, suggestions: [], rules: []};
 			} else {
 				const rs = this._rulesFor(n.id);
 				sel = {
@@ -311,7 +312,7 @@ sap.ui.define([
 					name: n.isAttr ? n.name : n.local,
 					path: n.path,
 					value: n.value,
-					kindText: (n.isAttr ? "Attribute" : "Element") + (engine.isLine(n, m, this._d) ? ", line item" : ""),
+					kindText: (n.isAttr ? "Attribute" : "Element") + (n.count > 1 ? ", repeats 1..n" : "") + (engine.isLine(n, m, this._d) ? ", line item" : ""),
 					ruleCount: rs.length,
 					suggestions: engine.suggest(n, m, this._cc, this._d).map(f => ({f, desc: engine.fieldDesc(f)})),
 					rules: rs.map(r => this._ruleRow(r))
@@ -403,15 +404,15 @@ sap.ui.define([
 			this._refreshPreviews();
 		},
 
-		/* =================== Joule =================== */
-		onAskJoule: function () {
+		/* =================== AI assistant =================== */
+		onAskAi: function () {
 			const n = this._selected ? this._m.nodes[this._selected] : null;
 			if (!n || !n.leaf) {
-				this.getOwnerComponent().getEventBus().publish("edoc", "joule", {prompt: `Help me map the ${this._d.label} for ${this._ws.getProperty("/countryName")}. What should I suggest?`});
+				this.getOwnerComponent().getEventBus().publish("edoc", "ai", {prompt: `Help me map the ${this._d.label} for ${this._ws.getProperty("/countryName")}. What should I suggest?`});
 				return;
 			}
 			const sField = n.isAttr ? n.name.slice(1) : n.local, sg = engine.suggest(n, this._m, this._cc, this._d);
-			this.getOwnerComponent().getEventBus().publish("edoc", "joule", {
+			this.getOwnerComponent().getEventBus().publish("edoc", "ai", {
 				prompt: `Explain <${sField}> in the ${this._d.label} (${this._ws.getProperty("/countryName")}) and how to fill it`,
 				ctx: {field: n.local, path: n.path, countryName: this._ws.getProperty("/countryName"), docLabel: this._d.label, suggestion: sg[0]}
 			});

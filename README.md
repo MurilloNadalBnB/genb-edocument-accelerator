@@ -20,12 +20,16 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 
 - **Cabeçalho no padrão do Work Zone / Launchpad:**
   - logo da B&B, título *GENB eDocument Accelerator* e menu do app *Mapping Workbench*;
-  - busca, **Joule**, troca de tema (Horizon Morning / Evening), notificações e product switch;
+  - busca, **AI Assistant**, troca de tema (Horizon Morning / Evening), notificações e product switch;
   - perfil fictício (*Jordan Lee*).
+- **Menu lateral:** Overview; *Countries* com os nós *Available* (França, Alemanha, México, Polônia) e *Planned* (Bélgica, Itália, Portugal, Espanha), em ordem alfabética; *Rule Library* e *B&B Requests*; *Settings* no rodapé.
 - **Overview:**
-  - card **Works with your Joule**: agentes e knowledge bases do próprio cliente somados ao conhecimento de DRC da B&B;
+  - card **Your AI, your choice**: três motores de IA, que podem ser usados sozinhos ou juntos, cada um com seu switch:
+    - **Joule**: agentes e knowledge bases que o cliente já tem;
+    - **SAP Generative AI Hub** (SAP AI Core): os LLMs da assinatura BTP do cliente, com grounding e data masking;
+    - **GENB AI**: o conhecimento de DRC da B&B;
   - os 4 passos, incluindo *Generate, or let B&B implement*;
-  - países em ordem alfabética: França, Alemanha, México e Polônia disponíveis; Bélgica, Itália, Portugal e Espanha planejados.
+  - tiles dos países e dos pedidos enviados à B&B.
 - **País:** cenários próprios de cada país, cada um com um XML real de projeto, anonimizado:
 
   | País | Cenários |
@@ -37,8 +41,9 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 
 - **Workspace:**
   - árvore do XML com busca e filtros;
-  - **Auto-suggest**, que cria as regras óbvias (MAP, CHANGE com value map, CONST para valores fixos e menções legais francesas, concatenação BELNR+GJAHR na autofaturação);
-  - **Ask Joule** no cabeçalho e no painel do campo selecionado;
+  - **Auto-suggest**, que cria as regras óbvias (MAP, CHANGE com value map, CONST para valores fixos, concatenação BELNR+GJAHR na autofaturação);
+  - **Ask AI** no cabeçalho e no painel do campo selecionado. Cada parte da resposta mostra qual motor a produziu;
+  - elementos repetidos (linhas, notas, meios de pagamento) aparecem uma vez só, como lista (*1..n*), com a estrutura de todas as ocorrências do exemplo;
   - diálogo de regra (Map, Check, Change, Constant) com o catálogo de campos SAP do source (SD, MM ou FI);
   - XML Preview com os campos mapeados destacados;
   - Code Preview com os objetos do cenário: adaptor (BAdI `EDOC_ADAPTOR`, gerado das regras, com AIF value maps), mapeamento inbound, e-mail (partner connector), custom fields do cockpit e UI functions (ações do cockpit);
@@ -46,10 +51,10 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 
 ## Roteiro sugerido para o vídeo
 
-1. Na **Overview**, mostrar o card *Works with your Joule* e clicar em **Check my master data**: o Joule responde citando o agente do cliente e o conhecimento da B&B.
-2. Clicar em **Start with France** e comentar os 4 cenários (venda, compra inbound, autofaturação, e-reporting).
+1. Na **Overview**, mostrar o card *Your AI, your choice* e clicar em **Check my master data**: a resposta vem em três partes, uma por motor. Desligar dois motores e perguntar de novo para mostrar que cada um funciona sozinho.
+2. Abrir **France** no menu lateral e comentar os 4 cenários (venda, compra inbound, autofaturação, e-reporting).
 3. Abrir **Customer Invoice** e clicar em **Auto-suggest**. Os KPIs sobem e as pills MAP/CHANGE/CONST aparecem na árvore.
-4. Selecionar `EndpointID` em *AccountingCustomerParty* e clicar em **Ask Joule**.
+4. Selecionar `EndpointID` em *AccountingCustomerParty* e clicar em **Ask AI**.
 5. Selecionar `InvoiceTypeCode` e mostrar o **Change value** com o value map (F2 → 380, G2 → 381).
 6. Clicar em **Generate Code**, rolar o ABAP e trocar o objeto para os custom fields.
 7. Clicar em **Request B&B Implementation**, enviar e mostrar o ticket criado.
@@ -67,13 +72,14 @@ Os XMLs em `webapp/samples/` vêm de projetos reais e foram anonimizados: nomes,
 index.html                  bootstrap do OpenUI5 (CDN)
 webapp/
   manifest.json             rotas e dependências
-  Component.js              perfil fictício, notificações, Joule e pedidos à B&B; carrega as amostras
+  Component.js              perfil fictício, notificações, motores de IA e pedidos à B&B; carrega as amostras
   model/engine.js           países, cenários, catálogo SAP, sugestões, validações, gerador ABAP
   model/templates.js        ABAP de e-mail, custom fields e UI functions
-  model/joule.js            respostas simuladas do Joule
+  model/assistant.js        respostas simuladas, uma parte por motor de IA
   model/plTemplate.js       XML de exemplo da Polônia (KSeF FA(2))
   samples/fr|de|mx/         XMLs reais anonimizados, um por cenário
-  view/, controller/        telas, diálogo de regra, painel do Joule, pedido à B&B
+  view/, controller/        telas, diálogo de regra, painel de IA, pedido à B&B
+  img/                      logo da B&B (cabeçalho), logo da SAP (card do Generative AI Hub) e favicon (ícone de IA da SAP)
   css/style.css             complementos visuais sobre o tema Horizon
 docs/
   bb-edocument-accelerator-spec.md   especificação funcional

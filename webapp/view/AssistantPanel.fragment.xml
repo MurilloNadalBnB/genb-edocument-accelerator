@@ -1,0 +1,69 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<!-- AI assistant: Joule, SAP Generative AI Hub and GENB AI, alone or together -->
+	<ResponsivePopover
+		id="aiPanel"
+		placement="Bottom"
+		contentWidth="32rem"
+		contentHeight="40rem"
+		verticalScrolling="false">
+		<customHeader>
+			<Bar>
+				<contentLeft>
+					<Avatar src="sap-icon://ai" displaySize="XS" backgroundColor="Accent7" class="sapUiTinyMarginBegin"/>
+					<Title text="AI Assistant" level="H5" class="sapUiTinyMarginBegin"/>
+				</contentLeft>
+				<contentRight>
+					<Button icon="sap-icon://refresh" type="Transparent" tooltip="New conversation" press=".onAiReset"/>
+					<Button icon="sap-icon://decline" type="Transparent" tooltip="Close" press=".onAiClose"/>
+				</contentRight>
+			</Bar>
+		</customHeader>
+		<content>
+			<VBox height="100%" renderType="Bare">
+				<!-- Engines: any combination -->
+				<VBox class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
+					<Label text="Answer with (one, two or all three):"/>
+					<HBox items="{app>/ai/engines}" wrap="Wrap" class="sapUiTinyMarginTop" renderType="Bare">
+						<ToggleButton text="{app>name}" icon="{app>icon}" pressed="{app>enabled}" press=".onEngineToggle" tooltip="{app>desc}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+					</HBox>
+				</VBox>
+
+				<!-- Conversation -->
+				<ScrollContainer id="aiScroll" vertical="true" height="100%" class="sapUiTinyMarginTop">
+					<layoutData><FlexItemData growFactor="1" minHeight="0"/></layoutData>
+					<VBox class="sapUiSmallMarginBeginEnd">
+						<IllustratedMessage
+							visible="{= ${app>/ai/messages}.length === 0 }"
+							illustrationType="sapIllus-SimpleConnection"
+							illustrationSize="Spot"
+							title="Ask about your eDocuments"
+							description="Each part of the answer shows which AI produced it. Switch engines on or off above and ask again to compare."/>
+						<VBox items="{app>/ai/messages}" renderType="Bare">
+							<VBox renderType="Bare">
+								<VBox visible="{= ${app>from} === 'user' }" class="edocAiMsg edocAiUser" renderType="Bare">
+									<Text text="{app>text}"/>
+								</VBox>
+								<VBox visible="{= ${app>from} !== 'user' }" items="{path: 'app>parts', templateShareable: false}" class="edocAiMsg edocAiBot" renderType="Bare">
+									<VBox class="edocAiPart" renderType="Bare">
+										<HBox alignItems="Center" renderType="Bare">
+											<Avatar src="{app>icon}" initials="{app>initials}" imageFitType="Contain" displaySize="XS" displayShape="Square" backgroundColor="{app>color}" class="sapUiTinyMarginEnd"/>
+											<Label text="{app>name}" design="Bold"/>
+										</HBox>
+										<FormattedText htmlText="{app>html}"/>
+									</VBox>
+								</VBox>
+							</VBox>
+						</VBox>
+						<BusyIndicator visible="{app>/ai/busy}" size="1.5rem" text="Asking {app>/ai/activeText}" class="sapUiSmallMarginTop"/>
+					</VBox>
+				</ScrollContainer>
+
+				<!-- Prompt suggestions and input -->
+				<HBox items="{app>/ai/prompts}" wrap="Wrap" class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop" renderType="Bare">
+					<Button text="{app>text}" press=".onAiPrompt" class="sapUiTinyMarginEnd sapUiTinyMarginBottom"/>
+				</HBox>
+				<FeedInput post=".onAiPost" placeholder="Message the AI assistant" showIcon="false" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom"/>
+			</VBox>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

@@ -31,7 +31,7 @@
 					<Text text="{ws>/sub}"/>
 				</f:snappedContent>
 				<f:actions>
-					<Button text="Ask Joule" icon="sap-icon://da-2" press=".onAskJoule" tooltip="Ask Joule about the selected field"/>
+					<Button text="Ask AI" icon="sap-icon://ai" press=".onAskAi" tooltip="Ask Joule, the SAP Generative AI Hub and GENB AI about the selected field"/>
 					<Button text="Auto-suggest" icon="sap-icon://lightbulb" press=".onAutoSuggest" tooltip="Create suggested mappings for open fields"/>
 				</f:actions>
 			</f:DynamicPageTitle>
@@ -130,7 +130,7 @@
 													<Label text="{ws>prefix}" visible="{= !!${ws>prefix} }" wrapping="false"/>
 													<Text text="{ws>local}" wrapping="false" visible="{= !!${ws>leaf} }"/>
 													<Title text="{ws>local}" wrapping="false" visible="{= !${ws>leaf} }" titleStyle="H6"/>
-													<Label text="[{ws>idx}]" visible="{= ${ws>idx} > 0 }" wrapping="false" class="sapUiTinyMarginBegin"/>
+													<ObjectStatus text="{ws>listText}" visible="{= !!${ws>listText} }" icon="sap-icon://list" state="Indication06" class="sapUiTinyMarginBegin" tooltip="Repeating element: the rules apply to every occurrence"/>
 												</HBox>
 											</t:template>
 										</t:Column>
@@ -227,7 +227,7 @@
 												<Button text="Constant" icon="sap-icon://pushpin-off" type="Transparent" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="constant"/></customData>
 												</Button>
-												<Button text="Ask Joule" icon="sap-icon://da-2" type="Transparent" press=".onAskJoule" tooltip="Explain this field with your Joule knowledge and the GENB DRC knowledge" class="sapUiTinyMarginBottom"/>
+												<Button text="Ask AI" icon="sap-icon://ai" type="Transparent" press=".onAskAi" tooltip="Explain this field with the AI engines switched on" class="sapUiTinyMarginBottom"/>
 											</HBox>
 											<List items="{ws>/sel/rules}" visible="{= ${ws>/sel/rules}.length > 0 }" showSeparators="Inner" class="sapUiTinyMarginTop">
 												<CustomListItem>

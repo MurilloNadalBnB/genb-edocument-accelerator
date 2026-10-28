@@ -32,7 +32,7 @@
 				<SearchField width="24rem" placeholder="Search" search=".onShellSearch">
 					<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
 				</SearchField>
-				<Button id="jouleBtn" icon="sap-icon://da-2" type="Transparent" tooltip="Joule" press=".onJoule">
+				<Button id="aiBtn" icon="sap-icon://ai" type="Transparent" tooltip="AI Assistant: Joule, SAP Generative AI Hub, GENB AI" press=".onAi">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Button>
 				<Button icon="sap-icon://palette" type="Transparent" tooltip="Theme (Horizon Morning / Evening)" press=".onThemeToggle"/>
@@ -51,18 +51,20 @@
 			<tnt:SideNavigation id="sideNav" itemPress=".onNavPress">
 				<tnt:NavigationList>
 					<tnt:NavigationListItem key="home" text="Overview" icon="sap-icon://home"/>
-					<tnt:NavigationListGroup text="Countries" items="{app>/countries}">
-						<tnt:NavigationListItem key="{app>code}" text="{app>name}" icon="sap-icon://flag"/>
+					<!-- Countries: available ones open the country page, planned ones only show a message -->
+					<tnt:NavigationListGroup text="Countries">
+						<tnt:NavigationListItem key="available" text="Available" icon="sap-icon://flag" selectable="false" expanded="true" items="{app>/countries}">
+							<tnt:NavigationListItem key="{app>code}" text="{app>name}"/>
+						</tnt:NavigationListItem>
+						<tnt:NavigationListItem key="planned" text="Planned" icon="sap-icon://future" selectable="false" expanded="false" items="{app>/planned}">
+							<tnt:NavigationListItem key="{app>code}" text="{app>name}" selectable="false"/>
+						</tnt:NavigationListItem>
 					</tnt:NavigationListGroup>
-					<tnt:NavigationListGroup text="Planned" items="{app>/planned}">
-						<tnt:NavigationListItem key="{app>code}" text="{app>name}" icon="sap-icon://future" selectable="false"/>
-					</tnt:NavigationListGroup>
+					<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>
+					<tnt:NavigationListItem key="requests" text="B&amp;B Requests" icon="sap-icon://collaborate" selectable="false"/>
 				</tnt:NavigationList>
 				<tnt:fixedItem>
 					<tnt:NavigationList>
-						<tnt:NavigationListItem key="joule" text="Joule" icon="sap-icon://da-2" selectable="false"/>
-						<tnt:NavigationListItem key="requests" text="B&amp;B Requests" icon="sap-icon://collaborate" selectable="false"/>
-						<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>
 						<tnt:NavigationListItem key="settings" text="Settings" icon="sap-icon://action-settings" selectable="false"/>
 					</tnt:NavigationList>
 				</tnt:fixedItem>
