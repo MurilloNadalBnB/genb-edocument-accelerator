@@ -31,6 +31,7 @@
 					<Text text="{ws>/sub}"/>
 				</f:snappedContent>
 				<f:actions>
+					<Button text="Ask Joule" icon="sap-icon://da-2" press=".onAskJoule" tooltip="Ask Joule about the selected field"/>
 					<Button text="Auto-suggest" icon="sap-icon://lightbulb" press=".onAutoSuggest" tooltip="Create suggested mappings for open fields"/>
 				</f:actions>
 			</f:DynamicPageTitle>
@@ -56,6 +57,14 @@
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="eDocument type"/>
 						<Text text="{ws>/edoc}"/>
+					</VBox>
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
+						<Label text="Direction"/>
+						<ObjectStatus text="{ws>/dirText}" icon="{= ${ws>/isInbound} ? 'sap-icon://inbox' : 'sap-icon://outbox' }" state="Information"/>
+					</VBox>
+					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
+						<Label text="Source type"/>
+						<Text text="{ws>/sourceType}"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
 						<Label text="SAP source"/>
@@ -215,9 +224,10 @@
 												<Button text="Change value" icon="sap-icon://switch-views" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="change"/></customData>
 												</Button>
-												<Button text="Constant" icon="sap-icon://pushpin-off" type="Transparent" press=".onOpenDlg" class="sapUiTinyMarginBottom">
+												<Button text="Constant" icon="sap-icon://pushpin-off" type="Transparent" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="constant"/></customData>
 												</Button>
+												<Button text="Ask Joule" icon="sap-icon://da-2" type="Transparent" press=".onAskJoule" tooltip="Explain this field with your Joule knowledge and the GENB DRC knowledge" class="sapUiTinyMarginBottom"/>
 											</HBox>
 											<List items="{ws>/sel/rules}" visible="{= ${ws>/sel/rules}.length > 0 }" showSeparators="Inner" class="sapUiTinyMarginTop">
 												<CustomListItem>
@@ -302,10 +312,14 @@
 						<VBox height="100%" renderType="Bare">
 							<OverflowToolbar style="Clear">
 								<Title text="ABAP Preview" level="H4"/>
+								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="26rem" tooltip="Generated objects for this scenario">
+									<core:ListItem key="{ws>key}" text="{ws>text}" additionalText="{ws>badi}"/>
+								</Select>
+								<ObjectStatus text="{= ${ws>/obj/generated} ? 'From ' + ${ws>/stats/rules} + ' rules' : 'From settings' }" state="{= ${ws>/obj/generated} ? 'Indication05' : 'Indication04' }" inverted="true"/>
 								<ObjectStatus text="Mock" state="Indication10" inverted="true"/>
-								<Label text="Illustrative output. The real generator will follow the project's Clean ABAP conventions."/>
 								<ToolbarSpacer/>
 								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode"/>
+								<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl"/>
 							</OverflowToolbar>
 							<IllustratedMessage
 								visible="{= !${ws>/abap} }"
@@ -336,6 +350,7 @@
 				<Text text="{ws>/stats/rules} rules · {ws>/stats/checks} checks" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
 				<Button text="Save Draft" press=".onSave"/>
+				<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" press=".onRequestImpl" tooltip="Send the package to B&amp;B: a ticket is opened in the B&amp;B service ERP"/>
 				<Button text="Generate Code" type="Emphasized" icon="sap-icon://syntax" press=".onGenerate"/>
 			</OverflowToolbar>
 		</f:footer>

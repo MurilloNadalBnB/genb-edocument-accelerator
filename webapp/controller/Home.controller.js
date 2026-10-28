@@ -19,7 +19,8 @@ sap.ui.define([
 				countries: aList.length,
 				available: aList.filter(c => !c.planned).length,
 				planned: aList.filter(c => c.planned).length,
-				totalRules: aList.reduce((s, c) => s + c.rules, 0)
+				scenarios: aList.reduce((s, c) => s + (c.docs || []).length, 0),
+				totalRules: engine.totalRuleCount()
 			});
 		},
 
@@ -29,6 +30,19 @@ sap.ui.define([
 
 		onTile: function (oEvent) {
 			this._open(oEvent.getSource().getBindingContext("home").getProperty("code"));
+		},
+
+		onAskJoule: function (oEvent) {
+			const sPrompt = oEvent.getSource().data("prompt");
+			if (sPrompt) {
+				this.getOwnerComponent().getEventBus().publish("edoc", "joule", {prompt: sPrompt});
+			} else {
+				this.getOwnerComponent().getEventBus().publish("edoc", "jouleOpen");
+			}
+		},
+
+		onRequests: function () {
+			this.getOwnerComponent().getEventBus().publish("edoc", "requests");
 		},
 
 		_open: function (sCode) {

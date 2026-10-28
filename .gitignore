@@ -1,2 +1,5 @@
 .DS_Store
 node_modules/
+
+# Raw client material (real data): never commit
+private/

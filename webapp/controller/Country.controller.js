@@ -19,8 +19,14 @@ sap.ui.define([
 				this._router.navTo("home", {}, true);
 				return;
 			}
+			const uniq = a => [...new Set(a)].join(", ");
 			this.getView().getModel("c").setData(Object.assign({}, oCountry, {
-				docs: engine.DOCS.map(d => Object.assign({}, d, {rules: engine.docRuleCount(sCode, d.id)}))
+				formats: uniq(oCountry.docs.map(d => d.schema.split(",")[0].replace(/ (Invoice|CreditNote|Comprobante)$/, ""))),
+				edocs: uniq(oCountry.docs.map(d => d.edoc)),
+				docs: oCountry.docs.map(d => Object.assign({}, d, {
+					rules: engine.docRuleCount(sCode, d.id),
+					dirText: d.dir === "in" ? "Inbound" : "Outbound"
+				}))
 			}));
 		},
 

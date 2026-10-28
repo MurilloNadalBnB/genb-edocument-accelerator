@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:pago20="http://www.sat.gob.mx/Pagos20" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/Pagos20 http://www.sat.gob.mx/sitio_internet/cfd/Pagos/Pagos20.xsd" Version="4.0" Serie="02" Folio="8800000011" Fecha="2025-05-07T08:47:30" Sello="TuSgR7cMy+UcU3zr1ZtoLuCr64CxqlIOdNKhiFXiQ2hzT/pLjHX2JiCL==" NoCertificado="00001000000512345678" Certificado="MIIFJ5ixaaJLShuQjOud/+yDUA+5zmS1swoPqApryPZBlgvIyxJu2jGjNGkTfi3o" SubTotal="0" Moneda="XXX" Total="0" TipoDeComprobante="P" LugarExpedicion="64000" Exportacion="01">
+  <cfdi:Emisor Rfc="CDM140214AB1" Nombre="COMPACTADORAS DEMO MEXICO" RegimenFiscal="601"/>
+  <cfdi:Receptor Rfc="LAN640812QR7" Nombre="LABORATORIOS ANDINOS" DomicilioFiscalReceptor="01210" RegimenFiscalReceptor="601" UsoCFDI="CP01"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="84111506" Cantidad="1" ClaveUnidad="ACT" Descripcion="Pago" ValorUnitario="0" Importe="0" ObjetoImp="01"/>
+  </cfdi:Conceptos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="6DA79A87-3D9A-4079-ABD0-D7FB12926185" FechaTimbrado="2025-05-07T08:47:33" RfcProvCertif="PAC080304AB9" SelloCFD="hKcIhP6Br1iQFeOUhGXZnnal5WisCgEBCY8f5N3/ynbdrZRzsGQBJg3U==" NoCertificadoSAT="00001000000700000001" SelloSAT="HKwkflF6XUi5AhuqpfEnbtXAqwK8jZfALhLSzFyCmmdKTxp/TkSF2RCd=="/>
+    <pago20:Pagos Version="2.0">
+      <pago20:Totales TotalTrasladosBaseIVA16="194052.70" TotalTrasladosImpuestoIVA16="31048.43" MontoTotalPagos="225101.13"/>
+      <pago20:Pago FechaPago="2025-04-23T12:00:00" FormaDePagoP="03" MonedaP="MXN" TipoCambioP="1" Monto="225101.13" CtaBeneficiario="0123456789">
+        <pago20:DoctoRelacionado IdDocumento="4D82FEAC-AB62-46CD-B672-D6AE12B80AED" MonedaDR="MXN" EquivalenciaDR="1" NumParcialidad="1" ImpSaldoAnt="116302.49" ImpPagado="116302.49" ImpSaldoInsoluto="0.00" ObjetoImpDR="02">
+          <pago20:ImpuestosDR>
+            <pago20:TrasladosDR>
+              <pago20:TrasladoDR BaseDR="100260.770000" ImpuestoDR="002" TipoFactorDR="Tasa" TasaOCuotaDR="0.160000" ImporteDR="16041.72"/>
+            </pago20:TrasladosDR>
+          </pago20:ImpuestosDR>
+        </pago20:DoctoRelacionado>
+        <pago20:DoctoRelacionado IdDocumento="C6E50DF2-E5A3-463E-9F52-5265C8B007EE" MonedaDR="MXN" EquivalenciaDR="1" NumParcialidad="1" ImpSaldoAnt="108798.64" ImpPagado="108798.64" ImpSaldoInsoluto="0.00" ObjetoImpDR="02">
+          <pago20:ImpuestosDR>
+            <pago20:TrasladosDR>
+              <pago20:TrasladoDR BaseDR="93791.930000" ImpuestoDR="002" TipoFactorDR="Tasa" TasaOCuotaDR="0.160000" ImporteDR="15006.71"/>
+            </pago20:TrasladosDR>
+          </pago20:ImpuestosDR>
+        </pago20:DoctoRelacionado>
+        <pago20:ImpuestosP>
+          <pago20:TrasladosP>
+            <pago20:TrasladoP BaseP="194052.70" ImpuestoP="002" TipoFactorP="Tasa" TasaOCuotaP="0.160000" ImporteP="31048.43"/>
+          </pago20:TrasladosP>
+        </pago20:ImpuestosP>
+      </pago20:Pago>
+    </pago20:Pagos>
+  </cfdi:Complemento>
+</cfdi:Comprobante>

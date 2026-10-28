@@ -1,0 +1,66 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form">
+	<!-- Send the generated package to B&B: creates a ticket in the B&B service ERP -->
+	<Dialog
+		id="implDialog"
+		title="Request B&amp;B Implementation"
+		icon="sap-icon://collaborate"
+		contentWidth="40rem"
+		resizable="true"
+		draggable="true">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<MessageStrip
+					type="Information"
+					showIcon="true"
+					text="B&amp;B receives this package as a ticket in its service ERP. Our consultants implement the code in your development system, test it with your documents and hand over a transport for approval."/>
+				<f:SimpleForm editable="true" layout="ColumnLayout" columnsM="1" columnsL="1" columnsXL="1" labelSpanL="4" labelSpanM="4" class="sapUiSmallMarginTop">
+					<f:content>
+						<core:Title text="Package"/>
+						<Label text="Scenario"/>
+						<Text text="{impl>/scenario}"/>
+						<Label text="eDocument type"/>
+						<Text text="{impl>/edoc}"/>
+						<Label text="Rules"/>
+						<Text text="{impl>/ruleText}"/>
+					</f:content>
+				</f:SimpleForm>
+				<List items="{impl>/objects}" mode="MultiSelect" includeItemInSelection="true" headerText="Objects to implement" class="sapUiSmallMarginTop">
+					<StandardListItem title="{impl>name}" description="{impl>badi}" icon="sap-icon://syntax" selected="{impl>selected}"/>
+				</List>
+				<f:SimpleForm editable="true" layout="ColumnLayout" columnsM="1" columnsL="1" columnsXL="1" labelSpanL="4" labelSpanM="4" class="sapUiSmallMarginTop">
+					<f:content>
+						<core:Title text="Delivery"/>
+						<Label text="Target system" required="true"/>
+						<Select selectedKey="{impl>/system}" forceSelection="true">
+							<core:Item key="DEV" text="S4D, development, client 100"/>
+							<core:Item key="SBX" text="S4X, sandbox, client 200"/>
+						</Select>
+						<Label text="Priority"/>
+						<SegmentedButton selectedKey="{impl>/priority}">
+							<items>
+								<SegmentedButtonItem key="normal" text="Normal"/>
+								<SegmentedButtonItem key="high" text="High"/>
+								<SegmentedButtonItem key="legal" text="Legal deadline"/>
+							</items>
+						</SegmentedButton>
+						<Label text="Requested go-live"/>
+						<DatePicker value="{impl>/golive}" valueFormat="yyyy-MM-dd" displayFormat="medium"/>
+						<Label text="Contact"/>
+						<Input value="{impl>/contact}" type="Email"/>
+						<Label text="Notes for B&amp;B"/>
+						<TextArea value="{impl>/notes}" rows="3" placeholder="For example: test with billing documents of company code FR01, sales org 1000" growing="true"/>
+					</f:content>
+				</f:SimpleForm>
+			</VBox>
+		</content>
+		<beginButton>
+			<Button text="Send to B&amp;B" type="Emphasized" icon="sap-icon://paper-plane" press=".onImplSend" enabled="{= !${impl>/busy} }"/>
+		</beginButton>
+		<endButton>
+			<Button text="Cancel" press=".onImplCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

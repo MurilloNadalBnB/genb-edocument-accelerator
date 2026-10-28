@@ -20,8 +20,9 @@
 					<Text text="Welcome back, {app>/user/name}"/>
 				</f:snappedContent>
 				<f:actions>
-					<Button text="Start with Poland" type="Emphasized" press=".onCountry">
-						<customData><core:CustomData key="code" value="PL"/></customData>
+					<Button text="Ask Joule" icon="sap-icon://da-2" press=".onAskJoule"/>
+					<Button text="Start with France" type="Emphasized" press=".onCountry">
+						<customData><core:CustomData key="code" value="FR"/></customData>
 					</Button>
 				</f:actions>
 			</f:DynamicPageTitle>
@@ -30,51 +31,95 @@
 			<f:DynamicPageHeader pinnable="false">
 				<VBox>
 					<Title text="Map eDocument XML fields to SAP without starting from code" level="H2" titleStyle="H4" wrapping="true"/>
-					<Text class="sapUiTinyMarginTop" text="Pick a country, choose the document type and click through the XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework."/>
+					<Text class="sapUiTinyMarginTop" text="Pick a country, choose the scenario and click through a real XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework, or B&amp;B implements it for you."/>
 				</VBox>
 			</f:DynamicPageHeader>
 		</f:header>
 		<f:content>
 			<VBox class="sapUiResponsiveContentPadding">
+				<!-- Joule: reuse the customer's Joule investment -->
+				<f:Card class="sapUiMediumMarginBottom">
+					<f:header>
+						<card:Header
+							title="Works with your Joule"
+							subtitle="Already subscribed to Joule? The accelerator reuses your Joule agents, knowledge bases and document grounding, and adds the DRC knowledge B&amp;B gathered in live projects."
+							subtitleMaxLines="3"
+							iconSrc="sap-icon://da-2"
+							iconBackgroundColor="Accent7"
+							statusText="Connected"/>
+					</f:header>
+					<f:content>
+						<l:Grid defaultSpan="XL4 L4 M12 S12" hSpacing="2" vSpacing="1" containerQuery="true" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
+							<VBox>
+								<Label text="Your Joule agents" design="Bold"/>
+								<VBox items="{app>/joule/agents}" class="sapUiTinyMarginTop">
+									<ObjectStatus title="{app>name}" text="{app>desc}" icon="sap-icon://robot" state="Indication05" class="sapUiTinyMarginBottom"/>
+								</VBox>
+							</VBox>
+							<VBox>
+								<Label text="Your knowledge bases" design="Bold"/>
+								<VBox items="{app>/joule/knowledge}" class="sapUiTinyMarginTop">
+									<ObjectStatus title="{app>name}" text="{app>desc}" icon="sap-icon://course-book" state="Indication05" class="sapUiTinyMarginBottom"/>
+								</VBox>
+							</VBox>
+							<VBox>
+								<Label text="Added by B&amp;B" design="Bold"/>
+								<ObjectStatus title="{app>/joule/bnb/name}" text="{app>/joule/bnb/desc}" icon="sap-icon://official-service" state="Indication04" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+								<HBox wrap="Wrap">
+									<Button text="Ask Joule" icon="sap-icon://da-2" type="Emphasized" press=".onAskJoule" class="sapUiTinyMarginEnd"/>
+									<Button text="Check my master data" press=".onAskJoule">
+										<customData><core:CustomData key="prompt" value="Which customers are missing a SIREN?"/></customData>
+									</Button>
+								</HBox>
+							</VBox>
+						</l:Grid>
+					</f:content>
+				</f:Card>
+
 				<!-- At a glance -->
 				<Title text="At a glance" level="H3" class="sapUiSmallMarginBottom"/>
 				<HBox wrap="Wrap">
 					<GenericTile header="Countries live" subheader="eDocument scenarios" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
-						<customData><core:CustomData key="code" value="PL"/></customData>
+						<customData><core:CustomData key="code" value="FR"/></customData>
 						<TileContent footer="{home>/planned} more planned">
 							<NumericContent value="{home>/available}" scale="of {home>/countries}" icon="sap-icon://world" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
+					<GenericTile header="Scenarios" subheader="Real XML samples" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+						<customData><core:CustomData key="code" value="FR"/></customData>
+						<TileContent footer="SD, MM, FI, inbound, reporting">
+							<NumericContent value="{home>/scenarios}" icon="sap-icon://documents" withMargin="false"/>
+						</TileContent>
+					</GenericTile>
 					<GenericTile header="Rules defined" subheader="All countries" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
-						<customData><core:CustomData key="code" value="PL"/></customData>
+						<customData><core:CustomData key="code" value="FR"/></customData>
 						<TileContent footer="In this session">
 							<NumericContent value="{home>/totalRules}" icon="sap-icon://chain-link" valueColor="{= ${home>/totalRules} ? 'Good' : 'Neutral' }" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
-					<GenericTile header="Document types" subheader="Per country" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
-						<customData><core:CustomData key="code" value="PL"/></customData>
-						<TileContent footer="Invoice, Credit Note, FI">
-							<NumericContent value="3" icon="sap-icon://documents" withMargin="false"/>
+					<GenericTile header="B&amp;B implementation" subheader="Requests sent" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onRequests">
+						<TileContent footer="Tickets in the B&amp;B service ERP">
+							<NumericContent value="{= String(${app>/requests}.length) }" icon="sap-icon://collaborate" valueColor="{= ${app>/requests}.length ? 'Critical' : 'Neutral' }" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
 				</HBox>
 
 				<!-- How it works -->
 				<Title text="How it works" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
-				<l:Grid defaultSpan="XL4 L4 M6 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd">
+				<l:Grid defaultSpan="XL3 L3 M6 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd">
 					<f:Card>
 						<f:header>
-							<card:Header title="1. Select the country" subtitle="Each country brings its legal XML format, eDocument type and interface already configured." subtitleMaxLines="3" iconSrc="sap-icon://world" iconBackgroundColor="Accent6"/>
+							<card:Header title="1. Select the country" subtitle="Each country brings its legal XML formats, eDocument types and interfaces already configured." subtitleMaxLines="3" iconSrc="sap-icon://world" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="2. Choose the document type" subtitle="Invoice, Credit Note or Accounting Document. The SAP source tables change with the type (SD billing or FI)." subtitleMaxLines="3" iconSrc="sap-icon://document" iconBackgroundColor="Accent6"/>
+							<card:Header title="2. Choose the scenario" subtitle="Sales, purchases, self-billing, payments or reporting. The SAP tables change with the source (SD, MM or FI)." subtitleMaxLines="3" iconSrc="sap-icon://document" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
+							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it. Joule explains any field." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
 						</f:header>
 						<f:content>
 							<HBox wrap="Wrap" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
@@ -84,6 +129,11 @@
 								<ObjectStatus text="CONST" icon="sap-icon://pushpin-off" inverted="true" state="Indication04"/>
 							</HBox>
 						</f:content>
+					</f:Card>
+					<f:Card>
+						<f:header>
+							<card:Header title="4. Generate, or let B&amp;B implement" subtitle="Get the adaptor, e-mail, custom fields and UI functions in ABAP, or send the package to B&amp;B with one click." subtitleMaxLines="3" iconSrc="sap-icon://collaborate" iconBackgroundColor="Accent6"/>
+						</f:header>
 					</f:Card>
 				</l:Grid>
 
@@ -95,7 +145,7 @@
 						subheader="{home>short}"
 						press=".onTile"
 						class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
-						<TileContent footer="{= ${home>planned} ? 'Planned' : 'Available' }">
+						<TileContent footer="{= ${home>planned} ? 'Planned' : ${home>docs}.length + ' scenarios' }">
 							<NumericContent
 								value="{= ${home>planned} ? '–' : String(${home>rules}) }"
 								scale="{= ${home>planned} ? '' : 'rules' }"

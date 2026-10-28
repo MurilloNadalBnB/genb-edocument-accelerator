@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd" Version="4.0" Serie="01" Folio="7000000025" Fecha="2025-04-09T11:55:06" Sello="EL31IeL2HPcHyGcFRl1SPnXNYvMIHa/2o76umfXfKm/r5kJP1VrT+1FJ==" FormaPago="99" NoCertificado="00001000000512345678" Certificado="MIIFCBNR3YbDgbleph1QHt61QTC4XATWS8PHp9NHfYjFM5DI4pZj59fhZ5R1Py4o" CondicionesDePago="Pago neto en 75 días" SubTotal="44427.19" Moneda="MXN" Total="51535.54" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="64000" Exportacion="01">
+  <cfdi:Emisor Rfc="CDM140214AB1" Nombre="COMPACTADORAS DEMO MEXICO" RegimenFiscal="601"/>
+  <cfdi:Receptor Rfc="FVA820511KL3" Nombre="FARMACEUTICA DEL VALLE" DomicilioFiscalReceptor="06600" RegimenFiscalReceptor="601" UsoCFDI="G03"/>
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000000" Cantidad="8.000" ClaveUnidad="E48" Descripcion="Horas de trabajo - Estándar" ValorUnitario="3071.360000" Importe="24570.880000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="24570.880000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="3931.340800"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000005" Cantidad="4.000" ClaveUnidad="E48" Descripcion="Horas de viaje - Estándar" ValorUnitario="1005.000000" Importe="4020.000000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="4020.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="643.200000"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000123" Cantidad="1.000" ClaveUnidad="E48" Descripcion="Provisión Reportes Técnicos" ValorUnitario="6606.030000" Importe="6606.030000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="6606.030000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1056.964800"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000102" Cantidad="120.000" ClaveUnidad="E48" Descripcion="Kilómetros (km)" ValorUnitario="22.900000" Importe="2748.000000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="2748.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="439.680000"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000118" Cantidad="1.000" ClaveUnidad="E48" Descripcion="Cuota por alimentos día" ValorUnitario="702.000000" Importe="702.000000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="702.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="112.320000"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="73152101" NoIdentificacion="000000000005000112" Cantidad="1.000" ClaveUnidad="E48" Descripcion="Gastos viaticos Varios" ValorUnitario="5780.280000" Importe="5780.280000" ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="5780.280000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="924.844800"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="7108.35">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="44427.19" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="7108.35"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="36F675CC-81E7-4EF5-A8E2-5D940ED90475" FechaTimbrado="2025-04-10T12:09:07" RfcProvCertif="PAC080304AB9" SelloCFD="ors/6ILi8IHn5kxsC7tVO/HbkQfyy/KV5zjR3j1twdTKWTddB+XhkAS1==" NoCertificadoSAT="00001000000700000001" SelloSAT="voQG6yyzyN9zHYIa4UOrGNATMuDJawTgsu8PO+799nKSNrh9UCauSDmL=="/>
+  </cfdi:Complemento>
+</cfdi:Comprobante>

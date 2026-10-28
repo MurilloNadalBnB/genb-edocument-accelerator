@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n0:StandardBusinessDocument xmlns:n0="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader" xmlns:n1="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:n2="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:n3="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <n0:StandardBusinessDocumentHeader>
+    <n0:HeaderVersion>1.0</n0:HeaderVersion>
+    <n0:Sender>
+      <n0:Identifier Authority="iso6523-actorid-upis">9930:DE123456789</n0:Identifier>
+    </n0:Sender>
+    <n0:Receiver>
+      <n0:Identifier Authority="iso6523-actorid-upis">9930:DE987654321</n0:Identifier>
+    </n0:Receiver>
+    <n0:DocumentIdentification>
+      <n0:Standard>urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</n0:Standard>
+      <n0:TypeVersion>2.1</n0:TypeVersion>
+      <n0:InstanceIdentifier>D23F0824128B2F330C5C7FD0A6A3A450</n0:InstanceIdentifier>
+      <n0:Type>Invoice</n0:Type>
+      <n0:CreationDateAndTime>2026-10-28T17:13:43Z</n0:CreationDateAndTime>
+    </n0:DocumentIdentification>
+    <n0:BusinessScope>
+      <n0:Scope>
+        <n0:Type>DOCUMENTID</n0:Type>
+        <n0:InstanceIdentifier>urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0::2.1</n0:InstanceIdentifier>
+      </n0:Scope>
+      <n0:Scope>
+        <n0:Type>PROCESSID</n0:Type>
+        <n0:InstanceIdentifier/>
+      </n0:Scope>
+    </n0:BusinessScope>
+  </n0:StandardBusinessDocumentHeader>
+  <n3:Invoice>
+    <n2:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</n2:CustomizationID>
+    <n2:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</n2:ProfileID>
+    <n2:ID>0090002594</n2:ID>
+    <n2:IssueDate>2026-04-01</n2:IssueDate>
+    <n2:DueDate>2026-04-11</n2:DueDate>
+    <n2:InvoiceTypeCode>380</n2:InvoiceTypeCode>
+    <n2:TaxPointDate>2026-04-01</n2:TaxPointDate>
+    <n2:DocumentCurrencyCode>EUR</n2:DocumentCurrencyCode>
+    <n2:BuyerReference>DE987654321</n2:BuyerReference>
+    <n1:OrderReference>
+      <n2:ID>2000015275</n2:ID>
+      <n2:SalesOrderID>M601524253</n2:SalesOrderID>
+    </n1:OrderReference>
+    <n1:BillingReference>
+      <n1:InvoiceDocumentReference>
+        <n2:ID>0090002594</n2:ID>
+        <n2:IssueDate>2026-04-01</n2:IssueDate>
+      </n1:InvoiceDocumentReference>
+    </n1:BillingReference>
+    <n1:AccountingSupplierParty>
+      <n1:Party>
+        <n2:EndpointID schemeID="9930">DE123456789</n2:EndpointID>
+        <n1:PartyName>
+          <n2:Name>Kompakt Pressen GmbH</n2:Name>
+        </n1:PartyName>
+        <n1:PostalAddress>
+          <n2:StreetName>Industriestraße 12</n2:StreetName>
+          <n2:CityName>Geesthacht</n2:CityName>
+          <n2:PostalZone>21502</n2:PostalZone>
+          <n2:CountrySubentity>Schleswig-Holstein</n2:CountrySubentity>
+          <n1:Country>
+            <n2:IdentificationCode>DE</n2:IdentificationCode>
+          </n1:Country>
+        </n1:PostalAddress>
+        <n1:PartyTaxScheme>
+          <n2:CompanyID>DE123456789</n2:CompanyID>
+          <n1:TaxScheme>
+            <n2:ID>VAT</n2:ID>
+          </n1:TaxScheme>
+        </n1:PartyTaxScheme>
+        <n1:PartyTaxScheme>
+          <n2:CompanyID>22 123 45678</n2:CompanyID>
+          <n1:TaxScheme>
+            <n2:ID>TAX</n2:ID>
+          </n1:TaxScheme>
+        </n1:PartyTaxScheme>
+        <n1:PartyLegalEntity>
+          <n2:RegistrationName>Kompakt Pressen GmbH</n2:RegistrationName>
+          <n2:CompanyID>DE123456789</n2:CompanyID>
+        </n1:PartyLegalEntity>
+        <n1:Contact>
+          <n2:Name>Kompakt Pressen GmbH</n2:Name>
+          <n2:Telephone>04152/9000</n2:Telephone>
+          <n2:ElectronicMail>rechnung@kompakt-pressen.example</n2:ElectronicMail>
+        </n1:Contact>
+      </n1:Party>
+    </n1:AccountingSupplierParty>
+    <n1:AccountingCustomerParty>
+      <n1:Party>
+        <n2:EndpointID schemeID="9930">DE987654321</n2:EndpointID>
+        <n1:PartyName>
+          <n2:Name>Westfalen Vital GmbH</n2:Name>
+        </n1:PartyName>
+        <n1:PostalAddress>
+          <n2:StreetName>Am Hafen 5</n2:StreetName>
+          <n2:CityName>Münster</n2:CityName>
+          <n2:PostalZone>48155</n2:PostalZone>
+          <n2:CountrySubentity>Nrth Rhine Westfalia</n2:CountrySubentity>
+          <n1:Country>
+            <n2:IdentificationCode>DE</n2:IdentificationCode>
+          </n1:Country>
+        </n1:PostalAddress>
+        <n1:PartyTaxScheme>
+          <n2:CompanyID>DE987654321</n2:CompanyID>
+          <n1:TaxScheme>
+            <n2:ID>VAT</n2:ID>
+          </n1:TaxScheme>
+        </n1:PartyTaxScheme>
+        <n1:PartyLegalEntity>
+          <n2:RegistrationName>Westfalen Vital GmbH</n2:RegistrationName>
+          <n2:CompanyID>DE987654321</n2:CompanyID>
+        </n1:PartyLegalEntity>
+        <n1:Contact>
+          <n2:Telephone>2519876543</n2:Telephone>
+          <n2:ElectronicMail>einkauf@westfalen-vital.example</n2:ElectronicMail>
+        </n1:Contact>
+      </n1:Party>
+    </n1:AccountingCustomerParty>
+    <n1:Delivery>
+      <n2:ActualDeliveryDate>2025-12-17</n2:ActualDeliveryDate>
+      <n1:DeliveryLocation>
+        <n2:ID>DE987654321</n2:ID>
+        <n1:Address>
+          <n2:StreetName>Am Hafen 5</n2:StreetName>
+          <n2:CityName>Münster</n2:CityName>
+          <n2:PostalZone>48155</n2:PostalZone>
+          <n2:CountrySubentity>Nrth Rhine Westfalia</n2:CountrySubentity>
+          <n1:Country>
+            <n2:IdentificationCode>DE</n2:IdentificationCode>
+          </n1:Country>
+        </n1:Address>
+      </n1:DeliveryLocation>
+      <n1:DeliveryParty>
+        <n1:PartyName>
+          <n2:Name>Westfalen Vital GmbH</n2:Name>
+        </n1:PartyName>
+      </n1:DeliveryParty>
+    </n1:Delivery>
+    <n1:PaymentMeans>
+      <n2:PaymentMeansCode>30</n2:PaymentMeansCode>
+      <n2:PaymentID>0090002594</n2:PaymentID>
+      <n1:PayeeFinancialAccount>
+        <n2:ID>DE89370400440532013000</n2:ID>
+        <n1:FinancialInstitutionBranch>
+          <n2:ID>DEMODEFF100</n2:ID>
+        </n1:FinancialInstitutionBranch>
+      </n1:PayeeFinancialAccount>
+    </n1:PaymentMeans>
+    <n1:PaymentMeans>
+      <n2:PaymentMeansCode>30</n2:PaymentMeansCode>
+      <n2:PaymentID>0090002594</n2:PaymentID>
+      <n1:PayeeFinancialAccount>
+        <n2:ID>DE02120300000000202051</n2:ID>
+        <n1:FinancialInstitutionBranch>
+          <n2:ID>DEMODEFF200</n2:ID>
+        </n1:FinancialInstitutionBranch>
+      </n1:PayeeFinancialAccount>
+    </n1:PaymentMeans>
+    <n1:PaymentMeans>
+      <n2:PaymentMeansCode>30</n2:PaymentMeansCode>
+      <n2:PaymentID>0090002594</n2:PaymentID>
+      <n1:PayeeFinancialAccount>
+        <n2:ID>DE02500105170137075030</n2:ID>
+        <n1:FinancialInstitutionBranch>
+          <n2:ID>DEMODEFF300</n2:ID>
+        </n1:FinancialInstitutionBranch>
+      </n1:PayeeFinancialAccount>
+    </n1:PaymentMeans>
+    <n1:PaymentMeans>
+      <n2:PaymentMeansCode>30</n2:PaymentMeansCode>
+      <n2:PaymentID>0090002594</n2:PaymentID>
+      <n1:PayeeFinancialAccount>
+        <n2:ID>DE88100900001234567892</n2:ID>
+        <n1:FinancialInstitutionBranch>
+          <n2:ID>DEMODEFF</n2:ID>
+        </n1:FinancialInstitutionBranch>
+      </n1:PayeeFinancialAccount>
+    </n1:PaymentMeans>
+    <n1:PaymentMeans>
+      <n2:PaymentMeansCode>30</n2:PaymentMeansCode>
+      <n2:PaymentID>0090002594</n2:PaymentID>
+      <n1:PayeeFinancialAccount>
+        <n2:ID>DE02100500000054540402</n2:ID>
+        <n1:FinancialInstitutionBranch>
+          <n2:ID>DEMODEFF</n2:ID>
+        </n1:FinancialInstitutionBranch>
+      </n1:PayeeFinancialAccount>
+    </n1:PaymentMeans>
+    <n1:PaymentTerms>
+      <n2:Note>#SKONTO#TAGE=10#PROZENT=0.00#BASISBETRAG=369376.00#</n2:Note>
+    </n1:PaymentTerms>
+    <n1:TaxTotal>
+      <n2:TaxAmount currencyID="EUR">58976.00</n2:TaxAmount>
+      <n1:TaxSubtotal>
+        <n2:TaxableAmount currencyID="EUR">310400.00</n2:TaxableAmount>
+        <n2:TaxAmount currencyID="EUR">58976.00</n2:TaxAmount>
+        <n1:TaxCategory>
+          <n2:ID>S</n2:ID>
+          <n2:Percent>19.00</n2:Percent>
+          <n1:TaxScheme>
+            <n2:ID>VAT</n2:ID>
+          </n1:TaxScheme>
+        </n1:TaxCategory>
+      </n1:TaxSubtotal>
+    </n1:TaxTotal>
+    <n1:LegalMonetaryTotal>
+      <n2:LineExtensionAmount currencyID="EUR">310400.00</n2:LineExtensionAmount>
+      <n2:TaxExclusiveAmount currencyID="EUR">310400.00</n2:TaxExclusiveAmount>
+      <n2:TaxInclusiveAmount currencyID="EUR">369376.00</n2:TaxInclusiveAmount>
+      <n2:PayableAmount currencyID="EUR">369376.00</n2:PayableAmount>
+    </n1:LegalMonetaryTotal>
+    <n1:InvoiceLine>
+      <n2:ID>000001</n2:ID>
+      <n2:InvoicedQuantity unitCode="H87">1.000</n2:InvoicedQuantity>
+      <n2:LineExtensionAmount currencyID="EUR">310400.00</n2:LineExtensionAmount>
+      <n1:InvoicePeriod>
+        <n2:EndDate>2025-12-17</n2:EndDate>
+      </n1:InvoicePeriod>
+      <n1:Item>
+        <n2:Description>Tablettenpresse TP-20 Basic Nr. 100245 mit Segmentrotor 33 Stationen, Stempelaufnahme 30 Grad, gemäß Angebot KP-20251121-01</n2:Description>
+        <n2:Name>TP-20 Nr. 100245, Westfalen Vital, DE</n2:Name>
+        <n1:SellersItemIdentification>
+          <n2:ID>000000000007497532</n2:ID>
+        </n1:SellersItemIdentification>
+        <n1:ClassifiedTaxCategory>
+          <n2:ID>S</n2:ID>
+          <n2:Percent>19.00</n2:Percent>
+          <n1:TaxScheme>
+            <n2:ID>VAT</n2:ID>
+          </n1:TaxScheme>
+        </n1:ClassifiedTaxCategory>
+      </n1:Item>
+      <n1:Price>
+        <n2:PriceAmount currencyID="EUR">310400.00</n2:PriceAmount>
+        <n2:BaseQuantity unitCode="H87">1.000</n2:BaseQuantity>
+      </n1:Price>
+    </n1:InvoiceLine>
+  </n3:Invoice>
+</n0:StandardBusinessDocument>

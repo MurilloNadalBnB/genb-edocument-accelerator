@@ -43,3 +43,11 @@
 .edocPill-check { background: var(--sapIndicationColor_2_Background); color: var(--sapIndicationColor_2_TextColor); }
 .edocPill-change { background: var(--sapIndicationColor_7_Background); color: var(--sapIndicationColor_7_TextColor); }
 .edocPill-constant { background: var(--sapIndicationColor_4_Background); color: var(--sapIndicationColor_4_TextColor); }
+
+/* Joule panel: chat bubbles */
+.edocJouleMsg { padding: .5rem .75rem; margin: .375rem 0; border-radius: var(--sapPopover_BorderCornerRadius, .75rem); max-width: 92%; }
+.edocJouleUser { align-self: flex-end; background: var(--sapButton_Emphasized_Background); }
+.edocJouleUser .sapMText { color: var(--sapButton_Emphasized_TextColor); }
+.edocJouleBot { align-self: flex-start; background: var(--sapGroup_ContentBackground); border: 1px solid var(--sapGroup_ContentBorderColor); }
+.edocJouleBot .sapMFT ul { margin: .25rem 0; padding-left: 1.25rem; }
+.edocJouleBot .sapMFT p { margin: .25rem 0; }

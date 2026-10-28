@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n0:Report xmlns:n0="http://www.w3.org/2001/XMLSchema-instance">
+  <ReportDocument>
+    <Id>6513270E269E0D37F2A74DE452E6B438</Id>
+    <Name>Déclaration 28 Octobre 2026</Name>
+    <IssueDateTime>
+      <DateTimeString>20261028141028</DateTimeString>
+    </IssueDateTime>
+    <TypeCode>IN</TypeCode>
+    <Sender>
+      <Id schemeId="0238">0568</Id>
+      <Name>Plateforme Agréée (demo)</Name>
+      <RoleCode>WK</RoleCode>
+      <URIUniversalCommunication>
+        <URIID>WK</URIID>
+      </URIUniversalCommunication>
+    </Sender>
+    <Issuer>
+      <Id schemeId="0002">512345678</Id>
+      <Name>Avialis Services France SAS</Name>
+      <RoleCode>BY</RoleCode>
+      <URIUniversalCommunication>
+        <URIID>factures@avialis.example</URIID>
+      </URIUniversalCommunication>
+    </Issuer>
+  </ReportDocument>
+  <TransactionsReport>
+    <ReportPeriod>
+      <StartDate>20260821</StartDate>
+      <EndDate>20260831</EndDate>
+    </ReportPeriod>
+    <Invoice>
+      <ID>1906000088</ID>
+      <IssueDate>20260825</IssueDate>
+      <TypeCode>380</TypeCode>
+      <CurrencyCode>USD</CurrencyCode>
+      <DueDate>20261001</DueDate>
+      <TaxDueDateTypeCode>3</TaxDueDateTypeCode>
+      <BusinessProcess>
+        <ID>B1</ID>
+        <TypeID>urn.cpro.gouv.fr:1p0:ereporting</TypeID>
+      </BusinessProcess>
+      <Seller>
+        <CompanyId schemeId="0223">IT01234567897</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">IT01234567897</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>IT</CountryId>
+        </PostalAddress>
+      </Seller>
+      <Buyer>
+        <CompanyId schemeId="0002">512345678</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">FR27512345678</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>FR</CountryId>
+        </PostalAddress>
+      </Buyer>
+      <Delivery>
+        <Location>
+          <CityName>TREMBLAY-EN-FRANCE</CityName>
+          <PostalZone>95500</PostalZone>
+          <CountryId>FR</CountryId>
+        </Location>
+      </Delivery>
+      <MonetaryTotal>
+        <TaxExclusiveAmount>9330.00</TaxExclusiveAmount>
+        <TaxAmount CurrencyCode="EUR">1616.01</TaxAmount>
+      </MonetaryTotal>
+      <TaxSubTotal>
+        <TaxableAmount>9330.00</TaxableAmount>
+        <TaxAmount>1616.01</TaxAmount>
+        <TaxCategory>
+          <Code>AE</Code>
+          <Percent>20.00</Percent>
+          <TaxExemptionReason>Exonération de TVA - article 138 Dir 2006/112/CE</TaxExemptionReason>
+          <TaxExemptionReasonCode>VATEX-EU-AE</TaxExemptionReasonCode>
+        </TaxCategory>
+      </TaxSubTotal>
+      <Line>
+        <BilledQuantity UnitCode="H87">10.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>933.00</PriceAmount>
+          <AllowanceChargeBaseAmount>933.00</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture 1906000088 VENETO AVIONICA S.P.A.</Name>
+        </Product>
+      </Line>
+    </Invoice>
+    <Invoice>
+      <ID>1906000089</ID>
+      <IssueDate>20260825</IssueDate>
+      <TypeCode>380</TypeCode>
+      <CurrencyCode>USD</CurrencyCode>
+      <DueDate>20261001</DueDate>
+      <TaxDueDateTypeCode>3</TaxDueDateTypeCode>
+      <BusinessProcess>
+        <ID>B1</ID>
+        <TypeID>urn.cpro.gouv.fr:1p0:ereporting</TypeID>
+      </BusinessProcess>
+      <Seller>
+        <CompanyId schemeId="0223">IT01234567897</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">IT01234567897</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>IT</CountryId>
+        </PostalAddress>
+      </Seller>
+      <Buyer>
+        <CompanyId schemeId="0002">512345678</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">FR27512345678</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>FR</CountryId>
+        </PostalAddress>
+      </Buyer>
+      <Delivery>
+        <Location>
+          <CityName>TREMBLAY-EN-FRANCE</CityName>
+          <PostalZone>95500</PostalZone>
+          <CountryId>FR</CountryId>
+        </Location>
+      </Delivery>
+      <MonetaryTotal>
+        <TaxExclusiveAmount>9330.00</TaxExclusiveAmount>
+        <TaxAmount CurrencyCode="EUR">1616.01</TaxAmount>
+      </MonetaryTotal>
+      <TaxSubTotal>
+        <TaxableAmount>9330.00</TaxableAmount>
+        <TaxAmount>1616.01</TaxAmount>
+        <TaxCategory>
+          <Code>AE</Code>
+          <Percent>20.00</Percent>
+          <TaxExemptionReason>Exonération de TVA - article 138 Dir 2006/112/CE</TaxExemptionReason>
+          <TaxExemptionReasonCode>VATEX-EU-AE</TaxExemptionReasonCode>
+        </TaxCategory>
+      </TaxSubTotal>
+      <Line>
+        <BilledQuantity UnitCode="H87">10.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>933.00</PriceAmount>
+          <AllowanceChargeBaseAmount>933.00</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture 1906000089 VENETO AVIONICA S.P.A.</Name>
+        </Product>
+      </Line>
+    </Invoice>
+    <Invoice>
+      <ID>1906000090</ID>
+      <IssueDate>20260826</IssueDate>
+      <TypeCode>380</TypeCode>
+      <CurrencyCode>USD</CurrencyCode>
+      <DueDate>20261001</DueDate>
+      <TaxDueDateTypeCode>3</TaxDueDateTypeCode>
+      <BusinessProcess>
+        <ID>B1</ID>
+        <TypeID>urn.cpro.gouv.fr:1p0:ereporting</TypeID>
+      </BusinessProcess>
+      <Seller>
+        <CompanyId schemeId="0223">IT01234567897</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">IT01234567897</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>IT</CountryId>
+        </PostalAddress>
+      </Seller>
+      <Buyer>
+        <CompanyId schemeId="0002">512345678</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">FR27512345678</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>FR</CountryId>
+        </PostalAddress>
+      </Buyer>
+      <Delivery>
+        <Location>
+          <CityName>TREMBLAY-EN-FRANCE</CityName>
+          <PostalZone>95500</PostalZone>
+          <CountryId>FR</CountryId>
+        </Location>
+      </Delivery>
+      <MonetaryTotal>
+        <TaxExclusiveAmount>9330.00</TaxExclusiveAmount>
+        <TaxAmount CurrencyCode="EUR">1616.01</TaxAmount>
+      </MonetaryTotal>
+      <TaxSubTotal>
+        <TaxableAmount>9330.00</TaxableAmount>
+        <TaxAmount>1616.01</TaxAmount>
+        <TaxCategory>
+          <Code>AE</Code>
+          <Percent>20.00</Percent>
+          <TaxExemptionReason>Exonération de TVA - article 138 Dir 2006/112/CE</TaxExemptionReason>
+          <TaxExemptionReasonCode>VATEX-EU-AE</TaxExemptionReasonCode>
+        </TaxCategory>
+      </TaxSubTotal>
+      <Line>
+        <BilledQuantity UnitCode="H87">10.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>933.00</PriceAmount>
+          <AllowanceChargeBaseAmount>933.00</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture 1906000090 VENETO AVIONICA S.P.A.</Name>
+        </Product>
+      </Line>
+    </Invoice>
+    <Invoice>
+      <ID>CC6178</ID>
+      <IssueDate>20260826</IssueDate>
+      <TypeCode>380</TypeCode>
+      <CurrencyCode>EUR</CurrencyCode>
+      <DueDate>20260820</DueDate>
+      <TaxDueDateTypeCode>3</TaxDueDateTypeCode>
+      <BusinessProcess>
+        <ID>S1</ID>
+        <TypeID>urn.cpro.gouv.fr:1p0:ereporting</TypeID>
+      </BusinessProcess>
+      <Seller>
+        <CompanyId schemeId="0223">DE298765431</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">DE298765431</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>DE</CountryId>
+        </PostalAddress>
+      </Seller>
+      <Buyer>
+        <CompanyId schemeId="0002">512345678</CompanyId>
+        <TaxRegistrationId qualifyingId="VAT">FR27512345678</TaxRegistrationId>
+        <PostalAddress>
+          <CountryId>FR</CountryId>
+        </PostalAddress>
+      </Buyer>
+      <Delivery>
+        <Location>
+          <CityName>TREMBLAY-EN-FRANCE</CityName>
+          <PostalZone>95500</PostalZone>
+          <CountryId>FR</CountryId>
+        </Location>
+      </Delivery>
+      <MonetaryTotal>
+        <TaxExclusiveAmount>16957.37</TaxExclusiveAmount>
+        <TaxAmount CurrencyCode="EUR">3391.47</TaxAmount>
+      </MonetaryTotal>
+      <TaxSubTotal>
+        <TaxableAmount>16957.37</TaxableAmount>
+        <TaxAmount>3391.47</TaxAmount>
+        <TaxCategory>
+          <Code>AE</Code>
+          <Percent>20.00</Percent>
+          <TaxExemptionReason>Autoliquidation Art 196-Dir TVA 2006-112-CE</TaxExemptionReason>
+          <TaxExemptionReasonCode>VATEX-EU-AE</TaxExemptionReasonCode>
+        </TaxCategory>
+      </TaxSubTotal>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>168.02</PriceAmount>
+          <AllowanceChargeBaseAmount>168.02</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>1845.40</PriceAmount>
+          <AllowanceChargeBaseAmount>1845.40</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>137.12</PriceAmount>
+          <AllowanceChargeBaseAmount>137.12</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>290.83</PriceAmount>
+          <AllowanceChargeBaseAmount>290.83</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>500.00</PriceAmount>
+          <AllowanceChargeBaseAmount>500.00</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>13413.75</PriceAmount>
+          <AllowanceChargeBaseAmount>13413.75</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>602.25</PriceAmount>
+          <AllowanceChargeBaseAmount>602.25</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>Facture CC6178 NORDSEE AIR TECHNIK AG</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>168.02</PriceAmount>
+          <AllowanceChargeBaseAmount>168.02</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>1845.40</PriceAmount>
+          <AllowanceChargeBaseAmount>1845.40</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>137.12</PriceAmount>
+          <AllowanceChargeBaseAmount>137.12</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>290.83</PriceAmount>
+          <AllowanceChargeBaseAmount>290.83</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>500.00</PriceAmount>
+          <AllowanceChargeBaseAmount>500.00</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>13413.75</PriceAmount>
+          <AllowanceChargeBaseAmount>13413.75</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+      <Line>
+        <BilledQuantity UnitCode="H87">1.0000</BilledQuantity>
+        <Price>
+          <PriceAmount>602.25</PriceAmount>
+          <AllowanceChargeBaseAmount>602.25</AllowanceChargeBaseAmount>
+        </Price>
+        <Product>
+          <Name>ACHATS DE SERVICES NATIONAUX</Name>
+        </Product>
+      </Line>
+    </Invoice>
+  </TransactionsReport>
+</n0:Report>

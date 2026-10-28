@@ -24,18 +24,17 @@
 				<ToolbarSeparator/>
 				<MenuButton text="Mapping Workbench" type="Transparent" class="edocShellApp">
 					<menu>
-						<Menu itemSelected=".onAppMenu">
-							<MenuItem text="Overview" icon="sap-icon://home" key="home"/>
-							<MenuItem text="France" icon="sap-icon://flag" key="FR" startsSection="true"/>
-							<MenuItem text="Poland" icon="sap-icon://flag" key="PL"/>
-							<MenuItem text="Germany" icon="sap-icon://flag" key="DE"/>
-						</Menu>
+						<!-- items are added in the controller: Overview + available countries -->
+						<Menu id="appMenu" itemSelected=".onAppMenu"/>
 					</menu>
 				</MenuButton>
 				<ToolbarSpacer/>
 				<SearchField width="24rem" placeholder="Search" search=".onShellSearch">
 					<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
 				</SearchField>
+				<Button id="jouleBtn" icon="sap-icon://da-2" type="Transparent" tooltip="Joule" press=".onJoule">
+					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+				</Button>
 				<Button icon="sap-icon://palette" type="Transparent" tooltip="Theme (Horizon Morning / Evening)" press=".onThemeToggle"/>
 				<Button icon="sap-icon://bell" type="Transparent" tooltip="Notifications" press=".onNotifications">
 					<customData>
@@ -52,20 +51,17 @@
 			<tnt:SideNavigation id="sideNav" itemPress=".onNavPress">
 				<tnt:NavigationList>
 					<tnt:NavigationListItem key="home" text="Overview" icon="sap-icon://home"/>
-					<tnt:NavigationListGroup text="Countries">
-						<tnt:NavigationListItem key="FR" text="France" icon="sap-icon://flag"/>
-						<tnt:NavigationListItem key="PL" text="Poland" icon="sap-icon://flag"/>
-						<tnt:NavigationListItem key="DE" text="Germany" icon="sap-icon://flag"/>
+					<tnt:NavigationListGroup text="Countries" items="{app>/countries}">
+						<tnt:NavigationListItem key="{app>code}" text="{app>name}" icon="sap-icon://flag"/>
 					</tnt:NavigationListGroup>
-					<tnt:NavigationListGroup text="Planned">
-						<tnt:NavigationListItem key="IT" text="Italy" icon="sap-icon://future" selectable="false"/>
-						<tnt:NavigationListItem key="ES" text="Spain" icon="sap-icon://future" selectable="false"/>
-						<tnt:NavigationListItem key="BE" text="Belgium" icon="sap-icon://future" selectable="false"/>
-						<tnt:NavigationListItem key="PT" text="Portugal" icon="sap-icon://future" selectable="false"/>
+					<tnt:NavigationListGroup text="Planned" items="{app>/planned}">
+						<tnt:NavigationListItem key="{app>code}" text="{app>name}" icon="sap-icon://future" selectable="false"/>
 					</tnt:NavigationListGroup>
 				</tnt:NavigationList>
 				<tnt:fixedItem>
 					<tnt:NavigationList>
+						<tnt:NavigationListItem key="joule" text="Joule" icon="sap-icon://da-2" selectable="false"/>
+						<tnt:NavigationListItem key="requests" text="B&amp;B Requests" icon="sap-icon://collaborate" selectable="false"/>
 						<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>
 						<tnt:NavigationListItem key="settings" text="Settings" icon="sap-icon://action-settings" selectable="false"/>
 					</tnt:NavigationList>

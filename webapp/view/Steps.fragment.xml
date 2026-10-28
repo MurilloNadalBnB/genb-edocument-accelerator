@@ -3,7 +3,7 @@
 	<HBox alignItems="Center" wrap="Wrap" class="sapUiSmallMarginTop">
 		<ObjectStatus text="1. Country" icon="sap-icon://sys-enter-2" state="Success" class="sapUiSmallMarginEnd"/>
 		<core:Icon src="sap-icon://slim-arrow-right" class="sapUiSmallMarginEnd"/>
-		<ObjectStatus text="2. Document type" icon="sap-icon://edit" state="Information" active="false" inverted="true" class="sapUiSmallMarginEnd"/>
+		<ObjectStatus text="2. Scenario" icon="sap-icon://edit" state="Information" active="false" inverted="true" class="sapUiSmallMarginEnd"/>
 		<core:Icon src="sap-icon://slim-arrow-right" class="sapUiSmallMarginEnd"/>
 		<ObjectStatus text="3. Field mapping" icon="sap-icon://circle-task" state="None"/>
 	</HBox>

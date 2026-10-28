@@ -35,13 +35,14 @@ sap.ui.define([
 		/* =================== Routing =================== */
 		_onMatched: function (oEvent) {
 			const {code, doc} = oEvent.getParameter("arguments");
-			const oCountry = engine.country(code), oDoc = engine.docDef(doc);
+			const oCountry = engine.country(code), oDoc = engine.docDef(code, doc);
 			if (!oCountry || oCountry.planned || !oDoc) {
 				this._router.navTo("home", {}, true);
 				return;
 			}
 			this._cc = code;
 			this._doc = doc;
+			this._d = oDoc;
 			this._m = engine.model(code, doc);
 			this._selected = null;
 			this._expanded = new Set(Object.values(this._m.nodes).filter(n => !n.leaf && n.depth < this._m.expandDepth).map(n => n.id));
@@ -51,9 +52,15 @@ sap.ui.define([
 			this._ws.setProperty("/code", code);
 			this._ws.setProperty("/countryName", oCountry.name);
 			this._ws.setProperty("/docLabel", oDoc.label);
-			this._ws.setProperty("/edoc", oCountry.edoc);
+			this._ws.setProperty("/edoc", oDoc.edoc);
 			this._ws.setProperty("/source", oDoc.source);
-			this._ws.setProperty("/sub", `${oCountry.name} · ${oCountry.schema} · ${oDoc.source} · eDocument type ${oCountry.edoc}`);
+			this._ws.setProperty("/sourceType", oDoc.sourceType);
+			this._ws.setProperty("/isInbound", oDoc.dir === "in");
+			this._ws.setProperty("/dirText", oDoc.dir === "in" ? "Inbound: XML to SAP" : "Outbound: SAP to XML");
+			this._ws.setProperty("/sub", `${oCountry.name} · ${oDoc.schema} · ${oDoc.source} · eDocument type ${oDoc.edoc}`);
+			const aObjects = engine.objects(code, doc);
+			this._ws.setProperty("/objects", aObjects);
+			this._ws.setProperty("/objKey", aObjects[0].key);
 			this._refreshAll(true);
 			this.byId("tree").setFirstVisibleRow(0);
 		},
@@ -91,7 +98,9 @@ sap.ui.define([
 			if (sTab === "xml") {
 				this._ws.setProperty("/xmlHtml", `<div class="edocXml">${engine.xmlHtml(this._cc, this._doc)}</div>`);
 			} else if (sTab === "code") {
-				this._ws.setProperty("/abap", engine.genAbap(this._cc, this._doc) || "");
+				const sKey = this._ws.getProperty("/objKey"), oObj = this._ws.getProperty("/objects").find(o => o.key === sKey);
+				this._ws.setProperty("/obj", oObj);
+				this._ws.setProperty("/abap", engine.objectCode(this._cc, this._doc, sKey) || "");
 			}
 		},
 
@@ -288,7 +297,7 @@ sap.ui.define([
 
 		/* =================== Side panel =================== */
 		_refreshSide: function () {
-			const m = this._m, n = this._selected ? m.nodes[this._selected] : null, src = engine.docDef(this._doc).src;
+			const m = this._m, n = this._selected ? m.nodes[this._selected] : null;
 			let sel;
 			if (!n) {
 				sel = {kind: "none", suggestions: [], rules: []};
@@ -302,9 +311,9 @@ sap.ui.define([
 					name: n.isAttr ? n.name : n.local,
 					path: n.path,
 					value: n.value,
-					kindText: (n.isAttr ? "Attribute" : "Element") + (engine.isLine(n, m) ? ", line item" : ""),
+					kindText: (n.isAttr ? "Attribute" : "Element") + (engine.isLine(n, m, this._d) ? ", line item" : ""),
 					ruleCount: rs.length,
-					suggestions: engine.suggest(n, m, src).map(f => ({f, desc: engine.fieldDesc(f)})),
+					suggestions: engine.suggest(n, m, this._cc, this._d).map(f => ({f, desc: engine.fieldDesc(f)})),
 					rules: rs.map(r => this._ruleRow(r))
 				};
 			}
@@ -390,7 +399,96 @@ sap.ui.define([
 			MessageToast.show("Draft saved (in this browser session only).");
 		},
 
+		onObject: function () {
+			this._refreshPreviews();
+		},
+
+		/* =================== Joule =================== */
+		onAskJoule: function () {
+			const n = this._selected ? this._m.nodes[this._selected] : null;
+			if (!n || !n.leaf) {
+				this.getOwnerComponent().getEventBus().publish("edoc", "joule", {prompt: `Help me map the ${this._d.label} for ${this._ws.getProperty("/countryName")}. What should I suggest?`});
+				return;
+			}
+			const sField = n.isAttr ? n.name.slice(1) : n.local, sg = engine.suggest(n, this._m, this._cc, this._d);
+			this.getOwnerComponent().getEventBus().publish("edoc", "joule", {
+				prompt: `Explain <${sField}> in the ${this._d.label} (${this._ws.getProperty("/countryName")}) and how to fill it`,
+				ctx: {field: n.local, path: n.path, countryName: this._ws.getProperty("/countryName"), docLabel: this._d.label, suggestion: sg[0]}
+			});
+		},
+
+		/* =================== B&B implementation request =================== */
+		onRequestImpl: function () {
+			const iRules = this._rules().length;
+			if (!iRules) {
+				MessageBox.information("Define at least one rule (or use Auto-suggest) before sending the package to B&B.");
+				return;
+			}
+			const s = engine.stats(this._cc, this._doc), oUser = this.getOwnerComponent().getModel("app").getProperty("/user");
+			const oGoLive = new Date(Date.now() + 45 * 864e5);
+			this._implModel = this._implModel || new JSONModel();
+			this._implModel.setData({
+				scenario: `${this._ws.getProperty("/countryName")}, ${this._d.label}`,
+				edoc: `${this._d.edoc} (interface ${this._d.iface})`,
+				ruleText: `${s.rules} rules, ${s.checks} checks, ${s.filled} of ${s.total} fields filled`,
+				objects: engine.objects(this._cc, this._doc).map(o => ({name: o.name, badi: o.badi, selected: true})),
+				system: "DEV",
+				priority: "normal",
+				golive: oGoLive.toISOString().slice(0, 10),
+				contact: oUser.email,
+				notes: "",
+				busy: false
+			});
+			if (!this._pImpl) {
+				this._pImpl = Fragment.load({id: this.getView().getId(), name: "bnb.edoc.view.ImplementationDialog", controller: this}).then(oDialog => {
+					oDialog.setModel(this._implModel, "impl");
+					this.getView().addDependent(oDialog);
+					return oDialog;
+				});
+			}
+			this._pImpl.then(oDialog => oDialog.open());
+		},
+
+		onImplCancel: function () {
+			this.byId("implDialog").close();
+		},
+
+		onImplSend: function () {
+			const oDialog = this.byId("implDialog"), d = this._implModel.getData(), oApp = this.getOwnerComponent().getModel("app");
+			const aObjects = d.objects.filter(o => o.selected);
+			if (!aObjects.length) {
+				MessageToast.show("Select at least one object to implement.");
+				return;
+			}
+			this._implModel.setProperty("/busy", true);
+			oDialog.setBusy(true);
+			// Simulated call to the B&B service ERP
+			setTimeout(() => {
+				const aReq = oApp.getProperty("/requests"), sTicket = `GENB-2026-${String(147 + aReq.length).padStart(4, "0")}`;
+				oApp.setProperty("/requests", [...aReq, {
+					ticket: sTicket,
+					scenario: d.scenario,
+					rules: String(this._rules().length),
+					objectsText: aObjects.map(o => o.name).join(", "),
+					systemText: d.system === "DEV" ? "S4D, client 100" : "S4X, client 200",
+					sentAt: new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}),
+					status: "Received by B&B"
+				}]);
+				const aNotif = oApp.getProperty("/notifications");
+				aNotif.unshift({id: sTicket, title: `${sTicket} received by B&B`, description: `${d.scenario}: a B&B consultant will contact you within one business day.`, datetime: "Just now", priority: "Medium", author: "B&B Service Desk", initials: "BB", unread: true});
+				oApp.setProperty("/notifications", aNotif);
+				oApp.setProperty("/unreadCount", String(aNotif.filter(x => x.unread).length));
+				oDialog.setBusy(false);
+				oDialog.close();
+				MessageBox.success(`Ticket ${sTicket} was created in the B&B service ERP.`, {
+					title: "Sent to B&B",
+					details: `<p><strong>${d.scenario}</strong></p><ul>${aObjects.map(o => `<li>${o.name}</li>`).join("")}</ul><p>Next steps: analysis, implementation in ${d.system === "DEV" ? "S4D" : "S4X"}, tests with your documents, transport for your approval.</p>`
+				});
+			}, 1200);
+		},
+
 		onGenerate: function () {
+			this._ws.setProperty("/objKey", this._ws.getProperty("/objects")[0].key);
 			this._ws.setProperty("/tab", "code");
 			this._refreshPreviews();
 			MessageToast.show(this._rules().length ? "ABAP preview generated." : "Add at least one rule first.");
@@ -424,11 +522,11 @@ sap.ui.define([
 		},
 
 		_openDialog: function (sNodeId, sType, sRuleId, sPresetSource) {
-			const m = this._m, n = m.nodes[sNodeId], oDoc = engine.docDef(this._doc), sg = engine.suggest(n, m, oDoc.src);
+			const m = this._m, n = m.nodes[sNodeId], oDoc = this._d, sg = engine.suggest(n, m, this._cc, oDoc);
 			const r = sRuleId ? this._rules().find(x => x.id === sRuleId) : null;
 			const d = r
 				? {type: r.type, source: r.source, cfg: clone(r.cfg), editId: r.id}
-				: {type: sType || "map", source: sType === "constant" ? null : (sPresetSource || sg[0] || null), cfg: engine.defaultCfg(n, this._cc), editId: null};
+				: {type: sType || "map", source: sType === "constant" ? null : (sPresetSource || sg[0] || null), cfg: engine.defaultCfg(n, this._cc, oDoc), editId: null};
 			if (!r && sType === "change" && !engine.VALMAP_FIELDS.includes(n.local) && /^(Kwota|P_1[1-5]|.*Amount)/.test(n.local)) {
 				d.cfg.transform = "sign";
 			}
@@ -441,6 +539,7 @@ sap.ui.define([
 				nodeName: n.name,
 				nodeValue: n.value,
 				sourceLabel: oDoc.source,
+				catalogTitle: oDoc.dir === "in" ? "SAP target fields" : "SAP source fields",
 				saveText: d.editId ? "Save Rule" : "Apply Rule",
 				q: "",
 				error: "",
@@ -462,19 +561,19 @@ sap.ui.define([
 			M.setProperty("/sourceDesc", d.source ? engine.fieldDesc(d.source) : "");
 			M.setProperty("/suggestions", this._dlgSugg.map(f => ({f, desc: engine.fieldDesc(f), selected: d.source === f})));
 			M.setProperty("/paramPlaceholder", PARAM_PH[d.cfg.cond] || "");
-			M.setProperty("/preview", engine.previewText(this._dlgNode, d));
+			M.setProperty("/preview", engine.previewText(this._dlgNode, d, this._d.dir === "in"));
 		},
 
 		_onDlgPropertyChange: function (oEvent) {
 			if (oEvent.getParameter("path") !== "preview") {
-				this._dlgModel.setProperty("/preview", engine.previewText(this._dlgNode, this._dlgModel.getData()));
+				this._dlgModel.setProperty("/preview", engine.previewText(this._dlgNode, this._dlgModel.getData(), this._d.dir === "in"));
 			}
 		},
 
 		_buildCatalog: function () {
-			const q = (this._dlgModel.getProperty("/q") || "").trim().toLowerCase(), src = engine.docDef(this._doc).src;
+			const q = (this._dlgModel.getProperty("/q") || "").trim().toLowerCase();
 			const aCat = [];
-			engine.CAT_GROUPS[src].forEach(([g, aTabs]) => {
+			engine.catGroups(this._cc, this._d).forEach(([g, aTabs]) => {
 				const aTables = [];
 				aTabs.forEach(t => {
 					const T = engine.CATALOG[t];

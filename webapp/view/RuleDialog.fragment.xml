@@ -25,7 +25,7 @@
 					<layoutData><l:SplitterLayoutData size="24rem" minSize="280"/></layoutData>
 					<HBox alignItems="Center" class="sapUiSmallMarginBeginEnd sapUiSmallMarginTop">
 						<core:Icon src="sap-icon://table-view" class="sapUiTinyMarginEnd"/>
-						<Title text="SAP source fields" level="H5"/>
+						<Title text="{dlg>/catalogTitle}" level="H5"/>
 						<Label text="· {dlg>/sourceLabel}" class="sapUiTinyMarginBegin" wrapping="false"/>
 					</HBox>
 					<VBox class="sapUiSmallMarginBeginEnd sapUiTinyMarginTop">

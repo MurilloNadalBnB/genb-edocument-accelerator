@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n0:Invoice xmlns:n0="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:n1="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:n2="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+  <n1:CustomizationID>urn:cen.eu:en16931:2017</n1:CustomizationID>
+  <n1:ProfileID>B1</n1:ProfileID>
+  <n1:ID>51157785212026</n1:ID>
+  <n1:IssueDate>2026-09-24</n1:IssueDate>
+  <n1:DueDate>2026-10-01</n1:DueDate>
+  <n1:InvoiceTypeCode>389</n1:InvoiceTypeCode>
+  <n1:Note>#AAB#NOTRE SOCIETE NE CONSENT PAS D'ESCOMPTE POUR PAIEMENT ANTICIPE</n1:Note>
+  <n1:Note>#PMD#Tout retard de paiement engendre une pénalité exigible à compter de la date d'échéance, calculée sur la base de trois fois le taux d'intérêt légal.</n1:Note>
+  <n1:Note>#PMT#INDEMNITE FORFAITAIRE DE 40 EUROS POUR FRAIS DE RECOUVREMENT</n1:Note>
+  <n1:Note>#SUR#Livraison urgente demandée.</n1:Note>
+  <n1:DocumentCurrencyCode listID="ISO4217">EUR</n1:DocumentCurrencyCode>
+  <n2:InvoicePeriod>
+    <n1:DescriptionCode>35</n1:DescriptionCode>
+  </n2:InvoicePeriod>
+  <n2:OrderReference>
+    <n1:ID>0905930135</n1:ID>
+  </n2:OrderReference>
+  <n2:AccountingSupplierParty>
+    <n2:Party>
+      <n1:EndpointID schemeID="0225">534567890_53456789000018</n1:EndpointID>
+      <n2:PartyName>
+        <n1:Name>SKYPARTS LOGISTIQUE</n1:Name>
+      </n2:PartyName>
+      <n2:PostalAddress>
+        <n1:StreetName>RUE DES ARTISANS 7</n1:StreetName>
+        <n1:CityName>ARGENTEUIL</n1:CityName>
+        <n1:PostalZone>95100</n1:PostalZone>
+        <n1:CountrySubentity>Val-d'Oise</n1:CountrySubentity>
+        <n2:Country>
+          <n1:IdentificationCode>FR</n1:IdentificationCode>
+        </n2:Country>
+      </n2:PostalAddress>
+      <n2:PartyTaxScheme>
+        <n1:CompanyID>FR61534567890</n1:CompanyID>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:PartyTaxScheme>
+      <n2:PartyLegalEntity>
+        <n1:RegistrationName>SKYPARTS LOGISTIQUE</n1:RegistrationName>
+        <n1:CompanyID schemeID="0002">534567890</n1:CompanyID>
+      </n2:PartyLegalEntity>
+      <n2:Contact>
+        <n1:Name>SKYPARTS LOGISTIQUE</n1:Name>
+        <n1:Telephone>01 39 00 00 00</n1:Telephone>
+        <n1:ElectronicMail>service.client@skyparts.example</n1:ElectronicMail>
+      </n2:Contact>
+    </n2:Party>
+  </n2:AccountingSupplierParty>
+  <n2:AccountingCustomerParty>
+    <n2:Party>
+      <n1:EndpointID schemeID="0225">512345678</n1:EndpointID>
+      <n2:PartyIdentification>
+        <n1:ID schemeID="0009">51234567800027</n1:ID>
+      </n2:PartyIdentification>
+      <n2:PartyName>
+        <n1:Name>Avialis Services France SAS</n1:Name>
+      </n2:PartyName>
+      <n2:PostalAddress>
+        <n1:StreetName>Bât. 12 Zone Aéroportuaire</n1:StreetName>
+        <n1:CityName>TREMBLAY-EN-FRANCE</n1:CityName>
+        <n1:PostalZone>95500</n1:PostalZone>
+        <n2:Country>
+          <n1:IdentificationCode>FR</n1:IdentificationCode>
+        </n2:Country>
+      </n2:PostalAddress>
+      <n2:PartyTaxScheme>
+        <n1:CompanyID>FR27512345678</n1:CompanyID>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:PartyTaxScheme>
+      <n2:PartyLegalEntity>
+        <n1:RegistrationName>Avialis Services France SAS</n1:RegistrationName>
+        <n1:CompanyID schemeID="0002">512345678</n1:CompanyID>
+      </n2:PartyLegalEntity>
+      <n2:Contact>
+        <n1:Name>Avialis Services France SAS</n1:Name>
+        <n1:ElectronicMail>factures@avialis.example</n1:ElectronicMail>
+      </n2:Contact>
+    </n2:Party>
+  </n2:AccountingCustomerParty>
+  <n2:PaymentMeans>
+    <n1:PaymentMeansCode>59</n1:PaymentMeansCode>
+    <n1:PaymentID/>
+    <n2:PayeeFinancialAccount>
+      <n1:ID>FR7630006000011234567890189</n1:ID>
+      <n2:FinancialInstitutionBranch>
+        <n1:ID>DEMOFRPPXXX</n1:ID>
+      </n2:FinancialInstitutionBranch>
+    </n2:PayeeFinancialAccount>
+  </n2:PaymentMeans>
+  <n2:PaymentTerms>
+    <n1:Note>Payable dans les 30 jours net</n1:Note>
+  </n2:PaymentTerms>
+  <n2:TaxTotal>
+    <n1:TaxAmount currencyID="EUR">0.00</n1:TaxAmount>
+    <n2:TaxSubtotal>
+      <n1:TaxableAmount currencyID="EUR">2239.24</n1:TaxableAmount>
+      <n1:TaxAmount currencyID="EUR">-447.85</n1:TaxAmount>
+      <n2:TaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>-20.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:TaxCategory>
+    </n2:TaxSubtotal>
+    <n2:TaxSubtotal>
+      <n1:TaxableAmount currencyID="EUR">-447.85</n1:TaxableAmount>
+      <n1:TaxAmount currencyID="EUR">447.85</n1:TaxAmount>
+      <n2:TaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>-100.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:TaxCategory>
+    </n2:TaxSubtotal>
+  </n2:TaxTotal>
+  <n2:LegalMonetaryTotal>
+    <n1:LineExtensionAmount currencyID="EUR">2239.24</n1:LineExtensionAmount>
+    <n1:TaxExclusiveAmount currencyID="EUR">2239.24</n1:TaxExclusiveAmount>
+    <n1:TaxInclusiveAmount currencyID="EUR">2239.24</n1:TaxInclusiveAmount>
+    <n1:PayableAmount currencyID="EUR">2239.24</n1:PayableAmount>
+  </n2:LegalMonetaryTotal>
+  <n2:InvoiceLine>
+    <n1:ID>0000000001</n1:ID>
+    <n1:InvoicedQuantity unitCodeListID="UNECERec20" unitCode="EA">1.00</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="EUR">2239.24</n1:LineExtensionAmount>
+    <n2:Item>
+      <n1:Name>0905930135 00020</n1:Name>
+      <n2:ClassifiedTaxCategory>
+        <n1:Percent>0.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="EUR">2239.24</n1:PriceAmount>
+    </n2:Price>
+  </n2:InvoiceLine>
+</n0:Invoice>
