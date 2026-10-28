@@ -312,14 +312,19 @@
 						<VBox height="100%" renderType="Bare">
 							<OverflowToolbar style="Clear">
 								<Title text="ABAP Preview" level="H4"/>
-								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="26rem" tooltip="Generated objects for this scenario">
+								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="20rem" tooltip="Generated objects for this scenario">
 									<core:ListItem key="{ws>key}" text="{ws>text}" additionalText="{ws>badi}"/>
 								</Select>
 								<ObjectStatus text="{= ${ws>/obj/generated} ? 'From ' + ${ws>/stats/rules} + ' rules' : 'From settings' }" state="{= ${ws>/obj/generated} ? 'Indication05' : 'Indication04' }" inverted="true"/>
-								<ObjectStatus text="Mock" state="Indication10" inverted="true"/>
+								<ObjectStatus text="Reviewed by {ws>/reviewText}" icon="sap-icon://ai" state="Indication07" inverted="true" visible="{= !!${ws>/reviewText} &amp;&amp; !!${ws>/obj/generated} }"/>
+								<ObjectStatus text="Mock" state="Indication10" inverted="true">
+									<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
+								</ObjectStatus>
 								<ToolbarSpacer/>
 								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode"/>
-								<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl"/>
+								<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl">
+									<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+								</Button>
 							</OverflowToolbar>
 							<IllustratedMessage
 								visible="{= !${ws>/abap} }"

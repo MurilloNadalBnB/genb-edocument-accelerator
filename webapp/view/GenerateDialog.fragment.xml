@@ -1,0 +1,43 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<!-- Generate Code: the ABAP comes from the rules; the user picks which AI reviews it -->
+	<Dialog
+		id="genDialog"
+		title="Generate Code"
+		icon="sap-icon://syntax"
+		contentWidth="34rem">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<MessageStrip
+					type="Information"
+					showIcon="true"
+					text="The ABAP comes from your rules, so the same rules always give the same code. The AI you choose reviews it before you see it."/>
+				<List
+					items="{gen>/options}"
+					mode="SingleSelectLeft"
+					includeItemInSelection="true"
+					headerText="Review the code with"
+					class="sapUiSmallMarginTop">
+					<CustomListItem selected="{gen>selected}">
+						<HBox alignItems="Start" class="sapUiSmallMarginTopBottom sapUiTinyMarginEnd">
+							<Avatar src="{gen>icon}" initials="{gen>initials}" imageFitType="Contain" displaySize="XS" displayShape="Square" backgroundColor="{gen>color}" class="sapUiSmallMarginEnd"/>
+							<VBox>
+								<HBox alignItems="Center">
+									<Label text="{gen>name}" design="Bold" wrapping="true"/>
+									<ObjectStatus text="Recommended" state="Success" inverted="true" visible="{gen>recommended}" class="sapUiTinyMarginBegin"/>
+								</HBox>
+								<Text text="{gen>desc}"/>
+							</VBox>
+						</HBox>
+					</CustomListItem>
+				</List>
+				<CheckBox text="Use this choice for the rest of the session" selected="{gen>/remember}" class="sapUiSmallMarginTop"/>
+			</VBox>
+		</content>
+		<beginButton>
+			<Button text="Generate" type="Emphasized" icon="sap-icon://syntax" press=".onGenConfirm"/>
+		</beginButton>
+		<endButton>
+			<Button text="Cancel" press=".onGenCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

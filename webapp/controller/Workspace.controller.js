@@ -14,6 +14,12 @@ sap.ui.define([
 	const clone = o => JSON.parse(JSON.stringify(o));
 	const toList = o => Object.entries(o).map(([key, text]) => ({key, text}));
 	const PARAM_PH = {maxLen: "e.g. 10", pattern: "e.g. ^[0-9]{10}$", inList: "e.g. PLN,EUR,USD", ref: "e.g. T005-LAND1"};
+	// what each AI engine checks when it reviews the generated code
+	const REVIEW_ROLE = {
+		joule: "Checks the code against your custom objects, billing types and existing AIF value maps.",
+		hub: "Reviews the code with the LLM of your BTP subscription and adds explanations as comments.",
+		genb: "Checks the code against B&B's DRC patterns and the legal schema of the country."
+	};
 
 	return Controller.extend("bnb.edoc.controller.Workspace", {
 		onInit: function () {
@@ -61,6 +67,8 @@ sap.ui.define([
 			const aObjects = engine.objects(code, doc);
 			this._ws.setProperty("/objects", aObjects);
 			this._ws.setProperty("/objKey", aObjects[0].key);
+			this._review = null;
+			this._ws.setProperty("/reviewText", "");
 			this._refreshAll(true);
 			this.byId("tree").setFirstVisibleRow(0);
 		},
@@ -100,7 +108,7 @@ sap.ui.define([
 			} else if (sTab === "code") {
 				const sKey = this._ws.getProperty("/objKey"), oObj = this._ws.getProperty("/objects").find(o => o.key === sKey);
 				this._ws.setProperty("/obj", oObj);
-				this._ws.setProperty("/abap", engine.objectCode(this._cc, this._doc, sKey) || "");
+				this._ws.setProperty("/abap", engine.objectCode(this._cc, this._doc, sKey, this._review) || "");
 			}
 		},
 
@@ -488,11 +496,65 @@ sap.ui.define([
 			}, 1200);
 		},
 
+		/* =================== Generate code =================== */
+		_activeEngines: function () {
+			return this.getOwnerComponent().getModel("app").getProperty("/ai/engines").filter(e => e.enabled);
+		},
+
+		/** One AI active: generate right away. More than one: ask which AI reviews the code, unless remembered. */
 		onGenerate: function () {
+			if (!this._rules().length) {
+				MessageToast.show("Add at least one rule first.");
+				return;
+			}
+			const aOn = this._activeEngines();
+			if (aOn.length === 1) {
+				this._generate([aOn[0].key]);
+				return;
+			}
+			const aKept = (this._genChoice || []).filter(k => aOn.some(e => e.key === k));
+			if (aKept.length) {
+				this._generate(aKept);
+				return;
+			}
+			this._genModel = this._genModel || new JSONModel();
+			this._genModel.setData({
+				remember: false,
+				options: [
+					{key: "all", name: `All active AI: ${aOn.map(e => e.name).join(", ")}`, desc: "Each one checks its part. The review notes show who found what.", icon: "sap-icon://ai", initials: "", color: "Accent7", recommended: true, selected: true},
+					...aOn.map(e => ({key: e.key, name: e.name, desc: REVIEW_ROLE[e.key], icon: e.icon, initials: e.initials, color: e.color, recommended: false, selected: false}))
+				]
+			});
+			if (!this._pGen) {
+				this._pGen = Fragment.load({id: this.getView().getId(), name: "bnb.edoc.view.GenerateDialog", controller: this}).then(oDialog => {
+					oDialog.setModel(this._genModel, "gen");
+					this.getView().addDependent(oDialog);
+					return oDialog;
+				});
+			}
+			this._pGen.then(oDialog => oDialog.open());
+		},
+
+		onGenConfirm: function () {
+			const d = this._genModel.getData(), oPick = d.options.find(o => o.selected) || d.options[0];
+			const aKeys = oPick.key === "all" ? this._activeEngines().map(e => e.key) : [oPick.key];
+			this._genChoice = d.remember ? aKeys : null;
+			this.byId("genDialog").close();
+			this._generate(aKeys);
+		},
+
+		onGenCancel: function () {
+			this.byId("genDialog").close();
+		},
+
+		_generate: function (aKeys) {
+			const aEngines = this.getOwnerComponent().getModel("app").getProperty("/ai/engines");
+			this._review = aKeys;
+			this._ws.setProperty("/reviewText", aKeys.map(k => aEngines.find(e => e.key === k).name).join(", "));
 			this._ws.setProperty("/objKey", this._ws.getProperty("/objects")[0].key);
 			this._ws.setProperty("/tab", "code");
 			this._refreshPreviews();
-			MessageToast.show(this._rules().length ? "ABAP preview generated." : "Add at least one rule first.");
+			MessageToast.show(`ABAP generated and reviewed by ${this._ws.getProperty("/reviewText")}.`);
 		},
 
 		onCopyCode: function () {

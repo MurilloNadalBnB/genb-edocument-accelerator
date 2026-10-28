@@ -541,7 +541,21 @@ sap.ui.define([
 	const className = (cc, d) => d.dir === "in" ? `ZCL_GENB_EDOC_INBOUND_${cc}` : `ZCL_GENB_EDOC_ADAPTOR_${cc}`;
 	const vmapName = (cc, n) => `ZGENB_${cc}_${snake(n.local).toUpperCase()}`.slice(0, 30);
 
-	function genAbap(cc, doc) {
+	// review notes per AI engine, written at the end of the generated class
+	function reviewNotes(k, d, rs, vmaps) {
+		const checks = rs.filter(r => r.type === "check").length;
+		switch (k) {
+			case "genb": return [`GENB AI: matches the B&B pattern for ${d.label} (${d.edoc}), ${vmaps.length} AIF value maps reused from the rule library.`,
+				checks ? `GENB AI: ${checks} checks, messages follow the cockpit wording.` : "GENB AI: no checks yet, live projects usually check the buyer's tax ID."];
+			case "joule": return [d.src === "SD" ? "Joule (Order-to-Cash Agent): billing types ZF2 and ZG2 are used but not in the value maps yet." : "Joule (Finance Operations Agent): document types and tax codes in use are all covered.",
+				"Joule: no custom field or Z table of your system is affected."];
+			case "hub": return ["SAP Generative AI Hub: reviewed with your model, no issues found; names and tax IDs masked in the prompt.",
+				"SAP Generative AI Hub: explanations added for the value maps and the line item loop."];
+		}
+		return [];
+	}
+
+	function genAbap(cc, doc, aReview) {
 		const c = country(cc), d = docDef(cc, doc), m = model(cc, doc), rs = sortedRules(cc, doc);
 		if (!rs.length) { return null; }
 		const bIn = d.dir === "in", srcVar = SRC_VAR[d.src], itemTab = ITEM_TABLE[d.src], sfx = d.src.toLowerCase();
@@ -642,6 +656,7 @@ sap.ui.define([
 			`" eDocument type .: ${d.edoc} / interface ${d.iface}`,
 			`" Source type ....: ${d.sourceType}, ${d.source}`,
 			`" Rules ..........: ${rs.length}`,
+			...(aReview && aReview.length ? [`" AI review ......: ${aReview.map(k => ({joule: "Joule", hub: "SAP Generative AI Hub", genb: "GENB AI"}[k])).join(", ")}`] : []),
 			"\" ----------------------------------------------------------------",
 			`CLASS ${className(cc, d).toLowerCase()} IMPLEMENTATION.`, ""];
 		const helperDecl = () => [...helpers].sort().map(t => `DATA(ls_${t.toLowerCase()}) = read_${t.toLowerCase()}( ${bIn ? "cs_invoice" : srcVar} ).`);
@@ -689,6 +704,11 @@ sap.ui.define([
 			vmaps.forEach(([v, rows]) => out.push(`"   ${v.padEnd(30)} ${rows.map(e => `${e.from || "' '"} → ${e.to}`).join(", ")}`));
 			out.push("\" ----------------------------------------------------------------");
 		}
+		if (aReview && aReview.length) {
+			out.push("", "\" ----------------------------------------------------------------", "\" AI review notes:");
+			aReview.forEach(k => reviewNotes(k, d, rs, vmaps).forEach(l => out.push(`"   ${l}`)));
+			out.push("\" ----------------------------------------------------------------");
+		}
 		return out.join("\n");
 	}
 
@@ -708,8 +728,8 @@ sap.ui.define([
 			return {key: k, name, text: `${name} · ${OBJECT_DEFS[k].text}`, badi: OBJECT_DEFS[k].badi, generated: bMap};
 		});
 	}
-	function objectCode(cc, doc, k) {
-		return k === "adaptor" || k === "inbound" ? genAbap(cc, doc) : templates.code(k, cc, docDef(cc, doc));
+	function objectCode(cc, doc, k, aReview) {
+		return k === "adaptor" || k === "inbound" ? genAbap(cc, doc, aReview) : templates.code(k, cc, docDef(cc, doc));
 	}
 
 	const shortPath = p => { const s = p.split("/").filter(Boolean); return (s.length > 3 ? "… /" : "/") + s.slice(-3).join("/"); };

@@ -46,6 +46,7 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
   - elementos repetidos (linhas, notas, meios de pagamento) aparecem uma vez só, como lista (*1..n*), com a estrutura de todas as ocorrências do exemplo;
   - diálogo de regra (Map, Check, Change, Constant) com o catálogo de campos SAP do source (SD, MM ou FI);
   - XML Preview com os campos mapeados destacados;
+  - **Generate Code**: o ABAP sai das regras (mesmas regras, mesmo código). Com mais de uma IA ligada, um diálogo pergunta qual revisa o código: todas as ativas (recomendado) ou só uma. A escolha aparece no cabeçalho do código e nas notas de revisão no final; com uma IA só, gera direto;
   - Code Preview com os objetos do cenário: adaptor (BAdI `EDOC_ADAPTOR`, gerado das regras, com AIF value maps), mapeamento inbound, e-mail (partner connector), custom fields do cockpit e UI functions (ações do cockpit);
   - **Request B&B Implementation**: envia o pacote à B&B, simulando a abertura de um ticket no ERP da B&B (aparece em notificações, no tile da Overview e em *B&B Requests*).
 
@@ -56,7 +57,7 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 3. Abrir **Customer Invoice** e clicar em **Auto-suggest**. Os KPIs sobem e as pills MAP/CHANGE/CONST aparecem na árvore.
 4. Selecionar `EndpointID` em *AccountingCustomerParty* e clicar em **Ask AI**.
 5. Selecionar `InvoiceTypeCode` e mostrar o **Change value** com o value map (F2 → 380, G2 → 381).
-6. Clicar em **Generate Code**, rolar o ABAP e trocar o objeto para os custom fields.
+6. Clicar em **Generate Code**, escolher quem revisa (todas as IAs ativas), rolar o ABAP até as notas de revisão e trocar o objeto para os custom fields.
 7. Clicar em **Request B&B Implementation**, enviar e mostrar o ticket criado.
 8. *(Opcional)* Mostrar o México: **CFDI Invoice**, Auto-suggest e os objetos de UI functions (Get PDF, Cancel).
 
