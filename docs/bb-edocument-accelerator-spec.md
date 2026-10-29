@@ -335,9 +335,9 @@ A primeira sugestão é a preferida (vem pré-selecionada no diálogo e é a usa
 - **Campos de valor** (formato padrão `dec2`): regex `^(P_11|P_13_\d|P_14_\d|P_15|.*Amount|Kwota.*|KursWaluty)$`.
 - **Campos de value mapping:** RodzajFaktury, InvoiceTypeCode, CreditNoteTypeCode, P_12, Percent.
 
-### 10.4 Auto-suggest (botão na árvore)
+### 10.4 Auto-suggest (fora da tela por enquanto)
 
-Para cada folha **sem nenhuma regra**:
+O botão foi retirado do cabeçalho do Workspace em 29/10/2026, a pedido da gestão (gera muitas perguntas na demo). A lógica continua em `engine.autoSuggest` para poder voltar. Para cada folha **sem nenhuma regra**:
 
 1. Ignora o campo se ele ou algum ancestral é a 2ª ocorrência (ou posterior) de um bloco repetido (`idx > 1`). Só a primeira ocorrência é mapeada.
 2. Calcula as sugestões; se não houver nenhuma, ignora.
@@ -367,7 +367,7 @@ Toast: "N suggested rules added. Review them in the rules list." ou "No new sugg
 - Ações: clique seleciona; duplo clique abre o diálogo em *Map value*; botão **+** (aparece no hover) abre o diálogo.
 - **Busca:** procura no nome local, no valor de exemplo e na origem SAP das regras; mostra os resultados com os ancestrais e tudo expandido.
 - **Filtros:** All / With rules / Open (sem regra). Filtro ou busca ativos expandem a árvore toda.
-- Botões: Expand all, Collapse all (mantém só a raiz aberta), Auto-suggest.
+- Botões: Expand all, Collapse all (mantém só a raiz aberta).
 
 ### 11.3 Painel lateral (direita)
 

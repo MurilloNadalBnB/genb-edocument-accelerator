@@ -32,7 +32,6 @@
 				</f:snappedContent>
 				<f:actions>
 					<Button text="Ask AI" icon="sap-icon://ai" press=".onAskAi" tooltip="Ask Joule, the SAP Generative AI Hub and GENB AI about the selected field"/>
-					<Button text="Auto-suggest" icon="sap-icon://lightbulb" press=".onAutoSuggest" tooltip="Create suggested mappings for open fields"/>
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -257,7 +256,7 @@
 										illustrationType="sapIllus-NoEntries"
 										illustrationSize="Spot"
 										title="No rules yet"
-										description="Pick a field on the left and choose Map value, Check or Change value. Or use Auto-suggest to prefill the obvious ones."/>
+										description="Pick a field on the left and choose Map value, Check or Change value, or tell the AI Assistant what you need."/>
 									<!-- contextualWidth: the columns pop in below the field when the side panel is narrow (small laptop screens) -->
 									<Table
 										items="{ws>/allRules}"

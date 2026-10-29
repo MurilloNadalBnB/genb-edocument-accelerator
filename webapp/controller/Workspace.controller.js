@@ -314,13 +314,6 @@ sap.ui.define([
 			this._renderTree();
 		},
 
-		onAutoSuggest: function () {
-			const iAdded = engine.autoSuggest(this._cc, this._doc);
-			this._markDirty();
-			this._refreshAll();
-			MessageToast.show(iAdded ? `${iAdded} suggested rules added. Review them in the rules list.` : "No new suggestions, every known field already has a rule.");
-		},
-
 		/* =================== Side panel =================== */
 		_refreshSide: function () {
 			const m = this._m, n = this._selected ? m.nodes[this._selected] : null;
@@ -459,9 +452,9 @@ sap.ui.define([
 
 		/* =================== B&B implementation request =================== */
 		onRequestImpl: function () {
-			const iRules = this._rules().length;
-			if (!iRules) {
-				MessageBox.information("Define at least one rule (or use Auto-suggest) before sending the package to B&B.");
+			const oRel = engine.relevanceOf(this._cc, this._doc);
+			if (!this._rules().length && !oRel) {
+				MessageBox.information("Define at least one rule before sending the package to B&B.");
 				return;
 			}
 			const s = engine.stats(this._cc, this._doc), oUser = this.getOwnerComponent().getModel("app").getProperty("/user");
@@ -470,7 +463,7 @@ sap.ui.define([
 			this._implModel.setData({
 				scenario: `${this._ws.getProperty("/countryName")}, ${this._d.label}`,
 				edoc: `${this._d.edoc} (interface ${this._d.iface})`,
-				ruleText: `${s.rules} rules, ${s.checks} checks, ${s.filled} of ${s.total} fields filled`,
+				ruleText: (oRel ? `Document relevance (no eDocument for ${oRel.values.join(", ")}), ` : "") + `${s.rules} rules, ${s.checks} checks, ${s.filled} of ${s.total} fields filled`,
 				objects: engine.objects(this._cc, this._doc).map(o => ({name: o.name, badi: o.badi, selected: true})),
 				system: "DEV",
 				priority: "normal",
@@ -508,7 +501,7 @@ sap.ui.define([
 				oApp.setProperty("/requests", [...aReq, {
 					ticket: sTicket,
 					scenario: d.scenario,
-					rules: String(this._rules().length),
+					rules: String(this._rules().length + (engine.relevanceOf(this._cc, this._doc) ? 1 : 0)),
 					objectsText: aObjects.map(o => o.name).join(", "),
 					systemText: d.system === "DEV" ? "S4D, client 100" : "S4X, client 200",
 					sentAt: new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}),

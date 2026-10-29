@@ -70,7 +70,7 @@ sap.ui.define([], function () {
 			joule: "<p>Your <em>Finance Operations Agent</em>: 6 cancellations last month, 4 of them with reason 02.</p>",
 			hub: "<p>Wrote a guide in Spanish for the AR team on when to use each cancellation reason.</p>"},
 		{re: /auto.?suggest|suggest|help me map/i,
-			genb: "<p>Auto-suggest starts from the GENB rule library: field mappings, value maps and checks used in live projects for this scenario.</p>",
+			genb: "<p>The GENB rule library has the field mappings, value maps and checks used in live projects for this scenario.</p>",
 			joule: "<p>Your agents add what is specific to you: custom billing types used in the last 90 days and AIF value maps that already exist, so we reuse them.</p>",
 			hub: "<p>Your model reviews the open fields against your documents and proposes rules for what is left, each marked for review.</p>"}
 	];

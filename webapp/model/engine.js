@@ -474,7 +474,8 @@ sap.ui.define([
 	function stats(cc, doc) {
 		const m = model(cc, doc), R = rulesOf(cc, doc), leaves = Object.values(m.nodes).filter(n => n.leaf);
 		const filled = new Set(R.filter(r => r.type !== "check").map(r => r.nodeId));
-		return {total: leaves.length, filled: filled.size, checks: R.filter(r => r.type === "check").length, rules: R.length};
+		// the document relevance rule (SKIP) counts as a rule, as it does in the rules list
+		return {total: leaves.length, filled: filled.size, checks: R.filter(r => r.type === "check").length, rules: R.length + (relevanceOf(cc, doc) ? 1 : 0)};
 	}
 	function mappedCounts(cc, doc) {
 		const m = model(cc, doc), cnt = {};
@@ -486,6 +487,7 @@ sap.ui.define([
 	}
 
 	/* ======================= Auto-suggest ======================= */
+	// not offered in the UI for now (the button was taken out); kept so it can come back
 	function autoSuggest(cc, doc) {
 		const m = model(cc, doc), d = docDef(cc, doc), R = rulesOf(cc, doc);
 		let added = 0;
@@ -688,7 +690,7 @@ sap.ui.define([
 			`" Scenario .......: ${d.label}, ${d.dir === "in" ? "inbound" : "outbound"}`,
 			`" eDocument type .: ${d.edoc} / interface ${d.iface}`,
 			`" Source type ....: ${d.sourceType}, ${d.source}`,
-			`" Rules ..........: ${rs.length}`,
+			`" Rules ..........: ${rs.length + (rel ? 1 : 0)}`,
 			...(aReview && aReview.length ? [`" AI review ......: ${aReview.map(k => ({joule: "Joule", hub: "SAP Generative AI Hub", genb: "GENB AI"}[k])).join(", ")}`] : []),
 			"\" ----------------------------------------------------------------",
 			`CLASS ${className(cc, d).toLowerCase()} IMPLEMENTATION.`, ""];

@@ -41,7 +41,7 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 
 - **Workspace:**
   - árvore do XML com busca e filtros;
-  - **Auto-suggest**, que cria as regras óbvias (MAP, CHANGE com value map, CONST para valores fixos, concatenação BELNR+GJAHR na autofaturação);
+  - sugestões de origem SAP por campo, vindas da biblioteca de regras (o botão *Auto-suggest*, que criava todas as regras óbvias de uma vez, foi retirado da tela por enquanto; a lógica continua em `engine.autoSuggest`);
   - **Ask AI** no cabeçalho e no painel do campo selecionado. Cada parte da resposta mostra qual motor a produziu;
   - elementos repetidos (linhas, notas, meios de pagamento) aparecem uma vez só, como lista (*1..n*), com a estrutura de todas as ocorrências do exemplo;
   - diálogo de regra (Map, Check, Change, Constant) com o catálogo de campos SAP do source (SD, MM ou FI);
@@ -55,12 +55,12 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 
 1. Na **Overview**, mostrar o card *Your AI, your choice* e clicar em **Check my master data**: a resposta vem em três partes, uma por motor. Desligar dois motores e perguntar de novo para mostrar que cada um funciona sozinho.
 2. Abrir **France** no menu lateral e comentar os 4 cenários (venda, compra inbound, autofaturação, e-reporting).
-3. Abrir **Customer Invoice** e clicar em **Auto-suggest**. Os KPIs sobem e as pills MAP/CHANGE/CONST aparecem na árvore.
+3. Abrir **Customer Invoice** e navegar na árvore do XML.
 4. Selecionar `EndpointID` em *AccountingCustomerParty* e clicar em **Ask AI**.
 5. Selecionar `InvoiceTypeCode` e mostrar o **Change value** com o value map (F2 → 380, G2 → 381).
 6. Clicar em **Generate Code**, escolher quem revisa (todas as IAs ativas), rolar o ABAP até as notas de revisão e trocar o objeto para os custom fields.
 7. Clicar em **Request B&B Implementation**, enviar e mostrar o ticket criado.
-8. *(Opcional)* Mostrar o México: **CFDI Invoice**, Auto-suggest e os objetos de UI functions (Get PDF, Cancel).
+8. *(Opcional)* Mostrar o México: **CFDI Invoice** e os objetos de UI functions (Get PDF, Cancel).
 
 URLs diretas, úteis para começar uma tomada: `#/country/FR`, `#/country/FR/customer-invoice`, `#/country/FR/self-billing`, `#/country/FR/e-reporting`, `#/country/DE/cii-email`, `#/country/MX/cfdi-invoice`, `#/country/MX/cfdi-payment`.
 
