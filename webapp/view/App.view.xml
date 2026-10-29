@@ -3,6 +3,7 @@
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:tnt="sap.tnt"
+	xmlns:core="sap.ui.core"
 	displayBlock="true"
 	height="100%">
 	<tnt:ToolPage id="toolPage" sideExpanded="{app>/sideExpanded}">
@@ -18,7 +19,7 @@
 				<Image id="logo" src="webapp/img/logo.svg" height="1.875rem" alt="B&amp;B" tooltip="Overview" press=".onHome" class="sapUiTinyMarginBeginEnd">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Image>
-				<Link text="GENB eDocument Accelerator" press=".onHome" class="edocShellTitle">
+				<Link text="GENB Accelerator" press=".onHome" class="edocShellTitle">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Link>
 				<ToolbarSeparator/>
@@ -53,11 +54,16 @@
 					<tnt:NavigationListItem key="home" text="Overview" icon="sap-icon://home"/>
 					<!-- Countries: available ones open the country page, planned ones only show a message -->
 					<tnt:NavigationListGroup text="Countries">
+						<!-- data-tag: short status of the mandates in the news (Live, 2027, Reform), drawn by style.css -->
 						<tnt:NavigationListItem key="available" text="Available" icon="sap-icon://flag" selectable="false" expanded="true" items="{app>/countries}">
-							<tnt:NavigationListItem key="{app>code}" text="{app>name}"/>
+							<tnt:NavigationListItem key="{app>code}" text="{app>name}">
+								<tnt:customData><core:CustomData key="tag" value="{app>tag}" writeToDom="true"/></tnt:customData>
+							</tnt:NavigationListItem>
 						</tnt:NavigationListItem>
-						<tnt:NavigationListItem key="planned" text="Planned" icon="sap-icon://future" selectable="false" expanded="false" items="{app>/planned}">
-							<tnt:NavigationListItem key="{app>code}" text="{app>name}" selectable="false"/>
+						<tnt:NavigationListItem key="planned" text="Planned" icon="sap-icon://future" selectable="false" expanded="true" items="{app>/planned}">
+							<tnt:NavigationListItem key="{app>code}" text="{app>name}" selectable="false">
+								<tnt:customData><core:CustomData key="tag" value="{app>tag}" writeToDom="true"/></tnt:customData>
+							</tnt:NavigationListItem>
 						</tnt:NavigationListItem>
 					</tnt:NavigationListGroup>
 					<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>

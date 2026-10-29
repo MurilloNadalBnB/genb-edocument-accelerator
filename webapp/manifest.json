@@ -3,7 +3,7 @@
 	"sap.app": {
 		"id": "bnb.edoc",
 		"type": "application",
-		"title": "GENB eDocument Accelerator",
+		"title": "GENB Accelerator",
 		"description": "Mapping Workbench (mock)",
 		"applicationVersion": {"version": "0.1.0"}
 	},

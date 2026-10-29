@@ -1,4 +1,4 @@
-/* GENB eDocument Accelerator: the few things standard UI5 controls do not cover.
+/* GENB Accelerator: the few things standard UI5 controls do not cover.
    Colors come from the Horizon theme variables, so Morning and Evening both work. */
 
 /* Shell header: app title in the shell text color, like the Work Zone header */
@@ -58,3 +58,22 @@
 .edocEngine { height: 100%; box-sizing: border-box; padding: .75rem 1rem; border: 1px solid var(--sapGroup_ContentBorderColor); border-radius: var(--sapElement_BorderCornerRadius); }
 /* same height for the three engine boxes (the grid cells float by default) */
 .edocEngines { display: flex; flex-wrap: wrap; }
+
+/* Side navigation: status tag of the mandates in the news (data-tag from the country list).
+   The link's own ::after is UI5's selection marker, so the tag hangs off the text span, one rule per value. */
+.sapTntNLI[data-tag]:not([data-tag=""]) > a { position: relative; }
+.sapTntNLI[data-tag]:not([data-tag=""]) .sapTntNLIText { padding-right: 3.5rem; box-sizing: border-box; max-width: 100%; }
+.sapTntNLI[data-tag]:not([data-tag=""]) .sapTntNLIText::after {
+	position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+	padding: 0 .375rem;
+	border-radius: var(--sapElement_BorderCornerRadius);
+	font-family: var(--sapFontBoldFamily);
+	font-size: var(--sapFontSmallSize);
+	line-height: 1.125rem;
+	color: var(--sapInformativeTextColor);
+	background: var(--sapInformationBackground);
+	border: 1px solid var(--sapInformativeElementColor);
+}
+.sapTntNLI[data-tag="Live"]:not([data-tag=""]) .sapTntNLIText::after { content: "Live"; color: var(--sapPositiveTextColor); background: var(--sapSuccessBackground); border-color: var(--sapPositiveElementColor); }
+.sapTntNLI[data-tag="2027"] .sapTntNLIText::after { content: "2027"; }
+.sapTntNLI[data-tag="Reform"] .sapTntNLIText::after { content: "Reform"; }

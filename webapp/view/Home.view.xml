@@ -47,14 +47,21 @@
 							<l:Grid content="{app>/ai/engines}" defaultSpan="XL4 L4 M12 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd edocEngines">
 								<VBox class="edocEngine">
 									<HBox alignItems="Center" justifyContent="SpaceBetween">
+										<!-- name and provider shrink and wrap, so the switch never leaves the box on narrow screens -->
 										<HBox alignItems="Center">
-											<Avatar src="{app>icon}" initials="{app>initials}" imageFitType="Contain" displaySize="S" displayShape="Square" backgroundColor="{app>color}" class="sapUiSmallMarginEnd"/>
+											<layoutData><FlexItemData shrinkFactor="1" minWidth="0"/></layoutData>
+											<Avatar src="{app>icon}" initials="{app>initials}" imageFitType="Contain" displaySize="S" displayShape="Square" backgroundColor="{app>color}" class="sapUiSmallMarginEnd">
+												<layoutData><FlexItemData shrinkFactor="0"/></layoutData>
+											</Avatar>
 											<VBox>
-												<Title text="{app>name}" level="H5"/>
-												<Label text="{app>by}"/>
+												<layoutData><FlexItemData shrinkFactor="1" minWidth="0"/></layoutData>
+												<Title text="{app>name}" level="H5" wrapping="true"/>
+												<Label text="{app>by}" wrapping="true"/>
 											</VBox>
 										</HBox>
-										<Switch state="{app>enabled}" change=".onEngineSwitch" tooltip="Use {app>name}"/>
+										<Switch state="{app>enabled}" change=".onEngineSwitch" tooltip="Use {app>name}" class="sapUiTinyMarginBegin">
+											<layoutData><FlexItemData shrinkFactor="0"/></layoutData>
+										</Switch>
 									</HBox>
 									<ObjectStatus text="{app>status}" icon="sap-icon://connected" state="{= ${app>enabled} ? 'Success' : 'None' }" class="sapUiSmallMarginTop"/>
 									<Text text="{app>desc}" class="sapUiTinyMarginTop"/>

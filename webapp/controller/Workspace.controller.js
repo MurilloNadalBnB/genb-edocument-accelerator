@@ -17,7 +17,7 @@ sap.ui.define([
 	// what each AI engine checks when it reviews the generated code
 	const REVIEW_ROLE = {
 		joule: "Checks the code against your custom objects, billing types and existing AIF value maps.",
-		hub: "Reviews the code with the LLM of your BTP subscription and adds explanations as comments.",
+		hub: "Reviews the code with the LLM of your SAP Business AI Platform subscription and adds explanations as comments.",
 		genb: "Checks the code against B&B's DRC patterns and the legal schema of the country."
 	};
 
@@ -36,6 +36,23 @@ sap.ui.define([
 			oTree.attachToggleOpenState(this._onToggleOpenState, this);
 			oTree.attachBrowserEvent("dblclick", this._onTreeDblClick, this);
 			this.getView().attachBrowserEvent("click", this._onXmlClick, this);
+			this.getOwnerComponent().getEventBus().subscribe("edoc", "relevance", this._onRelevance, this);
+		},
+
+		/* =================== Document relevance (requirement typed in the AI assistant) =================== */
+		_onRelevance: function (sChannel, sEvent, oData) {
+			if (oData.code !== this._cc || oData.doc !== this._doc) { return; }
+			engine.setRelevance(this._cc, this._doc, oData.types);
+			this._markDirty();
+			this._refreshAll();
+			MessageToast.show(`Rule added: no eDocument for billing types ${oData.types.join(", ")}.`);
+		},
+
+		_relevanceRow: function () {
+			const rel = engine.relevanceOf(this._cc, this._doc);
+			return rel && {id: "relevance", nodeId: null, type: "relevance", short: "SKIP", icon: "sap-icon://decline", state: "Indication03", source: rel.field,
+				desc: `No eDocument for billing types ${rel.values.join(", ")}`, field: "Document relevance", path: "IF_EDOC_ADAPTOR~IS_RELEVANT",
+				shortPath: "Whole billing document", selected: false, auto: false};
 		},
 
 		/* =================== Routing =================== */
@@ -337,6 +354,8 @@ sap.ui.define([
 					auto: !!r.auto
 				});
 			});
+			const oRel = this._relevanceRow();
+			if (oRel) { aAll.unshift(oRel); }
 			this._ws.setProperty("/allRules", aAll);
 			this._ws.setProperty("/allRulesTitle", `All rules (${aAll.length})`);
 		},
@@ -356,6 +375,10 @@ sap.ui.define([
 
 		onEditRule: function (oEvent) {
 			const sId = oEvent.getSource().getBindingContext("ws").getProperty("id");
+			if (sId === "relevance") {
+				MessageToast.show("Describe the change in the AI assistant, for example: billing type ZF5 must not create e-invoices.");
+				return;
+			}
 			const r = this._rules().find(x => x.id === sId);
 			this._select(r.nodeId);
 			this._openDialog(r.nodeId, r.type, r.id);
@@ -363,6 +386,13 @@ sap.ui.define([
 
 		onDeleteRule: function (oEvent) {
 			const sId = oEvent.getSource().getBindingContext("ws").getProperty("id");
+			if (sId === "relevance") {
+				engine.setRelevance(this._cc, this._doc, null);
+				this._markDirty();
+				this._refreshAll();
+				MessageToast.show("Rule deleted.");
+				return;
+			}
 			const aRules = this._rules();
 			aRules.splice(aRules.findIndex(x => x.id === sId), 1);
 			this._markDirty();
@@ -371,7 +401,8 @@ sap.ui.define([
 		},
 
 		onRuleRowPress: function (oEvent) {
-			this._gotoNode(oEvent.getSource().getBindingContext("ws").getProperty("nodeId"));
+			const sNode = oEvent.getSource().getBindingContext("ws").getProperty("nodeId");
+			if (sNode) { this._gotoNode(sNode); }
 		},
 
 		onClearRules: function () {
@@ -503,7 +534,7 @@ sap.ui.define([
 
 		/** One AI active: generate right away. More than one: ask which AI reviews the code, unless remembered. */
 		onGenerate: function () {
-			if (!this._rules().length) {
+			if (!this._rules().length && !engine.relevanceOf(this._cc, this._doc)) {
 				MessageToast.show("Add at least one rule first.");
 				return;
 			}

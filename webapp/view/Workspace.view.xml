@@ -258,14 +258,17 @@
 										illustrationSize="Spot"
 										title="No rules yet"
 										description="Pick a field on the left and choose Map value, Check or Change value. Or use Auto-suggest to prefill the obvious ones."/>
+									<!-- contextualWidth: the columns pop in below the field when the side panel is narrow (small laptop screens) -->
 									<Table
 										items="{ws>/allRules}"
 										visible="{= ${ws>/allRules}.length > 0 }"
-										sticky="ColumnHeaders">
+										sticky="ColumnHeaders"
+										contextualWidth="Auto"
+										popinLayout="GridSmall">
 										<columns>
-											<Column width="34%"><Text text="XML field"/></Column>
-											<Column width="22%"><Text text="Rule"/></Column>
-											<Column><Text text="SAP source / details"/></Column>
+											<Column><Text text="XML field"/></Column>
+											<Column width="22%" minScreenWidth="30rem" demandPopin="true"><Text text="Rule"/></Column>
+											<Column minScreenWidth="30rem" demandPopin="true"><Text text="SAP source / details"/></Column>
 											<Column width="5.5rem" hAlign="End"/>
 										</columns>
 										<items>
@@ -312,7 +315,7 @@
 						<VBox height="100%" renderType="Bare">
 							<OverflowToolbar style="Clear">
 								<Title text="ABAP Preview" level="H4"/>
-								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="20rem" tooltip="Generated objects for this scenario">
+								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="16rem" tooltip="Generated objects for this scenario">
 									<core:ListItem key="{ws>key}" text="{ws>text}" additionalText="{ws>badi}"/>
 								</Select>
 								<ObjectStatus text="{= ${ws>/obj/generated} ? 'From ' + ${ws>/stats/rules} + ' rules' : 'From settings' }" state="{= ${ws>/obj/generated} ? 'Indication05' : 'Indication04' }" inverted="true"/>
@@ -321,7 +324,7 @@
 									<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
 								</ObjectStatus>
 								<ToolbarSpacer/>
-								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode"/>
+								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode" tooltip="Copy the code for your own team"/>
 								<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl">
 									<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 								</Button>

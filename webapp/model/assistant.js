@@ -77,13 +77,33 @@ sap.ui.define([], function () {
 	const FALLBACK = {
 		genb: "<p>GENB AI knows the legal XML of each country and the rules B&amp;B used in live projects. Ask about a field, a scenario or a legal change.</p>",
 		joule: "<p>Joule adds your own agents and knowledge bases, for example to check your master data.</p>",
-		hub: "<p>The SAP Generative AI Hub uses the models of your SAP BTP subscription on your documents, with data masking.</p>"
+		hub: "<p>The SAP Generative AI Hub uses the models of your SAP Business AI Platform subscription on your documents, with data masking.</p>"
+	};
+
+	// "Billing types ZF2 and ZG2 must not create e-invoices": a requirement, not a question. Returns the billing types or null.
+	function relevance(sPrompt) {
+		const p = sPrompt || "";
+		if (!/billing type|fkart/i.test(p) || !/\b(not|no|never|exclude|skip|without|n't)\b/i.test(p)) { return null; }
+		const types = [...new Set((p.match(/\b[A-Z]{1,2}[0-9]{1,2}[A-Z]?\b/g) || []))];
+		return types.length ? types : ["ZF2", "ZG2"];
+	}
+	const relevanceAnswer = (types, oCtx) => {
+		const t = types.map(x => `<code>${x}</code>`).join(" and ");
+		const added = oCtx ? `<strong>Rule added</strong> to ${oCtx.docLabel} (${oCtx.countryName}): no eDocument for ${t}.` : "Open a scenario and ask again to add the rule.";
+		return {
+			joule: `<p>Your <em>Order-to-Cash Agent</em> knows these billing types: ${t} are pro forma and internal documents, not legal invoices. 37 of them were posted last month.</p>`,
+			genb: `<p>The standard DRC customizing cannot exclude billing types here. In live projects B&amp;B uses the method <code>IS_RELEVANT</code> of BAdI <code>EDOC_ADAPTOR</code>. ${added}</p>`,
+			hub: "<p>Generated the <code>IS_RELEVANT</code> method and reviewed it with your model: no issues, the other billing types are not affected. Open <strong>Code Preview</strong> to see it.</p>"
+		};
 	};
 
 	return {
+		relevance,
+
 		/** Answer a prompt with the parts of the engines in aKeys; oCtx (optional) is the XML field selected in the workspace. */
 		answer: function (sPrompt, oCtx, aKeys) {
-			let hit = (oCtx && FIELDS.find(f => f.re.test(oCtx.field))) || TOPICS.find(t => t.re.test(sPrompt)) || FIELDS.find(f => f.re.test(sPrompt));
+			const types = relevance(sPrompt);
+			let hit = types ? relevanceAnswer(types, oCtx) : (oCtx && FIELDS.find(f => f.re.test(oCtx.field))) || TOPICS.find(t => t.re.test(sPrompt)) || FIELDS.find(f => f.re.test(sPrompt));
 			if (!hit && oCtx) {
 				hit = {
 					genb: `<p><strong>${oCtx.field}</strong> in ${oCtx.docLabel} (${oCtx.countryName}), path <code>${oCtx.path}</code>. ` + (oCtx.suggestion ? `The GENB rule library maps it from <code>${oCtx.suggestion}</code> in similar projects.</p>` : "No rule in the GENB library yet; B&amp;B can add it when implementing your package.</p>"),
@@ -94,6 +114,6 @@ sap.ui.define([], function () {
 			hit = hit || FALLBACK;
 			return aKeys.map(k => ({engine: k, html: hit[k]}));
 		},
-		prompts: ["Which customers are missing a SIREN?", "Explain self-billing in France", "What changes for e-reporting?", "How does CFDI cancellation work?"]
+		prompts: ["Billing types ZF2 and ZG2 must not create e-invoices", "Which customers are missing a SIREN?", "Explain self-billing in France", "What changes for e-reporting?"]
 	};
 });

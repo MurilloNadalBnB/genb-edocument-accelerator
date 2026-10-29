@@ -1,4 +1,4 @@
-# GENB eDocument Accelerator: Mapping Workbench (mock)
+# GENB Accelerator: Mapping Workbench (mock)
 
 Protótipo navegável, com visual **SAP Fiori (Horizon)**, de um produto que ainda não existe. A ideia: o consultor mapeia, de forma visual, cada campo do XML legal de um país (SAP DRC / eDocument) para um campo SAP, define validações e transformações, e a ferramenta gera o código ABAP.
 
@@ -19,14 +19,14 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
 ## O que tem na demo
 
 - **Cabeçalho no padrão do Work Zone / Launchpad:**
-  - logo da B&B, título *GENB eDocument Accelerator* e menu do app *Mapping Workbench*;
+  - logo da B&B, título *GENB Accelerator* e menu do app *Mapping Workbench*;
   - busca, **AI Assistant**, troca de tema (Horizon Morning / Evening), notificações e product switch;
-  - perfil fictício (*Jordan Lee*).
-- **Menu lateral:** Overview; *Countries* com os nós *Available* (França, Alemanha, México, Polônia) e *Planned* (Bélgica, Itália, Portugal, Espanha), em ordem alfabética; *Rule Library* e *B&B Requests*; *Settings* no rodapé.
+  - perfil fictício (*Tori Hayes*, key user de eDocument).
+- **Menu lateral:** Overview; *Countries* com os nós *Available* (Bélgica, França, Alemanha, México, Polônia, Eslováquia, UAE) e *Planned* (Brasil, Croácia, Grécia, Itália, Malásia, Portugal, Arábia Saudita, Espanha), em ordem alfabética, com etiquetas nos mandatos do momento (*Live*, *2027*, *Reform*); *Rule Library* e *B&B Requests*; *Settings* no rodapé.
 - **Overview:**
   - card **Your AI, your choice**: três motores de IA, que podem ser usados sozinhos ou juntos, cada um com seu switch:
     - **Joule**: agentes e knowledge bases que o cliente já tem;
-    - **SAP Generative AI Hub** (SAP AI Core): os LLMs da assinatura BTP do cliente, com grounding e data masking;
+    - **SAP Generative AI Hub** (SAP AI Core): os LLMs da assinatura SAP Business AI Platform (antigo SAP BTP) do cliente, com grounding e data masking;
     - **GENB AI**: o conhecimento de DRC da B&B;
   - os 4 passos, incluindo *Generate, or let B&B implement*;
   - tiles dos países e dos pedidos enviados à B&B.
@@ -48,6 +48,7 @@ Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a
   - XML Preview com os campos mapeados destacados;
   - **Generate Code**: o ABAP sai das regras (mesmas regras, mesmo código). Com mais de uma IA ligada, um diálogo pergunta qual revisa o código: todas as ativas (recomendado) ou só uma. A escolha aparece no cabeçalho do código e nas notas de revisão no final; com uma IA só, gera direto;
   - Code Preview com os objetos do cenário: adaptor (BAdI `EDOC_ADAPTOR`, gerado das regras, com AIF value maps), mapeamento inbound, e-mail (partner connector), custom fields do cockpit e UI functions (ações do cockpit);
+  - **requisito em linguagem natural**: no AI Assistant, frases como *Billing types ZF2 and ZG2 must not create e-invoices* viram uma regra de relevância do documento (*SKIP* na lista de regras) e o ABAP ganha o método `IF_EDOC_ADAPTOR~IS_RELEVANT`, com notas de revisão de cada IA;
   - **Request B&B Implementation**: envia o pacote à B&B, simulando a abertura de um ticket no ERP da B&B (aparece em notificações, no tile da Overview e em *B&B Requests*).
 
 ## Roteiro sugerido para o vídeo

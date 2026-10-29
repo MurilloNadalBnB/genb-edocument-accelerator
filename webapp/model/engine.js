@@ -9,7 +9,7 @@ sap.ui.define([
 	// company: which XML party is the company code ("seller" for sales, "buyer" for purchases)
 	// partner: master data table of the business partner (KNA1 customer, LFA1 supplier)
 	const COUNTRIES = [
-		{code: "FR", name: "France", short: "2026 reform, UBL + e-reporting", scenario: "B2B e-invoicing and e-reporting reform through a certified platform (PA)", focus: true, docs: [
+		{code: "FR", name: "France", tag: "Live", short: "2026 reform, UBL + e-reporting", scenario: "B2B e-invoicing and e-reporting reform through a certified platform (PA)", focus: true, docs: [
 			{id: "customer-invoice", label: "Customer Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "FR_B2BINV", iface: "FR_UBL_INVOICE", schema: "UBL 2.1 Invoice, EN 16931 (CIUS FR)", format: "UBL 2.1", sample: "fr/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor", "fields"],
 				desc: "Domestic B2B invoices from SD billing, sent to the certified platform.", source: "SD billing (VBRK / VBRP)"},
 			{id: "supplier-invoice", label: "Supplier Invoice", icon: "sap-icon://inbox", src: "MM", dir: "in", company: "buyer", partner: "LFA1", sourceType: "INV_VERIF", edoc: "FR_B2BINV", iface: "FR_UBL_INBOUND", schema: "UBL 2.1 Invoice, EN 16931 (received)", format: "UBL 2.1", sample: "fr/supplier-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["inbound"],
@@ -19,7 +19,7 @@ sap.ui.define([
 			{id: "e-reporting", label: "E-reporting", icon: "sap-icon://official-service", src: "FI", dir: "out", company: "buyer", partner: "LFA1", sourceType: "EDOC_LIST", edoc: "FR_EREP", iface: "FR_EREPORTING", schema: "E-reporting report, international B2B purchases", format: "E-reporting XML", sample: "fr/e-reporting.xml", lines: ["Invoice"], depth: 2, objects: ["adaptor"],
 				desc: "Purchases from foreign suppliers reported to the tax authority, built from FI and MM invoices.", source: "FI / MM invoices (BKPF / BSEG / BSET)"}
 		]},
-		{code: "DE", name: "Germany", short: "XRechnung, Peppol, ZUGFeRD", scenario: "B2B e-invoicing mandate: XRechnung over Peppol and EN 16931 CII by e-mail", focus: true, docs: [
+		{code: "DE", name: "Germany", tag: "2027", short: "XRechnung, Peppol, ZUGFeRD", scenario: "B2B e-invoicing mandate: XRechnung over Peppol and EN 16931 CII by e-mail", focus: true, docs: [
 			{id: "xrechnung-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_INV", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL in a Peppol SBD", format: "XRechnung UBL (Peppol)", sample: "de/xrechnung-invoice.xml", lines: ["InvoiceLine"], depth: 2, objects: ["adaptor"],
 				desc: "SD invoices sent over Peppol, with the billing PDF attached.", source: "SD billing (VBRK / VBRP)"},
 			{id: "xrechnung-credit", label: "Credit Note (Peppol)", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "DE_CRE", iface: "DE_XRECHNUNG_SBD", schema: "XRechnung 3.0 UBL CreditNote in a Peppol SBD", format: "XRechnung UBL (Peppol)", sample: "de/xrechnung-credit.xml", lines: ["CreditNoteLine"], depth: 2, objects: ["adaptor"],
@@ -33,7 +33,7 @@ sap.ui.define([
 			{id: "cfdi-payment", label: "Payment Complement", icon: "sap-icon://payment-approval", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "MX_PAYMENT", iface: "MX_CFDI_PAGOS20", schema: "CFDI 4.0 Pago with Pagos 2.0 complement", format: "CFDI 4.0 + Pagos 2.0", sample: "mx/cfdi-payment.xml", lines: ["DoctoRelacionado"], depth: 2, objects: ["adaptor", "ui"],
 				desc: "Incoming payments that settle PPD invoices.", source: "FI clearing (BKPF / BSEG / BSAD)"}
 		]},
-		{code: "PL", name: "Poland", short: "KSeF, FA(2)", scenario: "KSeF national e-invoicing system, structure FA(2)", docs: [
+		{code: "PL", name: "Poland", tag: "Live", short: "KSeF, FA(2)", scenario: "KSeF national e-invoicing system, structure FA(2)", docs: [
 			{id: "invoice", label: "Invoice", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
 				desc: "Outgoing billing documents created in SD billing.", source: "SD billing (VBRK / VBRP)"},
 			{id: "credit", label: "Credit Note", icon: "sap-icon://credit-card", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2), KOR", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
@@ -41,9 +41,25 @@ sap.ui.define([
 			{id: "fi", label: "Accounting Document", icon: "sap-icon://accounting-document-verification", src: "FI", dir: "out", company: "seller", partner: "KNA1", sourceType: "FI_INVOICE", edoc: "PL_INV", iface: "PL_KSEF_INVOICE", format: "KSeF FA(2)", schema: "KSeF FA(2)", lines: ["FaWiersz", "ZamowienieWiersz"], depth: 3, objects: ["adaptor"],
 				desc: "FI invoices and credit memos posted directly in accounting (FB70 / FB75).", source: "FI document (BKPF / BSEG / BSET)"}
 		]},
-		{code: "BE", name: "Belgium", short: "Peppol BIS 3.0", planned: true},
+		{code: "BE", name: "Belgium", short: "Peppol BIS 3.0, B2B since 2026", scenario: "Mandatory B2B e-invoicing over Peppol (BIS Billing 3.0) since January 2026", docs: [
+			{id: "customer-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "BE_INV", iface: "BE_PEPPOL_INVOICE", schema: "Peppol BIS Billing 3.0 UBL", format: "Peppol BIS Billing 3.0 UBL", sample: "be/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor"],
+				desc: "Domestic B2B invoices from SD billing, sent over the Peppol network.", source: "SD billing (VBRK / VBRP)"}
+		]},
+		{code: "SK", name: "Slovakia", tag: "2027", short: "Peppol, 5-corner model", scenario: "Domestic B2B e-invoicing and near real-time reporting over Peppol from January 2027", docs: [
+			{id: "customer-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "SK_INV", iface: "SK_PEPPOL_INVOICE", schema: "Peppol BIS Billing 3.0 UBL", format: "Peppol BIS Billing 3.0 UBL", sample: "sk/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor"],
+				desc: "Domestic B2B invoices from SD billing, sent over the Peppol network.", source: "SD billing (VBRK / VBRP)"}
+		]},
+		{code: "AE", name: "UAE", tag: "2027", short: "Peppol PINT AE", scenario: "B2B e-invoicing over Peppol (PINT AE) through accredited service providers, phased from 2027", docs: [
+			{id: "customer-invoice", label: "Customer Invoice (Peppol)", icon: "sap-icon://customer-financial-fact-sheet", src: "SD", dir: "out", company: "seller", partner: "KNA1", sourceType: "SD_INVOICE", edoc: "AE_INV", iface: "AE_PINT_INVOICE", schema: "Peppol PINT AE UBL", format: "Peppol PINT AE UBL", sample: "ae/customer-invoice.xml", lines: ["InvoiceLine"], depth: 1, objects: ["adaptor"],
+				desc: "Domestic B2B invoices from SD billing, sent over the Peppol network.", source: "SD billing (VBRK / VBRP)"}
+		]},
+		{code: "BR", name: "Brazil", tag: "Reform", short: "Tax reform: CBS and IBS on NF-e", planned: true},
+		{code: "HR", name: "Croatia", short: "Fiscalization 2.0", planned: true},
+		{code: "GR", name: "Greece", short: "myDATA e-invoicing", planned: true},
 		{code: "IT", name: "Italy", short: "FatturaPA, SdI", planned: true},
+		{code: "MY", name: "Malaysia", short: "MyInvois", planned: true},
 		{code: "PT", name: "Portugal", short: "CIUS-PT", planned: true},
+		{code: "SA", name: "Saudi Arabia", short: "ZATCA FATOORA", planned: true},
 		{code: "ES", name: "Spain", short: "SII / VeriFactu", planned: true}
 	].sort((a, b) => !!a.planned - !!b.planned || a.name.localeCompare(b.name)); // available first, each group alphabetical
 
@@ -401,7 +417,8 @@ sap.ui.define([
 		if (L === "TaxExemptionReasonCode") { return vm([["A0", "VATEX-FR-CGI275"], ["E0", "VATEX-EU-132"], ["R1", "VATEX-EU-AE"]]); }
 		if (["CategoryCode", "Code"].includes(L)) { return vm([["A1", "S"], ["A0", "E"], ["R1", "AE"]]); }
 		if (["P_12", "Percent", "RateApplicablePercent"].includes(L)) {
-			const r = {PL: [["A1", "23"], ["A2", "8"], ["A3", "5"]], FR: [["A1", "20"], ["A2", "10"], ["A3", "5.5"]], DE: [["A1", "19"], ["A2", "7"]], MX: [["A1", "16"], ["A0", "0"]]}[cc];
+			const r = {PL: [["A1", "23"], ["A2", "8"], ["A3", "5"]], FR: [["A1", "20"], ["A2", "10"], ["A3", "5.5"]], DE: [["A1", "19"], ["A2", "7"]], MX: [["A1", "16"], ["A0", "0"]],
+				BE: [["A1", "21"], ["A2", "12"], ["A3", "6"]], SK: [["A1", "23"], ["A2", "19"], ["A3", "5"]], AE: [["A1", "5"], ["A0", "0"]]}[cc] || [["A1", ""]];
 			return vm(r);
 		}
 		return [{from: "", to: ""}];
@@ -541,9 +558,24 @@ sap.ui.define([
 	const className = (cc, d) => d.dir === "in" ? `ZCL_GENB_EDOC_INBOUND_${cc}` : `ZCL_GENB_EDOC_ADAPTOR_${cc}`;
 	const vmapName = (cc, n) => `ZGENB_${cc}_${snake(n.local).toUpperCase()}`.slice(0, 30);
 
+	/* ======================= Document relevance ======================= */
+	// Requirements that are not about one XML field, e.g. "billing types ZF2 and ZG2 never create an e-invoice".
+	// Captured from the AI assistant, generated as IF_EDOC_ADAPTOR~IS_RELEVANT (outbound SD only).
+	const RELEVANCE = {};
+	const relevanceOf = (cc, doc) => RELEVANCE[key(cc, doc)] || null;
+	function setRelevance(cc, doc, aTypes) {
+		if (aTypes && aTypes.length) { RELEVANCE[key(cc, doc)] = {field: "VBRK-FKART", values: aTypes}; } else { delete RELEVANCE[key(cc, doc)]; }
+	}
+
 	// review notes per AI engine, written at the end of the generated class
-	function reviewNotes(k, d, rs, vmaps) {
-		const checks = rs.filter(r => r.type === "check").length;
+	function reviewNotes(k, d, rs, vmaps, rel) {
+		const checks = rs.filter(r => r.type === "check").length, types = rel ? rel.values.join(" and ") : "";
+		if (rel) {
+			const n = {genb: `GENB AI: IS_RELEVANT is the B&B pattern when the DRC customizing cannot exclude billing types (${d.edoc}).`,
+				joule: `Joule (Order-to-Cash Agent): ${types} are pro forma and internal billing types in your system, 37 documents last month.`,
+				hub: `SAP Generative AI Hub: checked IS_RELEVANT against the rest of the class, the other billing types are not affected.`}[k];
+			return [n, ...reviewNotes(k, d, rs, vmaps, null)];
+		}
 		switch (k) {
 			case "genb": return [`GENB AI: matches the B&B pattern for ${d.label} (${d.edoc}), ${vmaps.length} AIF value maps reused from the rule library.`,
 				checks ? `GENB AI: ${checks} checks, messages follow the cockpit wording.` : "GENB AI: no checks yet, live projects usually check the buyer's tax ID."];
@@ -557,7 +589,8 @@ sap.ui.define([
 
 	function genAbap(cc, doc, aReview) {
 		const c = country(cc), d = docDef(cc, doc), m = model(cc, doc), rs = sortedRules(cc, doc);
-		if (!rs.length) { return null; }
+		const rel = d.dir === "out" && d.src === "SD" ? relevanceOf(cc, doc) : null;
+		if (!rs.length && !rel) { return null; }
 		const bIn = d.dir === "in", srcVar = SRC_VAR[d.src], itemTab = ITEM_TABLE[d.src], sfx = d.src.toLowerCase();
 		const seg = n => snake(n.local);
 		const pathFrom = (n, stop) => { const parts = []; let x = n; while (x && x.id !== stop) { parts.unshift(seg(x)); x = x.parent ? m.nodes[x.parent] : null; } return parts.join("-"); };
@@ -650,7 +683,7 @@ sap.ui.define([
 		const ind = (a, s) => a.map(l => l ? s + l : "");
 		const out = [
 			"\" ----------------------------------------------------------------",
-			"\" Generated by GENB eDocument Accelerator (mock preview)",
+			"\" Generated by GENB Accelerator (mock preview)",
 			`" Country ........: ${c.name} (${c.code})`,
 			`" Scenario .......: ${d.label}, ${d.dir === "in" ? "inbound" : "outbound"}`,
 			`" eDocument type .: ${d.edoc} / interface ${d.iface}`,
@@ -665,6 +698,18 @@ sap.ui.define([
 				"    \" is_xml: received UBL invoice, cs_invoice: MM invoice to post (MIRO)",
 				"    DATA lt_error_txt TYPE string_table.", "");
 		} else {
+			if (rel) {
+				const ls = srcVar.replace("is_", "ls_");
+				out.push("  METHOD if_edoc_adaptor~is_relevant.",
+					`    " Requirement from the AI assistant: billing types ${rel.values.join(", ")} never create a ${d.edoc} eDocument`,
+					`    CHECK io_source->mv_source_type = '${d.sourceType}'.`,
+					`    DATA(${ls}) = VALUE ${SRC_TYPE[d.src]}( ).`,
+					`    io_source->get_data( IMPORTING es_data = ${ls} ).`,
+					`    IF ${rel.values.map(v => `${ls}-document_header-fkart = '${q(v)}'`).join("\n       OR ")}.`,
+					"      cv_relevant = abap_false.",
+					"    ENDIF.",
+					"  ENDMETHOD.", "");
+			}
 			out.push("  METHOD if_edoc_adaptor~set_output_data.",
 				`    CHECK iv_interface_id = '${d.iface}'.`, "",
 				"    CASE io_source->mv_source_type.",
@@ -706,7 +751,7 @@ sap.ui.define([
 		}
 		if (aReview && aReview.length) {
 			out.push("", "\" ----------------------------------------------------------------", "\" AI review notes:");
-			aReview.forEach(k => reviewNotes(k, d, rs, vmaps).forEach(l => out.push(`"   ${l}`)));
+			aReview.forEach(k => reviewNotes(k, d, rs, vmaps, rel).forEach(l => out.push(`"   ${l}`)));
 			out.push("\" ----------------------------------------------------------------");
 		}
 		return out.join("\n");
@@ -738,6 +783,6 @@ sap.ui.define([
 		COUNTRIES, TYPES, CATALOG, FORMATS, CONDS, TRANSFORMS, VALMAP_FIELDS,
 		load, country, docDef, catGroups, fieldDesc, model, rulesOf, nextRuleId, countryRuleCount, docRuleCount, totalRuleCount,
 		ancestors, isLine, suggest, defaultCfg, describe, previewText, validate,
-		sortedRules, stats, mappedCounts, autoSuggest, xmlHtml, genAbap, objects, objectCode, shortPath
+		sortedRules, stats, mappedCounts, autoSuggest, xmlHtml, genAbap, objects, objectCode, shortPath, relevanceOf, setRelevance
 	};
 });

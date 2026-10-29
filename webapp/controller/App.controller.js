@@ -111,8 +111,10 @@ sap.ui.define([
 				oModel.setProperty("/ai/messages", aMsgs);
 				oModel.setProperty("/ai/busy", true);
 				this._scrollAi();
+				// a requirement typed while a scenario is open ("ZF2 must not create e-invoices") becomes a rule of that scenario
+				const aTypes = assistant.relevance(sPrompt), oWs = aTypes && this._openScenario();
 				setTimeout(() => {
-					const aParts = assistant.answer(sPrompt, oCtx, aEngines.map(e => e.key)).map(p => {
+					const aParts = assistant.answer(sPrompt, oCtx || oWs, aEngines.map(e => e.key)).map(p => {
 						const oEngine = aEngines.find(e => e.key === p.engine);
 						return {name: oEngine.name, icon: oEngine.icon, initials: oEngine.initials, color: oEngine.color, html: p.html};
 					});
@@ -120,8 +122,18 @@ sap.ui.define([
 					oModel.setProperty("/ai/messages", aMsgs);
 					oModel.setProperty("/ai/busy", false);
 					this._scrollAi();
+					if (oWs) {
+						this.getOwnerComponent().getEventBus().publish("edoc", "relevance", {code: oWs.code, doc: oWs.doc, types: aTypes});
+					}
 				}, 900);
 			});
+		},
+
+		/** Country and scenario of the open workspace (from the URL hash), or null. */
+		_openScenario: function () {
+			const m = /^country\/([A-Z]{2})\/([\w-]+)/.exec(this.getOwnerComponent().getRouter().getHashChanger().getHash() || "");
+			const oDoc = m && engine.docDef(m[1], m[2]);
+			return oDoc ? {code: m[1], doc: m[2], countryName: engine.country(m[1]).name, docLabel: oDoc.label} : null;
 		},
 
 		_scrollAi: function () {
@@ -283,7 +295,7 @@ sap.ui.define([
 									}).addStyleClass("sapUiSmallMarginBeginEnd")
 								}),
 								new StandardListItem({title: "My Settings", icon: "sap-icon://action-settings", type: "Active", press: this.onNotInMock.bind(this)}),
-								new StandardListItem({title: "About", icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show("GENB eDocument Accelerator, product preview (mock data).")}),
+								new StandardListItem({title: "About", icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show("GENB Accelerator, product preview (mock data).")}),
 								new StandardListItem({title: "Sign Out", icon: "sap-icon://log", type: "Active", press: () => MessageToast.show("This is a demo, there is nothing to sign out from.")})
 							]
 						})

@@ -19,15 +19,15 @@ sap.ui.define([
 			document.body.classList.toggle("sapUiSizeCompact", !bCozy);
 			document.body.classList.toggle("sapUiSizeCozy", bCozy);
 
-			const toNav = c => ({code: c.code, name: c.name});
+			const toNav = c => ({code: c.code, name: c.name, tag: c.tag || ""});
 			// Fictional demo profile shown in the shell bar
 			this.setModel(new JSONModel({
 				user: {
-					name: "Jordan Lee",
-					initials: "JL",
-					role: "Senior eDocument Consultant",
-					email: "jordan.lee@bnb-demo.example",
-					company: "B&B Enterprise Solutions (demo)"
+					name: "Tori Hayes",
+					initials: "TH",
+					role: "eDocument Key User",
+					email: "tori.hayes@demo-company.example",
+					company: "Demo Company (fictional)"
 				},
 				countries: engine.COUNTRIES.filter(c => !c.planned).map(toNav),
 				planned: engine.COUNTRIES.filter(c => c.planned).map(toNav),
@@ -56,8 +56,8 @@ sap.ui.define([
 								{text: "Billing handbook, 214 documents", icon: "sap-icon://course-book"},
 								{text: "Customer master guidelines, 38 documents", icon: "sap-icon://course-book"}
 							]},
-						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP BTP", icon: "webapp/img/sap-logo.svg", initials: "", color: "Transparent", status: "Connected", enabled: true,
-							desc: "Use the LLMs of your own BTP subscription on your documents.",
+						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP Business AI Platform", icon: "webapp/img/sap-logo.svg", initials: "", color: "Transparent", status: "Connected", enabled: true,
+							desc: "Use the LLMs of your own SAP Business AI Platform subscription on your documents.",
 							items: [
 								{text: "Your choice of model: GPT, Claude, Gemini, Mistral", icon: "sap-icon://chain-link"},
 								{text: "Grounding on your documents and eDocument history", icon: "sap-icon://documents"},
@@ -67,7 +67,7 @@ sap.ui.define([
 						{key: "genb", name: "GENB AI", by: "B&B Enterprise Solutions", icon: "sap-icon://ai", initials: "", color: "Accent7", status: "Connected", enabled: true,
 							desc: "Add B&B's DRC knowledge, built from live projects.",
 							items: [
-								{text: "Rule library for FR, DE, MX and PL", icon: "sap-icon://course-book"},
+								{text: "Rule library for every available country", icon: "sap-icon://course-book"},
 								{text: "Legal XML schemas and change feed", icon: "sap-icon://official-service"},
 								{text: "Patterns reviewed by B&B consultants", icon: "sap-icon://employee-approvals"},
 								{text: "Updated with every new go-live", icon: "sap-icon://history"}

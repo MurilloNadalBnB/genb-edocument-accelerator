@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<n0:Invoice xmlns:n0="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:n1="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:n2="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+  <n1:CustomizationID>urn:peppol:pint:billing-1@ae-1</n1:CustomizationID>
+  <n1:ProfileID>urn:peppol:bis:billing</n1:ProfileID>
+  <n1:ID>0015660121</n1:ID>
+  <n1:IssueDate>2025-03-31</n1:IssueDate>
+  <n1:DueDate>2025-04-30</n1:DueDate>
+  <n1:InvoiceTypeCode>380</n1:InvoiceTypeCode>
+  <n1:Note>Tax invoice. Payment within 30 days.</n1:Note>
+  <n1:DocumentCurrencyCode>AED</n1:DocumentCurrencyCode>
+  <n1:BuyerReference>60033361</n1:BuyerReference>
+  <n2:InvoicePeriod>
+    <n1:DescriptionCode>3</n1:DescriptionCode>
+  </n2:InvoicePeriod>
+  <n2:OrderReference>
+    <n1:ID>PO-GAC004312</n1:ID>
+    <n1:SalesOrderID>0072340266</n1:SalesOrderID>
+  </n2:OrderReference>
+  <n2:ContractDocumentReference>
+    <n1:ID/>
+  </n2:ContractDocumentReference>
+  <n2:AccountingSupplierParty>
+    <n2:Party>
+      <n1:EndpointID schemeID="0235">1001234567</n1:EndpointID>
+      <n2:PartyName>
+        <n1:Name>Avialis Services Middle East LLC</n1:Name>
+      </n2:PartyName>
+      <n2:PostalAddress>
+        <n1:StreetName>Airport Free Zone, Building 12</n1:StreetName>
+        <n1:CityName>DUBAI</n1:CityName>
+        <n1:PostalZone>00000</n1:PostalZone>
+        <n2:Country>
+          <n1:IdentificationCode>AE</n1:IdentificationCode>
+        </n2:Country>
+      </n2:PostalAddress>
+      <n2:PartyTaxScheme>
+        <n1:CompanyID>100123456700003</n1:CompanyID>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:PartyTaxScheme>
+      <n2:PartyLegalEntity>
+        <n1:RegistrationName>Avialis Services Middle East LLC</n1:RegistrationName>
+        <n1:CompanyID schemeID="0235">1001234567</n1:CompanyID>
+      </n2:PartyLegalEntity>
+      <n2:Contact>
+        <n1:Name>Avialis Services Middle East LLC</n1:Name>
+        <n1:ElectronicMail>invoices@avialis.example</n1:ElectronicMail>
+      </n2:Contact>
+    </n2:Party>
+  </n2:AccountingSupplierParty>
+  <n2:AccountingCustomerParty>
+    <n2:Party>
+      <n1:EndpointID schemeID="0235">1009876543</n1:EndpointID>
+      <n2:PartyName>
+        <n1:Name>Gulf Aero Components FZE</n1:Name>
+      </n2:PartyName>
+      <n2:PostalAddress>
+        <n1:StreetName>Industrial City, Plot 24</n1:StreetName>
+        <n1:CityName>ABU DHABI</n1:CityName>
+        <n1:PostalZone>00000</n1:PostalZone>
+        <n2:Country>
+          <n1:IdentificationCode>AE</n1:IdentificationCode>
+        </n2:Country>
+      </n2:PostalAddress>
+      <n2:PartyTaxScheme>
+        <n1:CompanyID>100987654300003</n1:CompanyID>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:PartyTaxScheme>
+      <n2:PartyLegalEntity>
+        <n1:RegistrationName>Gulf Aero Components FZE</n1:RegistrationName>
+        <n1:CompanyID schemeID="0235">1009876543</n1:CompanyID>
+      </n2:PartyLegalEntity>
+      <n2:Contact>
+        <n1:Telephone>561 000 123</n1:Telephone>
+        <n1:ElectronicMail>ap@gulf-aero.example</n1:ElectronicMail>
+      </n2:Contact>
+    </n2:Party>
+  </n2:AccountingCustomerParty>
+  <n2:Delivery>
+    <n1:ActualDeliveryDate>2025-03-31</n1:ActualDeliveryDate>
+    <n2:DeliveryLocation>
+      <n2:Address>
+        <n1:StreetName>Industrial City, Plot 24</n1:StreetName>
+        <n1:CityName>ABU DHABI</n1:CityName>
+        <n1:PostalZone>00000</n1:PostalZone>
+        <n2:Country>
+          <n1:IdentificationCode>AE</n1:IdentificationCode>
+        </n2:Country>
+      </n2:Address>
+    </n2:DeliveryLocation>
+    <n2:DeliveryParty>
+      <n2:PartyName>
+        <n1:Name>Gulf Aero Components FZE</n1:Name>
+      </n2:PartyName>
+    </n2:DeliveryParty>
+  </n2:Delivery>
+  <n2:PaymentMeans>
+    <n1:PaymentMeansCode name="Credit transfer">30</n1:PaymentMeansCode>
+    <n1:PaymentID>0015660121</n1:PaymentID>
+  </n2:PaymentMeans>
+  <n2:PaymentTerms>
+    <n1:Note>Up to 30.04.2025 without deduction.</n1:Note>
+  </n2:PaymentTerms>
+  <n2:TaxTotal>
+    <n1:TaxAmount currencyID="AED">186.19</n1:TaxAmount>
+    <n2:TaxSubtotal>
+      <n1:TaxableAmount currencyID="AED">3723.71</n1:TaxableAmount>
+      <n1:TaxAmount currencyID="AED">186.19</n1:TaxAmount>
+      <n2:TaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:TaxCategory>
+    </n2:TaxSubtotal>
+  </n2:TaxTotal>
+  <n2:LegalMonetaryTotal>
+    <n1:LineExtensionAmount currencyID="AED">3723.71</n1:LineExtensionAmount>
+    <n1:TaxExclusiveAmount currencyID="AED">3723.71</n1:TaxExclusiveAmount>
+    <n1:TaxInclusiveAmount currencyID="AED">3909.90</n1:TaxInclusiveAmount>
+    <n1:PayableAmount currencyID="AED">3909.90</n1:PayableAmount>
+  </n2:LegalMonetaryTotal>
+  <n2:InvoiceLine>
+    <n1:ID>000020</n1:ID>
+    <n1:InvoicedQuantity unitCode="H87">8.000</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="AED">1089.04</n1:LineExtensionAmount>
+    <n2:OrderLineReference>
+      <n1:LineID/>
+    </n2:OrderLineReference>
+    <n2:AllowanceCharge>
+      <n1:ChargeIndicator>true</n1:ChargeIndicator>
+      <n1:AllowanceChargeReason>Price</n1:AllowanceChargeReason>
+      <n1:Amount currencyID="AED">0.01</n1:Amount>
+    </n2:AllowanceCharge>
+    <n2:Item>
+      <n1:Description>WASHER</n1:Description>
+      <n1:Name>WASHER</n1:Name>
+      <n2:SellersItemIdentification>
+        <n1:ID>000000000001562045</n1:ID>
+      </n2:SellersItemIdentification>
+      <n2:ClassifiedTaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="AED">136128.75</n1:PriceAmount>
+      <n1:BaseQuantity unitCode="H87">1000.000</n1:BaseQuantity>
+    </n2:Price>
+  </n2:InvoiceLine>
+  <n2:InvoiceLine>
+    <n1:ID>000030</n1:ID>
+    <n1:InvoicedQuantity unitCode="H87">8.000</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="AED">593.20</n1:LineExtensionAmount>
+    <n2:OrderLineReference>
+      <n1:LineID/>
+    </n2:OrderLineReference>
+    <n2:AllowanceCharge>
+      <n1:ChargeIndicator>true</n1:ChargeIndicator>
+      <n1:AllowanceChargeReason>Price</n1:AllowanceChargeReason>
+      <n1:Amount currencyID="AED">0.01</n1:Amount>
+    </n2:AllowanceCharge>
+    <n2:Item>
+      <n1:Description>WASHER</n1:Description>
+      <n1:Name>WASHER</n1:Name>
+      <n2:SellersItemIdentification>
+        <n1:ID>000000000001562067</n1:ID>
+      </n2:SellersItemIdentification>
+      <n2:ClassifiedTaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="AED">74148.75</n1:PriceAmount>
+      <n1:BaseQuantity unitCode="H87">1000.000</n1:BaseQuantity>
+    </n2:Price>
+  </n2:InvoiceLine>
+  <n2:InvoiceLine>
+    <n1:ID>000040</n1:ID>
+    <n1:InvoicedQuantity unitCode="H87">4.000</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="AED">296.60</n1:LineExtensionAmount>
+    <n2:OrderLineReference>
+      <n1:LineID/>
+    </n2:OrderLineReference>
+    <n2:AllowanceCharge>
+      <n1:ChargeIndicator>true</n1:ChargeIndicator>
+      <n1:AllowanceChargeReason>Price</n1:AllowanceChargeReason>
+      <n1:Amount currencyID="AED">0.01</n1:Amount>
+    </n2:AllowanceCharge>
+    <n2:Item>
+      <n1:Description>WASHER</n1:Description>
+      <n1:Name>WASHER</n1:Name>
+      <n2:SellersItemIdentification>
+        <n1:ID>000000000001562089</n1:ID>
+      </n2:SellersItemIdentification>
+      <n2:ClassifiedTaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="AED">7414.75</n1:PriceAmount>
+      <n1:BaseQuantity unitCode="H87">100.000</n1:BaseQuantity>
+    </n2:Price>
+  </n2:InvoiceLine>
+  <n2:InvoiceLine>
+    <n1:ID>000055</n1:ID>
+    <n1:InvoicedQuantity unitCode="H87">10.000</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="AED">754.40</n1:LineExtensionAmount>
+    <n2:OrderLineReference>
+      <n1:LineID/>
+    </n2:OrderLineReference>
+    <n2:AllowanceCharge>
+      <n1:ChargeIndicator>false</n1:ChargeIndicator>
+      <n1:AllowanceChargeReason>Price</n1:AllowanceChargeReason>
+      <n1:Amount currencyID="AED">0.03</n1:Amount>
+    </n2:AllowanceCharge>
+    <n2:Item>
+      <n1:Description>WASHER</n1:Description>
+      <n1:Name>WASHER</n1:Name>
+      <n2:SellersItemIdentification>
+        <n1:ID>000000000001562934</n1:ID>
+      </n2:SellersItemIdentification>
+      <n2:ClassifiedTaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="AED">754.43</n1:PriceAmount>
+      <n1:BaseQuantity unitCode="H87">10.000</n1:BaseQuantity>
+    </n2:Price>
+  </n2:InvoiceLine>
+  <n2:InvoiceLine>
+    <n1:ID>000070</n1:ID>
+    <n1:InvoicedQuantity unitCode="H87">13.000</n1:InvoicedQuantity>
+    <n1:LineExtensionAmount currencyID="AED">990.47</n1:LineExtensionAmount>
+    <n2:OrderLineReference>
+      <n1:LineID/>
+    </n2:OrderLineReference>
+    <n2:AllowanceCharge>
+      <n1:ChargeIndicator>true</n1:ChargeIndicator>
+      <n1:AllowanceChargeReason>Price</n1:AllowanceChargeReason>
+      <n1:Amount currencyID="AED">0.04</n1:Amount>
+    </n2:AllowanceCharge>
+    <n2:Item>
+      <n1:Description>WASHER</n1:Description>
+      <n1:Name>WASHER</n1:Name>
+      <n2:SellersItemIdentification>
+        <n1:ID>000000000001562990</n1:ID>
+      </n2:SellersItemIdentification>
+      <n2:ClassifiedTaxCategory>
+        <n1:ID>S</n1:ID>
+        <n1:Percent>5.00</n1:Percent>
+        <n2:TaxScheme>
+          <n1:ID>VAT</n1:ID>
+        </n2:TaxScheme>
+      </n2:ClassifiedTaxCategory>
+    </n2:Item>
+    <n2:Price>
+      <n1:PriceAmount currencyID="AED">76186.92</n1:PriceAmount>
+      <n1:BaseQuantity unitCode="H87">1000.000</n1:BaseQuantity>
+    </n2:Price>
+  </n2:InvoiceLine>
+</n0:Invoice>
