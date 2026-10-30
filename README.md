@@ -79,7 +79,7 @@ webapp/
   model/templates.js        ABAP de e-mail, custom fields e UI functions
   model/assistant.js        respostas simuladas, uma parte por motor de IA
   model/plTemplate.js       XML de exemplo da Polônia (KSeF FA(2))
-  samples/fr|de|mx/         XMLs reais anonimizados, um por cenário
+  samples/fr|de|mx|be|sk|ae/  XMLs anonimizados, um por cenário (BE, SK e AE derivados do UBL francês, com partes fictícias)
   view/, controller/        telas, diálogo de regra, painel de IA, pedido à B&B
   img/                      logo da B&B (cabeçalho), logo da SAP (card do Generative AI Hub) e favicon (ícone de IA da SAP)
   css/style.css             complementos visuais sobre o tema Horizon
@@ -87,4 +87,7 @@ docs/
   bb-edocument-accelerator-spec.md   especificação funcional
   legacy/                            mockup original em HTML puro
 private/                    material bruto de clientes (fora do git)
+temp/                       PPTs e PDFs de referência da B&B, com nomes de clientes (fora do git)
+video/                      vídeos promocionais v1 e v2 e as fontes para regravar (video/build/README.md); fora do git
+presentation/               PPT do GENB Accelerator; fora do git
 ```

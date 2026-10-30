@@ -4,11 +4,11 @@ node_modules/
 # Raw client material (real data): never commit
 private/
 
-# Promo video renders (large binaries): only the latest one is kept locally
+# Promo videos (large binaries, v1 and v2) and their build sources: kept locally
 video/
 
 # Material shared for reference (decks with client names): never commit
 temp/
 
-# Event deck (brand photos and embedded fonts): kept locally, latest version only
+# GENB Accelerator deck (brand photos and embedded fonts): kept locally, latest version only
 presentation/
