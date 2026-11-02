@@ -4,7 +4,7 @@ node_modules/
 # Raw client material (real data): never commit
 private/
 
-# Promo videos (large binaries, v1 and v2) and their build sources: kept locally
+# Promo video (large binary, final version) and its build sources: kept locally
 video/
 
 # Material shared for reference (decks with client names): never commit

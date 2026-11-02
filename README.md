@@ -88,6 +88,6 @@ docs/
   legacy/                            mockup original em HTML puro
 private/                    material bruto de clientes (fora do git)
 temp/                       PPTs e PDFs de referência da B&B, com nomes de clientes (fora do git)
-video/                      vídeos promocionais v1 e v2 e as fontes para regravar (video/build/README.md); fora do git
+video/                      vídeo promocional final e as fontes para regravar (video/build/README.md); fora do git
 presentation/               PPT do GENB Accelerator; fora do git
 ```
