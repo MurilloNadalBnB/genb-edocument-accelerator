@@ -30,7 +30,7 @@ A página inicial (`index.html`) abre o mesmo app dentro do **launchpad real da 
 
 O mock fala **inglês** (padrão), **português do Brasil**, **espanhol**, **francês** e **alemão**.
 
-- **Como trocar:** no launchpad, menu do usuário > *Language*; no `standalone.html`, menu do perfil > *Language*; ou pela URL, com `?sap-language=pt` (ou `es`, `fr`, `de`). A escolha fica gravada no navegador; sem escolha, abre em inglês, seja qual for o idioma do navegador.
+- **Como trocar:** no launchpad, *Settings > Language and Region* (menu do usuário), como num launchpad de verdade; no `standalone.html`, menu do perfil > *Language*; ou pela URL, com `?sap-language=pt` (ou `es`, `fr`, `de`). A escolha fica gravada no navegador; sem escolha, abre em inglês, seja qual for o idioma do navegador.
 - **O que é traduzido:** telas, diálogos e mensagens; o próprio launchpad (pela SAP); países, cenários, descrições de campos SAP e tiles; as respostas do AI Assistant, que também entende as perguntas digitadas nas cinco línguas.
 - **O que fica em inglês:** o código ABAP gerado, nomes técnicos (tabelas, campos, elementos XML) e nomes de produto (Joule, SAP Generative AI Hub, GENB AI).
 - **Onde ficam os textos:** `webapp/i18n/i18n*.properties` (interface, com chaves, padrão UI5) e `webapp/i18n/content_*.json` (conteúdo do mock: a chave é o texto em inglês, então um texto novo sem tradução aparece em inglês).
@@ -93,7 +93,7 @@ Os XMLs em `webapp/samples/` vêm de projetos reais e foram anonimizados: nomes,
 ```
 index.html                  página inicial: o app dentro do SAP Fiori launchpad (sandbox do SAPUI5, CDN)
 standalone.html             o app sozinho, bootstrap do OpenUI5 (CDN), versão do vídeo
-launchpad/                  site CDM (spaces, pages, tiles), configuração do shell e shell.js (logo, menu de idioma)
+launchpad/                  site CDM (spaces, pages, tiles), configuração do shell e shell.js (logo e idiomas do Settings)
 webapp/
   manifest.json             rotas e dependências
   Component.js              perfil fictício, notificações, motores de IA e pedidos à B&B; carrega as amostras

@@ -1,12 +1,8 @@
 sap.ui.define([
 	"sap/ui/core/Element",
 	"sap/ui/core/Theming",
-	"sap/base/i18n/Localization",
-	"sap/m/Dialog",
-	"sap/m/List",
-	"sap/m/StandardListItem",
-	"sap/m/Button"
-], function (Element, Theming, Localization, Dialog, List, StandardListItem, Button) {
+	"sap/ui/thirdparty/jquery"
+], function (Element, Theming, jQuery) {
 	"use strict";
 
 	// Same list as webapp/model/i18n.js
@@ -17,17 +13,6 @@ sap.ui.define([
 		{key: "fr", text: "Français"},
 		{key: "de", text: "Deutsch"}
 	];
-	const TEXTS = {
-		en: {language: "Language", cancel: "Cancel"},
-		pt: {language: "Idioma", cancel: "Cancelar"},
-		es: {language: "Idioma", cancel: "Cancelar"},
-		fr: {language: "Langue", cancel: "Annuler"},
-		de: {language: "Sprache", cancel: "Abbrechen"}
-	};
-	const lang = () => {
-		const k = Localization.getLanguage().split("-")[0].toLowerCase();
-		return TEXTS[k] ? k : "en";
-	};
 
 	function switchTo(sLang) {
 		try {
@@ -40,27 +25,22 @@ sap.ui.define([
 		window.location.replace(oUrl.toString());
 	}
 
-	let oDialog;
-	function openLanguages() {
-		const T = TEXTS[lang()];
-		if (!oDialog) {
-			oDialog = new Dialog({
-				title: T.language,
-				icon: "sap-icon://translate",
-				contentWidth: "18rem",
-				content: new List({
-					items: LANGUAGES.map(l => new StandardListItem({
-						title: l.text,
-						type: "Active",
-						selected: l.key === lang(),
-						icon: l.key === lang() ? "sap-icon://accept" : "",
-						press: () => switchTo(l.key)
-					}))
-				}),
-				endButton: new Button({text: T.cancel, press: () => oDialog.close()})
-			});
-		}
-		oDialog.open();
+	/**
+	 * Settings > Language and Region: the sandbox has no backend to store the language, so the list offers the
+	 * languages of the mock and saving reloads the launchpad in the chosen one (remembered in the browser).
+	 */
+	function useLanguageSettings(Container) {
+		Container.getServiceAsync("UserInfo").then(oUserInfo => {
+			oUserInfo.getLanguageList = () => jQuery.Deferred().resolve(LANGUAGES).promise();
+		});
+		const oUser = Container.getUser(), fnSet = oUser.setLanguage.bind(oUser);
+		oUser.setLanguage = function (sLang) {
+			fnSet(sLang);
+			// called on Save only when the user picked another language than the current one
+			if (sLang && sLang !== document.documentElement.lang.split("-")[0]) {
+				switchTo(sLang);
+			}
+		};
 	}
 
 	/** Company logo of the launchpad header: B&B, white line art on dark themes (in Work Zone this is a site setting). */
@@ -79,12 +59,7 @@ sap.ui.define([
 		init: function (Container) {
 			useCompanyLogo();
 			Theming.attachApplied(useCompanyLogo);
-			Container.getServiceAsync("Extension")
-				.then(oExtension => oExtension.createUserAction({text: TEXTS[lang()].language, icon: "sap-icon://translate", press: openLanguages}))
-				.then(oItem => {
-					oItem.showOnHome();
-					oItem.showForAllApps();
-				});
+			useLanguageSettings(Container);
 		}
 	};
 });

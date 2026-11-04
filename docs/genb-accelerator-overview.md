@@ -153,7 +153,7 @@ Este caso é usado no vídeo. A personagem é fictícia: **Tori Hayes**, key use
   - `#/country/{code}`;
   - `#/country/{code}/{doc}` (Workspace). Exemplo: `#/country/FR/customer-invoice`.
 - **Bibliotecas:** `sap.m`, `sap.f`, `sap.tnt` (ToolPage e SideNavigation), `sap.ui.table` (TreeTable da árvore XML) e `sap.ui.codeeditor` (ABAP). Os dados ficam em JSONModel, e as telas se comunicam por EventBus.
-- **Idiomas:** inglês (padrão), português do Brasil, espanhol, francês e alemão. Troca pelo menu do usuário (launchpad), pelo menu do perfil (standalone) ou por `?sap-language=xx`; a escolha fica gravada no navegador. Textos da interface em `webapp/i18n/i18n*.properties`; conteúdo do mock (países, cenários, campos SAP, respostas da IA, tiles) em `webapp/i18n/content_*.json`, com o texto em inglês como chave. O ABAP gerado e os nomes técnicos ficam em inglês. O AI Assistant reconhece as perguntas nas cinco línguas.
+- **Idiomas:** inglês (padrão), português do Brasil, espanhol, francês e alemão. Troca em *Settings > Language and Region* (launchpad), pelo menu do perfil (standalone) ou por `?sap-language=xx`; a escolha fica gravada no navegador. Textos da interface em `webapp/i18n/i18n*.properties`; conteúdo do mock (países, cenários, campos SAP, respostas da IA, tiles) em `webapp/i18n/content_*.json`, com o texto em inglês como chave. O ABAP gerado e os nomes técnicos ficam em inglês. O AI Assistant reconhece as perguntas nas cinco línguas.
 
 ### 5.3 Telas
 
@@ -206,7 +206,7 @@ webapp/model/templates.js    ABAP de e-mail, custom fields e UI functions
 webapp/model/assistant.js    respostas simuladas por motor de IA, detecção do requisito de relevância
 webapp/model/i18n.js         idioma atual, textos da interface e do conteúdo, troca de idioma
 webapp/i18n/                 i18n*.properties (interface) e content_*.json (conteúdo) em EN, PT-BR, ES, FR, DE
-launchpad/shell.js           logo da B&B no cabeçalho do launchpad e opção de idioma no menu do usuário
+launchpad/shell.js           logo da B&B no cabeçalho do launchpad e os 5 idiomas em Settings > Language and Region
 webapp/model/plTemplate.js   XML de exemplo da Polônia (KSeF FA(2))
 webapp/samples/<país>/       XMLs anonimizados (fr, de, mx, be, sk, ae)
 webapp/view/, controller/    telas, diálogo de regra, painel de IA, pedido à B&B

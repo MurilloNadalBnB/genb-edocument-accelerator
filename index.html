@@ -18,7 +18,7 @@
 		}
 	</script>
 	<script>
-		// Language: ?sap-language=xx wins; otherwise the last choice (user menu), otherwise English
+		// Language: ?sap-language=xx wins; otherwise the last choice (Settings > Language and Region), otherwise English
 		let sLanguage = null;
 		try {
 			sLanguage = localStorage.getItem("genb-language");
@@ -51,7 +51,7 @@
 						})(oSite);
 						Sandbox._applyDefaultUshellConfig(oDefaults, oConfig);
 						Sandbox._applyDefaultUshellConfig(oOwn, oConfig); // ours wins over the SAP defaults
-						Object.assign(oConfig.services.Container.adapter.config.userProfile.defaults, {language: sLang.toUpperCase(), languageBcp47: sLang});
+						Object.assign(oConfig.services.Container.adapter.config.userProfile.defaults, {language: sLang, languageBcp47: sLang});
 						Sandbox._applyDefaultSiteData(oSite, oConfig);
 						const [Container] = await ushellUtils.requireAsync(["sap/ushell/Container"]);
 						await Container.init("cdm");
