@@ -6,26 +6,27 @@
 	xmlns:card="sap.f.cards"
 	xmlns:l="sap.ui.layout"
 	xmlns:core="sap.ui.core"
+	core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 	height="100%">
 	<f:DynamicPage id="homePage" toggleHeaderOnTitleClick="false">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:heading>
-					<Title text="Overview" wrapping="true"/>
+					<Title text="{i18n>nav.overview}" wrapping="true"/>
 				</f:heading>
 				<f:expandedContent>
-					<Text text="Welcome back, {app>/user/name}. Pick a country to continue mapping."/>
+					<Text text="{parts: ['i18n>home.welcome', 'app>/user/name'], formatter: 'formatMessage'}"/>
 				</f:expandedContent>
 				<f:snappedContent>
-					<Text text="Welcome back, {app>/user/name}"/>
+					<Text text="{parts: ['i18n>home.welcomeShort', 'app>/user/name'], formatter: 'formatMessage'}"/>
 				</f:snappedContent>
 			</f:DynamicPageTitle>
 		</f:title>
 		<f:header>
 			<f:DynamicPageHeader pinnable="false">
 				<VBox>
-					<Title text="Map eDocument XML fields to SAP without starting from code" level="H2" titleStyle="H4" wrapping="true"/>
-					<Text class="sapUiTinyMarginTop" text="Pick a country, choose the scenario and click through a real XML. For each field you say where the value comes from in SAP, how it must be checked and how it should be changed. The accelerator turns those choices into ABAP for the eDocument framework, or B&amp;B implements it for you."/>
+					<Title text="{i18n>home.headline}" level="H2" titleStyle="H4" wrapping="true"/>
+					<Text class="sapUiTinyMarginTop" text="{i18n>home.intro}"/>
 				</VBox>
 			</f:DynamicPageHeader>
 		</f:header>
@@ -35,8 +36,8 @@
 				<f:Card class="sapUiMediumMarginBottom">
 					<f:header>
 						<card:Header
-							title="Your AI, your choice"
-							subtitle="Work with Joule, the SAP Generative AI Hub, GENB AI, or any combination. Reuse what you already have at SAP and add the DRC knowledge B&amp;B gathered in live projects."
+							title="{i18n>home.aiTitle}"
+							subtitle="{i18n>home.aiSubtitle}"
 							subtitleMaxLines="3"
 							iconSrc="sap-icon://ai"
 							iconBackgroundColor="Accent7"
@@ -59,7 +60,7 @@
 												<Label text="{app>by}" wrapping="true"/>
 											</VBox>
 										</HBox>
-										<Switch state="{app>enabled}" change=".onEngineSwitch" tooltip="Use {app>name}" class="sapUiTinyMarginBegin">
+										<Switch state="{app>enabled}" change=".onEngineSwitch" tooltip="{parts: ['i18n>home.useEngine', 'app>name'], formatter: 'formatMessage'}" class="sapUiTinyMarginBegin">
 											<layoutData><FlexItemData shrinkFactor="0"/></layoutData>
 										</Switch>
 									</HBox>
@@ -71,60 +72,60 @@
 								</VBox>
 							</l:Grid>
 							<HBox wrap="Wrap" alignItems="Center" class="sapUiSmallMarginTop">
-								<Button text="AI Assistant" icon="sap-icon://ai" type="Emphasized" press=".onAskAi" class="sapUiTinyMarginEnd"/>
-								<Button text="Check my master data" press=".onAskAi" class="sapUiTinyMarginEnd">
-									<customData><core:CustomData key="prompt" value="Which customers are missing a SIREN?"/></customData>
+								<Button text="{i18n>ai.title}" icon="sap-icon://ai" type="Emphasized" press=".onAskAi" class="sapUiTinyMarginEnd"/>
+								<Button text="{i18n>home.checkMasterData}" press=".onAskAi" class="sapUiTinyMarginEnd">
+									<customData><core:CustomData key="prompt" value="{i18n>ai.prompt.siren}"/></customData>
 								</Button>
-								<Label text="Switch engines off to see what each one adds to the answer."/>
+								<Label text="{i18n>home.switchHint}"/>
 							</HBox>
 						</VBox>
 					</f:content>
 				</f:Card>
 
 				<!-- At a glance -->
-				<Title text="At a glance" level="H3" class="sapUiSmallMarginBottom"/>
+				<Title text="{i18n>home.atAGlance}" level="H3" class="sapUiSmallMarginBottom"/>
 				<HBox wrap="Wrap">
-					<GenericTile header="Countries live" subheader="eDocument scenarios" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+					<GenericTile header="{i18n>home.tile.countries}" subheader="{i18n>home.tile.countriesSub}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
 						<customData><core:CustomData key="code" value="FR"/></customData>
-						<TileContent footer="{home>/planned} more planned">
-							<NumericContent value="{home>/available}" scale="of {home>/countries}" icon="sap-icon://world" withMargin="false"/>
+						<TileContent footer="{parts: ['i18n>home.tile.morePlanned', 'home>/planned'], formatter: 'formatMessage'}">
+							<NumericContent value="{home>/available}" scale="{parts: ['i18n>home.tile.of', 'home>/countries'], formatter: 'formatMessage'}" icon="sap-icon://world" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
-					<GenericTile header="Scenarios" subheader="Real XML samples" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+					<GenericTile header="{i18n>home.tile.scenarios}" subheader="{i18n>home.tile.scenariosSub}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
 						<customData><core:CustomData key="code" value="FR"/></customData>
-						<TileContent footer="SD, MM, FI, inbound, reporting">
+						<TileContent footer="{i18n>home.tile.scenariosFooter}">
 							<NumericContent value="{home>/scenarios}" icon="sap-icon://documents" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
-					<GenericTile header="Rules defined" subheader="All countries" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
+					<GenericTile header="{i18n>home.tile.rules}" subheader="{i18n>home.tile.rulesSub}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onCountry">
 						<customData><core:CustomData key="code" value="FR"/></customData>
-						<TileContent footer="In this session">
+						<TileContent footer="{i18n>home.tile.rulesFooter}">
 							<NumericContent value="{home>/totalRules}" icon="sap-icon://chain-link" valueColor="{= ${home>/totalRules} ? 'Good' : 'Neutral' }" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
-					<GenericTile header="B&amp;B implementation" subheader="Requests sent" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onRequests">
-						<TileContent footer="Tickets in the B&amp;B service ERP">
+					<GenericTile header="{i18n>home.tile.impl}" subheader="{i18n>home.tile.implSub}" class="sapUiTinyMarginEnd sapUiTinyMarginBottom" press=".onRequests">
+						<TileContent footer="{i18n>home.tile.implFooter}">
 							<NumericContent value="{= String(${app>/requests}.length) }" icon="sap-icon://collaborate" valueColor="{= ${app>/requests}.length ? 'Critical' : 'Neutral' }" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
 				</HBox>
 
 				<!-- How it works -->
-				<Title text="How it works" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
+				<Title text="{i18n>home.how}" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
 				<l:Grid defaultSpan="XL3 L3 M6 S12" hSpacing="1" vSpacing="1" containerQuery="true" class="sapUiNoMarginBegin sapUiNoMarginEnd">
 					<f:Card>
 						<f:header>
-							<card:Header title="1. Select the country" subtitle="Each country brings its legal XML formats, eDocument types and interfaces already configured." subtitleMaxLines="3" iconSrc="sap-icon://world" iconBackgroundColor="Accent6"/>
+							<card:Header title="{i18n>home.step1}" subtitle="{i18n>home.step1Text}" subtitleMaxLines="3" iconSrc="sap-icon://world" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="2. Choose the scenario" subtitle="Sales, purchases, self-billing, payments or reporting. The SAP tables change with the source (SD, MM or FI)." subtitleMaxLines="3" iconSrc="sap-icon://document" iconBackgroundColor="Accent6"/>
+							<card:Header title="{i18n>home.step2}" subtitle="{i18n>home.step2Text}" subtitleMaxLines="3" iconSrc="sap-icon://document" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="3. Define rules per XML field" subtitle="Click a field, pick the SAP field and choose what to do with it. The AI assistant explains any field." subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
+							<card:Header title="{i18n>home.step3}" subtitle="{i18n>home.step3Text}" subtitleMaxLines="3" iconSrc="sap-icon://chain-link" iconBackgroundColor="Accent6"/>
 						</f:header>
 						<f:content>
 							<HBox wrap="Wrap" class="sapUiSmallMarginBeginEnd sapUiSmallMarginBottom">
@@ -137,23 +138,23 @@
 					</f:Card>
 					<f:Card>
 						<f:header>
-							<card:Header title="4. Generate, or let B&amp;B implement" subtitle="Get the adaptor, e-mail, custom fields and UI functions in ABAP, or send the package to B&amp;B with one click." subtitleMaxLines="3" iconSrc="sap-icon://collaborate" iconBackgroundColor="Accent6"/>
+							<card:Header title="{i18n>home.step4}" subtitle="{i18n>home.step4Text}" subtitleMaxLines="3" iconSrc="sap-icon://collaborate" iconBackgroundColor="Accent6"/>
 						</f:header>
 					</f:Card>
 				</l:Grid>
 
 				<!-- Countries -->
-				<Title text="Countries" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
+				<Title text="{i18n>nav.countries}" level="H3" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
 				<HBox wrap="Wrap" items="{home>/list}">
 					<GenericTile
 						header="{home>name}"
 						subheader="{home>short}"
 						press=".onTile"
 						class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
-						<TileContent footer="{= ${home>planned} ? 'Planned' : ${home>docs}.length + ' scenarios' }">
+						<TileContent footer="{home>footer}">
 							<NumericContent
 								value="{= ${home>planned} ? '–' : String(${home>rules}) }"
-								scale="{= ${home>planned} ? '' : 'rules' }"
+								scale="{home>scale}"
 								icon="{= ${home>planned} ? 'sap-icon://future' : 'sap-icon://flag' }"
 								valueColor="{= ${home>planned} ? 'Neutral' : 'Good' }"
 								withMargin="false"/>

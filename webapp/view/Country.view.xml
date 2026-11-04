@@ -10,7 +10,7 @@
 			<f:DynamicPageTitle>
 				<f:breadcrumbs>
 					<Breadcrumbs currentLocationText="{c>/name}">
-						<Link text="Overview" press=".onHome"/>
+						<Link text="{i18n>nav.overview}" press=".onHome"/>
 					</Breadcrumbs>
 				</f:breadcrumbs>
 				<f:heading>
@@ -32,20 +32,20 @@
 				<VBox>
 					<HBox wrap="Wrap">
 						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-							<Label text="Scenarios"/>
+							<Label text="{i18n>country.scenarios}"/>
 							<Text text="{= ${c>/docs}.length }"/>
 						</VBox>
 						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-							<Label text="XML formats"/>
+							<Label text="{i18n>country.formats}"/>
 							<Text text="{c>/formats}"/>
 						</VBox>
 						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-							<Label text="eDocument types"/>
+							<Label text="{i18n>country.edocTypes}"/>
 							<Text text="{c>/edocs}"/>
 						</VBox>
 						<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-							<Label text="Status"/>
-							<ObjectStatus text="Available" state="Success" icon="sap-icon://sys-enter-2"/>
+							<Label text="{i18n>country.status}"/>
+							<ObjectStatus text="{i18n>country.available}" state="Success" icon="sap-icon://sys-enter-2"/>
 						</VBox>
 					</HBox>
 					<core:Fragment fragmentName="bnb.edoc.view.Steps" type="XML"/>
@@ -54,7 +54,7 @@
 		</f:header>
 		<f:content>
 			<VBox class="sapUiResponsiveContentPadding">
-				<Title text="Choose a scenario" level="H3" class="sapUiSmallMarginBottom"/>
+				<Title text="{i18n>country.choose}" level="H3" class="sapUiSmallMarginBottom"/>
 				<FlexBox wrap="Wrap" items="{c>/docs}">
 					<GenericTile
 						header="{c>label}"
@@ -63,7 +63,7 @@
 						press=".onDoc"
 						class="sapUiSmallMarginEnd sapUiSmallMarginBottom">
 						<TileContent footer="{c>dirText} · {c>source}">
-							<NumericContent value="{= String(${c>rules}) }" scale="{= ${c>rules} === 1 ? 'rule' : 'rules' }" icon="{c>icon}" valueColor="{= ${c>rules} ? 'Good' : 'Neutral' }" withMargin="false"/>
+							<NumericContent value="{= String(${c>rules}) }" scale="{= ${c>rules} === 1 ? ${i18n>common.ruleUnit1} : ${i18n>common.ruleUnitN} }" icon="{c>icon}" valueColor="{= ${c>rules} ? 'Good' : 'Neutral' }" withMargin="false"/>
 						</TileContent>
 					</GenericTile>
 				</FlexBox>
@@ -71,7 +71,7 @@
 					class="sapUiSmallMarginTop"
 					type="Information"
 					showIcon="true"
-					text="Every scenario starts from a real XML of a live project, anonymized. Outbound scenarios map SAP data to the XML; inbound scenarios map the received XML to the SAP document to post. The field picker and the suggestions follow the SAP source (SD, MM or FI)."/>
+					text="{i18n>country.info}"/>
 			</VBox>
 		</f:content>
 	</f:DynamicPage>

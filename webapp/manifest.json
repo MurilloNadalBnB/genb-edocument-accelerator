@@ -3,6 +3,11 @@
 	"sap.app": {
 		"id": "bnb.edoc",
 		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": ["", "pt", "es", "fr", "de"],
+			"fallbackLocale": ""
+		},
 		"title": "GENB Accelerator",
 		"description": "Mapping Workbench (mock)",
 		"applicationVersion": {"version": "0.1.0"},
@@ -41,6 +46,17 @@
 			}
 		},
 		"contentDensities": {"compact": true, "cozy": true},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "bnb.edoc.i18n.i18n",
+					"supportedLocales": ["", "pt", "es", "fr", "de"],
+					"fallbackLocale": "",
+					"async": true
+				}
+			}
+		},
 		"resources": {
 			"css": [{"uri": "css/style.css"}]
 		},

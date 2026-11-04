@@ -2,9 +2,12 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageToast",
+	"../model/i18n",
 	"../model/engine"
-], function (Controller, JSONModel, MessageToast, engine) {
+], function (Controller, JSONModel, MessageToast, i18n, engine) {
 	"use strict";
+
+	const t = i18n.t;
 
 	return Controller.extend("bnb.edoc.controller.Home", {
 		onInit: function () {
@@ -13,7 +16,14 @@ sap.ui.define([
 		},
 
 		_refresh: function () {
-			const aList = engine.COUNTRIES.map(c => Object.assign({}, c, {rules: engine.countryRuleCount(c.code)}));
+			const aList = engine.COUNTRIES.map(c => {
+				const iRules = engine.countryRuleCount(c.code), iDocs = (c.docs || []).length;
+				return Object.assign({}, c, {
+					rules: iRules,
+					footer: c.planned ? t("nav.planned") : t(iDocs === 1 ? "common.scenario1" : "common.scenarioN", iDocs),
+					scale: c.planned ? "" : t(iRules === 1 ? "common.ruleUnit1" : "common.ruleUnitN")
+				});
+			});
 			this.getView().getModel("home").setData({
 				list: aList,
 				countries: aList.length,
@@ -44,7 +54,7 @@ sap.ui.define([
 		onEngineSwitch: function (oEvent) {
 			const oCtx = oEvent.getSource().getBindingContext("app");
 			if (!this.getOwnerComponent().setEngine(oCtx.getProperty("key"), oEvent.getParameter("state"))) {
-				MessageToast.show("Keep at least one AI engine on.");
+				MessageToast.show(t("ai.keepOne"));
 			}
 		},
 
@@ -55,7 +65,7 @@ sap.ui.define([
 		_open: function (sCode) {
 			const oCountry = engine.country(sCode);
 			if (oCountry.planned) {
-				MessageToast.show(`${oCountry.name} is planned for a future release.`);
+				MessageToast.show(t("msg.planned", oCountry.name));
 				return;
 			}
 			this.getOwnerComponent().getRouter().navTo("country", {code: sCode});

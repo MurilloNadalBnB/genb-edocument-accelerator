@@ -8,13 +8,14 @@
 	xmlns:t="sap.ui.table"
 	xmlns:rm="sap.ui.table.rowmodes"
 	xmlns:ce="sap.ui.codeeditor"
+	core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 	height="100%">
 	<f:DynamicPage id="wsPage" fitContent="true" showFooter="true" headerExpanded="true">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:breadcrumbs>
 					<Breadcrumbs currentLocationText="{ws>/docLabel}">
-						<Link text="Overview" press=".onHome"/>
+						<Link text="{i18n>nav.overview}" press=".onHome"/>
 						<Link text="{ws>/countryName}" press=".onCountry"/>
 					</Breadcrumbs>
 				</f:breadcrumbs>
@@ -31,7 +32,7 @@
 					<Text text="{ws>/sub}"/>
 				</f:snappedContent>
 				<f:actions>
-					<Button text="Ask AI" icon="sap-icon://ai" press=".onAskAi" tooltip="Ask Joule, the SAP Generative AI Hub and GENB AI about the selected field"/>
+					<Button text="{i18n>ws.askAi}" icon="sap-icon://ai" press=".onAskAi" tooltip="{i18n>ws.askAiTooltip}"/>
 				</f:actions>
 			</f:DynamicPageTitle>
 		</f:title>
@@ -39,34 +40,34 @@
 			<f:DynamicPageHeader pinnable="true">
 				<HBox wrap="Wrap" alignItems="Start">
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="Fields filled"/>
+						<Label text="{i18n>ws.fieldsFilled}"/>
 						<HBox alignItems="Baseline">
-							<ObjectNumber number="{ws>/stats/filled}" unit="of {ws>/stats/total} · {ws>/stats/pct}%" class="sapMObjectNumberLarge"/>
+							<ObjectNumber number="{ws>/stats/filled}" unit="{parts: ['i18n>ws.ofPct', 'ws>/stats/total', 'ws>/stats/pct'], formatter: 'formatMessage'}" class="sapMObjectNumberLarge"/>
 						</HBox>
 						<ProgressIndicator percentValue="{ws>/stats/pct}" displayValue="{ws>/stats/pct}%" showValue="false" state="None" width="12rem"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="Checks"/>
+						<Label text="{i18n>ws.checks}"/>
 						<ObjectNumber number="{ws>/stats/checks}" class="sapMObjectNumberLarge"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="Rules"/>
+						<Label text="{i18n>ws.rules}"/>
 						<ObjectNumber number="{ws>/stats/rules}" class="sapMObjectNumberLarge"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="eDocument type"/>
+						<Label text="{i18n>ws.edocType}"/>
 						<Text text="{ws>/edoc}"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="Direction"/>
+						<Label text="{i18n>ws.direction}"/>
 						<ObjectStatus text="{ws>/dirText}" icon="{= ${ws>/isInbound} ? 'sap-icon://inbox' : 'sap-icon://outbox' }" state="Information"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="Source type"/>
+						<Label text="{i18n>ws.sourceType}"/>
 						<Text text="{ws>/sourceType}"/>
 					</VBox>
 					<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-						<Label text="SAP source"/>
+						<Label text="{i18n>ws.sapSource}"/>
 						<Text text="{ws>/source}"/>
 					</VBox>
 				</HBox>
@@ -85,27 +86,27 @@
 				backgroundDesign="Transparent">
 				<items>
 					<!-- ================= Field Mapping ================= -->
-					<IconTabFilter key="mapping" text="Field Mapping" count="{= ${ws>/stats/rules} || '' }">
+					<IconTabFilter key="mapping" text="{i18n>ws.tabMapping}" count="{= ${ws>/stats/rules} || '' }">
 						<l:Splitter height="100%" width="100%">
 							<!-- XML tree -->
 							<VBox height="100%" renderType="Bare">
 								<layoutData><l:SplitterLayoutData size="58%" minSize="420"/></layoutData>
 								<OverflowToolbar style="Clear">
-									<Title text="XML Structure" level="H4"/>
+									<Title text="{i18n>ws.xmlStructure}" level="H4"/>
 									<Label text="{ws>/treeSub}"/>
 									<ToolbarSpacer/>
-									<Button icon="sap-icon://expand-group" type="Transparent" tooltip="Expand all" press=".onExpandAll"/>
-									<Button icon="sap-icon://collapse-group" type="Transparent" tooltip="Collapse all" press=".onCollapseAll"/>
+									<Button icon="sap-icon://expand-group" type="Transparent" tooltip="{i18n>ws.expandAll}" press=".onExpandAll"/>
+									<Button icon="sap-icon://collapse-group" type="Transparent" tooltip="{i18n>ws.collapseAll}" press=".onCollapseAll"/>
 								</OverflowToolbar>
 								<Toolbar style="Clear">
-									<SearchField value="{ws>/search}" liveChange=".onTreeSearch" placeholder="Search XML fields, sample values or SAP fields">
+									<SearchField value="{ws>/search}" liveChange=".onTreeSearch" placeholder="{i18n>ws.searchTree}">
 										<layoutData><ToolbarLayoutData shrinkable="true" minWidth="10rem"/></layoutData>
 									</SearchField>
 									<SegmentedButton selectedKey="{ws>/filter}" selectionChange=".onFilter">
 										<items>
-											<SegmentedButtonItem key="all" text="All"/>
-											<SegmentedButtonItem key="mapped" text="With rules"/>
-											<SegmentedButtonItem key="open" text="Open"/>
+											<SegmentedButtonItem key="all" text="{i18n>ws.filterAll}"/>
+											<SegmentedButtonItem key="mapped" text="{i18n>ws.filterMapped}"/>
+											<SegmentedButtonItem key="open" text="{i18n>ws.filterOpen}"/>
 										</items>
 									</SegmentedButton>
 								</Toolbar>
@@ -117,36 +118,36 @@
 									rowSelectionChange=".onRowSelect"
 									columnHeaderVisible="true"
 									enableColumnReordering="false"
-									noData="No XML fields match the current filter.">
+									noData="{i18n>ws.noFields}">
 									<t:layoutData><FlexItemData growFactor="1" minHeight="0"/></t:layoutData>
 									<t:rowMode><rm:Auto minRowCount="6"/></t:rowMode>
 									<t:columns>
 										<t:Column width="40%" minWidth="220">
-											<Label text="XML element"/>
+											<Label text="{i18n>ws.colElement}"/>
 											<t:template>
 												<HBox alignItems="Center" renderType="Bare">
 													<core:Icon src="{ws>icon}" color="{ws>iconColor}" class="sapUiTinyMarginEnd"/>
 													<Label text="{ws>prefix}" visible="{= !!${ws>prefix} }" wrapping="false"/>
 													<Text text="{ws>local}" wrapping="false" visible="{= !!${ws>leaf} }"/>
 													<Title text="{ws>local}" wrapping="false" visible="{= !${ws>leaf} }" titleStyle="H6"/>
-													<ObjectStatus text="{ws>listText}" visible="{= !!${ws>listText} }" icon="sap-icon://list" state="Indication06" class="sapUiTinyMarginBegin" tooltip="Repeating element: the rules apply to every occurrence"/>
+													<ObjectStatus text="{ws>listText}" visible="{= !!${ws>listText} }" icon="sap-icon://list" state="Indication06" class="sapUiTinyMarginBegin" tooltip="{i18n>ws.repeatingTooltip}"/>
 												</HBox>
 											</t:template>
 										</t:Column>
 										<t:Column width="22%">
-											<Label text="Sample value"/>
+											<Label text="{i18n>ws.sampleValue}"/>
 											<t:template>
 												<Text text="{ws>value}" wrapping="false"/>
 											</t:template>
 										</t:Column>
 										<t:Column width="16%">
-											<Label text="SAP source"/>
+											<Label text="{i18n>ws.sapSource}"/>
 											<t:template>
 												<ObjectStatus text="{ws>source}" state="Information"/>
 											</t:template>
 										</t:Column>
 										<t:Column>
-											<Label text="Rules"/>
+											<Label text="{i18n>ws.rules}"/>
 											<t:template>
 												<HBox alignItems="Center" renderType="Bare" wrap="NoWrap">
 													<Label text="{ws>countText}" visible="{= !${ws>leaf} }" class="sapUiTinyMarginEnd"/>
@@ -158,7 +159,7 @@
 										</t:Column>
 										<t:Column width="3.5rem" hAlign="Center">
 											<t:template>
-												<Button icon="sap-icon://add" type="Transparent" tooltip="Add rule" visible="{= !!${ws>leaf} }" press=".onAddRuleRow"/>
+												<Button icon="sap-icon://add" type="Transparent" tooltip="{i18n>ws.addRule}" visible="{= !!${ws>leaf} }" press=".onAddRuleRow"/>
 											</t:template>
 										</t:Column>
 									</t:columns>
@@ -171,7 +172,7 @@
 								<VBox class="sapUiSmallMargin">
 									<!-- nothing selected -->
 									<MessageStrip visible="{= ${ws>/sel/kind} === 'none' }" type="Information" showIcon="true"
-										text="Select a field in the XML structure to define how it is filled. Use + on a row, or double-click it, to add a rule directly."/>
+										text="{i18n>ws.selectHint}"/>
 
 									<!-- group or leaf -->
 									<Panel visible="{= ${ws>/sel/kind} !== 'none' }">
@@ -186,47 +187,47 @@
 										</HBox>
 										<HBox wrap="Wrap" class="sapUiSmallMarginTop">
 											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom" visible="{= ${ws>/sel/kind} === 'leaf' }">
-												<Label text="Sample value"/>
-												<Text text="{= ${ws>/sel/value} || 'empty' }"/>
+												<Label text="{i18n>ws.sampleValue}"/>
+												<Text text="{= ${ws>/sel/value} || ${i18n>common.empty} }"/>
 											</VBox>
 											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-												<Label text="Kind"/>
+												<Label text="{i18n>ws.kind}"/>
 												<Text text="{ws>/sel/kindText}"/>
 											</VBox>
 											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom" visible="{= ${ws>/sel/kind} === 'group' }">
-												<Label text="Fields inside"/>
+												<Label text="{i18n>ws.fieldsInside}"/>
 												<Text text="{ws>/sel/total}"/>
 											</VBox>
 											<VBox class="sapUiLargeMarginEnd sapUiTinyMarginBottom">
-												<Label text="{= ${ws>/sel/kind} === 'group' ? 'With rules' : 'Rules' }"/>
+												<Label text="{= ${ws>/sel/kind} === 'group' ? ${i18n>ws.filterMapped} : ${i18n>ws.rules} }"/>
 												<Text text="{ws>/sel/ruleCount}"/>
 											</VBox>
 										</HBox>
 										<MessageStrip visible="{= ${ws>/sel/kind} === 'group' }" type="Information" showIcon="true" class="sapUiSmallMarginTop"
-											text="This is a group node. Expand it and pick one of its fields to define a rule."/>
+											text="{i18n>ws.groupHint}"/>
 
 										<VBox visible="{= ${ws>/sel/kind} === 'leaf' }">
 											<HBox wrap="Wrap" alignItems="Center" visible="{= ${ws>/sel/suggestions}.length > 0 }" class="sapUiSmallMarginTop">
 												<core:Icon src="sap-icon://lightbulb" color="Default" class="sapUiTinyMarginEnd"/>
-												<Label text="Suggested:" class="sapUiTinyMarginEnd"/>
+												<Label text="{i18n>ws.suggested}" class="sapUiTinyMarginEnd"/>
 												<HBox items="{ws>/sel/suggestions}" wrap="Wrap" renderType="Bare">
 													<Button text="{ws>f}" tooltip="{ws>desc}" press=".onQuickMap" class="sapUiTinyMarginEnd"/>
 												</HBox>
 											</HBox>
 											<HBox wrap="Wrap" class="sapUiSmallMarginTop">
-												<Button text="Map value" icon="sap-icon://journey-arrive" type="Emphasized" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+												<Button text="{i18n>rule.typeMap}" icon="sap-icon://journey-arrive" type="Emphasized" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="map"/></customData>
 												</Button>
-												<Button text="Add check" icon="sap-icon://shield" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+												<Button text="{i18n>ws.addCheck}" icon="sap-icon://shield" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="check"/></customData>
 												</Button>
-												<Button text="Change value" icon="sap-icon://switch-views" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+												<Button text="{i18n>rule.typeChange}" icon="sap-icon://switch-views" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="change"/></customData>
 												</Button>
-												<Button text="Constant" icon="sap-icon://pushpin-off" type="Transparent" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
+												<Button text="{i18n>rule.typeConstant}" icon="sap-icon://pushpin-off" type="Transparent" press=".onOpenDlg" class="sapUiTinyMarginEnd sapUiTinyMarginBottom">
 													<customData><core:CustomData key="type" value="constant"/></customData>
 												</Button>
-												<Button text="Ask AI" icon="sap-icon://ai" type="Transparent" press=".onAskAi" tooltip="Explain this field with the AI engines switched on" class="sapUiTinyMarginBottom"/>
+												<Button text="{i18n>ws.askAi}" icon="sap-icon://ai" type="Transparent" press=".onAskAi" tooltip="{i18n>ws.askAiFieldTooltip}" class="sapUiTinyMarginBottom"/>
 											</HBox>
 											<List items="{ws>/sel/rules}" visible="{= ${ws>/sel/rules}.length > 0 }" showSeparators="Inner" class="sapUiTinyMarginTop">
 												<CustomListItem>
@@ -237,8 +238,8 @@
 															<ObjectStatus text="{ws>source}" visible="{= !!${ws>source} }" state="Information"/>
 															<Text text="{ws>desc}"/>
 														</VBox>
-														<Button icon="sap-icon://edit" type="Transparent" tooltip="Edit" press=".onEditRule"/>
-														<Button icon="sap-icon://delete" type="Transparent" tooltip="Delete" press=".onDeleteRule"/>
+														<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>common.edit}" press=".onEditRule"/>
+														<Button icon="sap-icon://delete" type="Transparent" tooltip="{i18n>common.delete}" press=".onDeleteRule"/>
 													</HBox>
 												</CustomListItem>
 											</List>
@@ -249,14 +250,14 @@
 									<OverflowToolbar style="Clear" class="sapUiSmallMarginTop">
 										<Title text="{ws>/allRulesTitle}" level="H4"/>
 										<ToolbarSpacer/>
-										<Button text="Clear all" icon="sap-icon://delete" type="Transparent" visible="{= ${ws>/allRules}.length > 0 }" press=".onClearRules"/>
+										<Button text="{i18n>ws.clearAll}" icon="sap-icon://delete" type="Transparent" visible="{= ${ws>/allRules}.length > 0 }" press=".onClearRules"/>
 									</OverflowToolbar>
 									<IllustratedMessage
 										visible="{= ${ws>/allRules}.length === 0 }"
 										illustrationType="sapIllus-NoEntries"
 										illustrationSize="Spot"
-										title="No rules yet"
-										description="Pick a field on the left and choose Map value, Check or Change value, or tell the AI Assistant what you need."/>
+										title="{i18n>ws.noRulesTitle}"
+										description="{i18n>ws.noRulesText}"/>
 									<!-- contextualWidth: the columns pop in below the field when the side panel is narrow (small laptop screens) -->
 									<Table
 										items="{ws>/allRules}"
@@ -265,9 +266,9 @@
 										contextualWidth="Auto"
 										popinLayout="GridSmall">
 										<columns>
-											<Column><Text text="XML field"/></Column>
-											<Column width="22%" minScreenWidth="30rem" demandPopin="true"><Text text="Rule"/></Column>
-											<Column minScreenWidth="30rem" demandPopin="true"><Text text="SAP source / details"/></Column>
+											<Column><Text text="{i18n>ws.colField}"/></Column>
+											<Column width="22%" minScreenWidth="30rem" demandPopin="true"><Text text="{i18n>ws.colRule}"/></Column>
+											<Column minScreenWidth="30rem" demandPopin="true"><Text text="{i18n>ws.colDetails}"/></Column>
 											<Column width="5.5rem" hAlign="End"/>
 										</columns>
 										<items>
@@ -283,8 +284,8 @@
 														<Label text="{ws>desc}" wrapping="true"/>
 													</VBox>
 													<HBox justifyContent="End" renderType="Bare">
-														<Button icon="sap-icon://edit" type="Transparent" tooltip="Edit" press=".onEditRule"/>
-														<Button icon="sap-icon://delete" type="Transparent" tooltip="Delete" press=".onDeleteRule"/>
+														<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>common.edit}" press=".onEditRule"/>
+														<Button icon="sap-icon://delete" type="Transparent" tooltip="{i18n>common.delete}" press=".onDeleteRule"/>
 													</HBox>
 												</cells>
 											</ColumnListItem>
@@ -296,11 +297,11 @@
 					</IconTabFilter>
 
 					<!-- ================= XML Preview ================= -->
-					<IconTabFilter key="xml" text="XML Preview">
+					<IconTabFilter key="xml" text="{i18n>ws.tabXml}">
 						<VBox height="100%" renderType="Bare">
 							<OverflowToolbar style="Clear">
-								<Title text="XML Preview" level="H4"/>
-								<Label text="Highlighted lines already have a rule. Click one to open it in the mapping."/>
+								<Title text="{i18n>ws.tabXml}" level="H4"/>
+								<Label text="{i18n>ws.xmlHint}"/>
 							</OverflowToolbar>
 							<ScrollContainer vertical="true" horizontal="true" height="100%">
 								<layoutData><FlexItemData growFactor="1" minHeight="0"/></layoutData>
@@ -310,29 +311,29 @@
 					</IconTabFilter>
 
 					<!-- ================= Code Preview ================= -->
-					<IconTabFilter key="code" text="Code Preview">
+					<IconTabFilter key="code" text="{i18n>ws.tabCode}">
 						<VBox height="100%" renderType="Bare">
 							<OverflowToolbar style="Clear">
-								<Title text="ABAP Preview" level="H4"/>
-								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="16rem" tooltip="Generated objects for this scenario">
+								<Title text="{i18n>ws.abapPreview}" level="H4"/>
+								<Select selectedKey="{ws>/objKey}" items="{ws>/objects}" change=".onObject" width="16rem" tooltip="{i18n>ws.objectsTooltip}">
 									<core:ListItem key="{ws>key}" text="{ws>text}" additionalText="{ws>badi}"/>
 								</Select>
-								<ObjectStatus text="{= ${ws>/obj/generated} ? 'From ' + ${ws>/stats/rules} + ' rules' : 'From settings' }" state="{= ${ws>/obj/generated} ? 'Indication05' : 'Indication04' }" inverted="true"/>
-								<ObjectStatus text="Reviewed by {ws>/reviewText}" icon="sap-icon://ai" state="Indication07" inverted="true" visible="{= !!${ws>/reviewText} &amp;&amp; !!${ws>/obj/generated} }"/>
+								<ObjectStatus text="{ws>/fromText}" state="{= ${ws>/obj/generated} ? 'Indication05' : 'Indication04' }" inverted="true"/>
+								<ObjectStatus text="{parts: ['i18n>ws.reviewedBy', 'ws>/reviewText'], formatter: 'formatMessage'}" icon="sap-icon://ai" state="Indication07" inverted="true" visible="{= !!${ws>/reviewText} &amp;&amp; !!${ws>/obj/generated} }"/>
 								<ObjectStatus text="Mock" state="Indication10" inverted="true">
 									<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
 								</ObjectStatus>
 								<ToolbarSpacer/>
-								<Button text="Copy" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode" tooltip="Copy the code for your own team"/>
-								<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl">
+								<Button text="{i18n>ws.copy}" icon="sap-icon://copy" visible="{= !!${ws>/abap} }" press=".onCopyCode" tooltip="{i18n>ws.copyTooltip}"/>
+								<Button text="{i18n>impl.request}" icon="sap-icon://collaborate" type="Emphasized" press=".onRequestImpl">
 									<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 								</Button>
 							</OverflowToolbar>
 							<IllustratedMessage
 								visible="{= !${ws>/abap} }"
 								illustrationType="sapIllus-NoData"
-								title="Nothing to generate yet"
-								description="Define at least one rule in the Field Mapping tab, then come back here."/>
+								title="{i18n>ws.nothingTitle}"
+								description="{i18n>ws.nothingText}"/>
 							<ce:CodeEditor
 								id="codeEditor"
 								visible="{= !!${ws>/abap} }"
@@ -351,14 +352,14 @@
 		<f:footer>
 			<OverflowToolbar>
 				<ObjectStatus
-					text="{= ${ws>/savedAt} ? 'Draft saved at ' + ${ws>/savedAt} : 'Draft, not saved' }"
+					text="{= ${ws>/savedAt} ? ${i18n>ws.draftSaved} + ' ' + ${ws>/savedAt} : ${i18n>ws.draftNotSaved} }"
 					state="{= ${ws>/savedAt} ? 'Success' : 'Warning' }"
 					icon="{= ${ws>/savedAt} ? 'sap-icon://sys-enter-2' : 'sap-icon://edit' }"/>
-				<Text text="{ws>/stats/rules} rules · {ws>/stats/checks} checks" class="sapUiSmallMarginBegin"/>
+				<Text text="{ws>/countsText}" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
-				<Button text="Save Draft" press=".onSave"/>
-				<Button text="Request B&amp;B Implementation" icon="sap-icon://collaborate" press=".onRequestImpl" tooltip="Send the package to B&amp;B: a ticket is opened in the B&amp;B service ERP"/>
-				<Button text="Generate Code" type="Emphasized" icon="sap-icon://syntax" press=".onGenerate"/>
+				<Button text="{i18n>ws.saveDraft}" press=".onSave"/>
+				<Button text="{i18n>impl.request}" icon="sap-icon://collaborate" press=".onRequestImpl" tooltip="{i18n>impl.requestTooltip}"/>
+				<Button text="{i18n>gen.title}" type="Emphasized" icon="sap-icon://syntax" press=".onGenerate"/>
 			</OverflowToolbar>
 		</f:footer>
 	</f:DynamicPage>

@@ -77,3 +77,6 @@
 .sapTntNLI[data-tag="Live"]:not([data-tag=""]) .sapTntNLIText::after { content: "Live"; color: var(--sapPositiveTextColor); background: var(--sapSuccessBackground); border-color: var(--sapPositiveElementColor); }
 .sapTntNLI[data-tag="2027"] .sapTntNLIText::after { content: "2027"; }
 .sapTntNLI[data-tag="Reform"] .sapTntNLIText::after { content: "Reform"; }
+html[lang^="pt"] .sapTntNLI[data-tag="Reform"] .sapTntNLIText::after,
+html[lang^="es"] .sapTntNLI[data-tag="Reform"] .sapTntNLIText::after { content: "Reforma"; }
+html[lang^="fr"] .sapTntNLI[data-tag="Reform"] .sapTntNLIText::after { content: "R\00E9 forme"; }

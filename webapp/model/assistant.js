@@ -1,5 +1,9 @@
-sap.ui.define([], function () {
+sap.ui.define(["./i18n"], function (i18n) {
 	"use strict";
+
+	// Answers are written in English and translated through the content dictionary (i18n.tr, English text = key).
+	// The patterns below recognise the questions in English, Portuguese, Spanish, French and German.
+	const tr = i18n.tr;
 
 	// Canned answers for the demo. Each answer has one part per AI engine; only the parts of the
 	// engines switched on are shown, so the same question shows what 1, 2 or all 3 engines add.
@@ -53,23 +57,23 @@ sap.ui.define([], function () {
 			hub: "<p>Matched 9 of the 12 customers to a SIREN from the public company register extract you uploaded.</p>"}
 	];
 	const TOPICS = [
-		{re: /missing|siren|master data|customers/i,
+		{re: /missing|siren|master data|customers|dados mestres?|datos maestros|données de base|stammdaten/i,
 			genb: "<p>GENB adds a <strong>CHECK</strong> rule so the eDocument stops with a clear message instead of a platform rejection.</p>",
 			joule: "<p>Your <em>Order-to-Cash Agent</em> checked company code <code>FR01</code>: <strong>12 customers</strong> without SIREN (<code>STCD2</code>) and 3 without an e-mail for the platform directory.</p>",
 			hub: "<p>Drafted the worklist e-mail to your master data team, grouped by sales organization.</p>"},
-		{re: /self.?billing|autofactur|389/i,
+		{re: /self.?billing|autofactur|autofatur|auto-?factur|selbstfakturier|gutschriftverfahren|389/i,
 			genb: "<p><strong>Self-billing</strong> (autofacturation) invoices are issued by the buyer on behalf of the supplier, type code <strong>389</strong>, from evaluated receipt settlement (<code>MRRL</code>, source type <code>INV_VERIF</code>). The invoice ID joins document number and fiscal year: <strong>CHANGE</strong> <em>Concatenate</em> <code>RBKP-BELNR</code> + <code>RBKP-GJAHR</code>.</p>",
 			joule: "<p>Your <em>Finance Operations Agent</em>: ERS runs daily for 3 company codes, about 420 self-billing invoices a month.</p>",
 			hub: "<p>Drafted the letter to suppliers that explains the self-billing agreement required by the reform.</p>"},
-		{re: /reporting|e-report/i,
+		{re: /reporting|e-report|e-relat|e-déclar|e-meldung/i,
 			genb: "<p><strong>E-reporting</strong> covers transactions that are not e-invoiced in France, such as purchases from foreign suppliers. The eDocument is a list (<code>EDOC_LIST</code>) built from FI and MM invoices; typical rules convert tax to EUR and treat the Canary Islands as non-EU.</p>",
 			joule: "<p>Your <em>Finance Operations Agent</em>: 312 invoices from foreign suppliers last month, 18 in non-EUR currencies.</p>",
 			hub: "<p>Summarised the 18 non-EUR invoices and the exchange rates that will be used in the report.</p>"},
-		{re: /pac|cfdi|cancel/i,
+		{re: /pac|cfdi|cancel|annul|stornier/i,
 			genb: "<p>CFDI 4.0 goes to the PAC for stamping. The accelerator generates the cockpit actions around it: <strong>Get PDF</strong>, <strong>Cancel</strong> with SAT reason 01 to 04, and a cockpit column with the PAC invoice ID.</p>",
 			joule: "<p>Your <em>Finance Operations Agent</em>: 6 cancellations last month, 4 of them with reason 02.</p>",
 			hub: "<p>Wrote a guide in Spanish for the AR team on when to use each cancellation reason.</p>"},
-		{re: /auto.?suggest|suggest|help me map/i,
+		{re: /auto.?suggest|suggest|help me map|suger|sugier|suggér|vorschlag|vorschlagen|ajude|ayúdame|ayudame|aide-moi|hilf mir/i,
 			genb: "<p>The GENB rule library has the field mappings, value maps and checks used in live projects for this scenario.</p>",
 			joule: "<p>Your agents add what is specific to you: custom billing types used in the last 90 days and AIF value maps that already exist, so we reuse them.</p>",
 			hub: "<p>Your model reviews the open fields against your documents and proposes rules for what is left, each marked for review.</p>"}
@@ -83,16 +87,18 @@ sap.ui.define([], function () {
 	// "Billing types ZF2 and ZG2 must not create e-invoices": a requirement, not a question. Returns the billing types or null.
 	function relevance(sPrompt) {
 		const p = sPrompt || "";
-		if (!/billing type|fkart/i.test(p) || !/\b(not|no|never|exclude|skip|without|n't)\b/i.test(p)) { return null; }
+		const bType = /billing type|fkart|tipos? de faturamento|tipos? de fatura|clases? de factura|tipos? de factura|types? de factur|fakturaart/i.test(p);
+		const bNot = /n't|(^|[^\p{L}])(not|no|never|exclude|skip|without|não|nao|nunca|sem|excluir|sin|ne|pas|jamais|sans|exclure|nicht|kein\p{L}*|nie|niemals|ohne|ausschließen|ausschliessen)(?=$|[^\p{L}])/iu.test(p);
+		if (!bType || !bNot) { return null; }
 		const types = [...new Set((p.match(/\b[A-Z]{1,2}[0-9]{1,2}[A-Z]?\b/g) || []))];
 		return types.length ? types : ["ZF2", "ZG2"];
 	}
 	const relevanceAnswer = (types, oCtx) => {
-		const t = types.map(x => `<code>${x}</code>`).join(" and ");
-		const added = oCtx ? `<strong>Rule added</strong> to ${oCtx.docLabel} (${oCtx.countryName}): no eDocument for ${t}.` : "Open a scenario and ask again to add the rule.";
+		const t = types.map(x => `<code>${x}</code>`).join(` ${i18n.t("common.and")} `);
+		const added = oCtx ? tr("<strong>Rule added</strong> to {0} ({1}): no eDocument for {2}.", oCtx.docLabel, oCtx.countryName, t) : tr("Open a scenario and ask again to add the rule.");
 		return {
-			joule: `<p>Your <em>Order-to-Cash Agent</em> knows these billing types: ${t} are pro forma and internal documents, not legal invoices. 37 of them were posted last month.</p>`,
-			genb: `<p>The standard DRC customizing cannot exclude billing types here. In live projects B&amp;B uses the method <code>IS_RELEVANT</code> of BAdI <code>EDOC_ADAPTOR</code>. ${added}</p>`,
+			joule: tr("<p>Your <em>Order-to-Cash Agent</em> knows these billing types: {0} are pro forma and internal documents, not legal invoices. 37 of them were posted last month.</p>", t),
+			genb: tr("<p>The standard DRC customizing cannot exclude billing types here. In live projects B&amp;B uses the method <code>IS_RELEVANT</code> of BAdI <code>EDOC_ADAPTOR</code>. {0}</p>", added),
 			hub: "<p>Generated the <code>IS_RELEVANT</code> method and reviewed it with your model: no issues, the other billing types are not affected. Open <strong>Code Preview</strong> to see it.</p>"
 		};
 	};
@@ -106,14 +112,15 @@ sap.ui.define([], function () {
 			let hit = types ? relevanceAnswer(types, oCtx) : (oCtx && FIELDS.find(f => f.re.test(oCtx.field))) || TOPICS.find(t => t.re.test(sPrompt)) || FIELDS.find(f => f.re.test(sPrompt));
 			if (!hit && oCtx) {
 				hit = {
-					genb: `<p><strong>${oCtx.field}</strong> in ${oCtx.docLabel} (${oCtx.countryName}), path <code>${oCtx.path}</code>. ` + (oCtx.suggestion ? `The GENB rule library maps it from <code>${oCtx.suggestion}</code> in similar projects.</p>` : "No rule in the GENB library yet; B&amp;B can add it when implementing your package.</p>"),
+					genb: tr("<p><strong>{0}</strong> in {1} ({2}), path <code>{3}</code>. ", oCtx.field, oCtx.docLabel, oCtx.countryName, oCtx.path) + (oCtx.suggestion ? tr("The GENB rule library maps it from <code>{0}</code> in similar projects.</p>", oCtx.suggestion) : tr("No rule in the GENB library yet; B&amp;B can add it when implementing your package.</p>")),
 					joule: "<p>No mention of this field in your knowledge bases.</p>",
-					hub: `<p>Explained <strong>${oCtx.field}</strong> from the official schema documentation and drafted a short note for the functional specification.</p>`
+					hub: tr("<p>Explained <strong>{0}</strong> from the official schema documentation and drafted a short note for the functional specification.</p>", oCtx.field)
 				};
 			}
 			hit = hit || FALLBACK;
-			return aKeys.map(k => ({engine: k, html: hit[k]}));
+			return aKeys.map(k => ({engine: k, html: tr(hit[k])}));
 		},
-		prompts: ["Billing types ZF2 and ZG2 must not create e-invoices", "Which customers are missing a SIREN?", "Explain self-billing in France", "What changes for e-reporting?"]
+		/** Suggested questions, in the current language (each one matches a pattern above). */
+		prompts: () => ["ai.prompt.relevance", "ai.prompt.siren", "ai.prompt.selfBilling", "ai.prompt.reporting"].map(k => i18n.t(k))
 	};
 });

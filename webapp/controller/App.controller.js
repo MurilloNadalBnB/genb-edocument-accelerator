@@ -23,23 +23,28 @@ sap.ui.define([
 	"sap/m/ObjectListItem",
 	"sap/m/ObjectStatus",
 	"sap/m/ObjectAttribute",
+	"sap/m/Select",
+	"sap/ui/core/Item",
 	"sap/ui/core/Fragment",
+	"../model/i18n",
 	"../model/engine",
 	"../model/assistant"
 ], function (Controller, Element, Theming, MessageToast, ResponsivePopover, VBox, HBox, Avatar, Title, Text, List,
 	StandardListItem, CustomListItem, Switch, Label, Button, NotificationListItem, ProductSwitch, ProductSwitchItem,
-	MenuItem, Dialog, ObjectListItem, ObjectStatus, ObjectAttribute, Fragment, engine, assistant) {
+	MenuItem, Dialog, ObjectListItem, ObjectStatus, ObjectAttribute, Select, Item, Fragment, i18n, engine, assistant) {
 	"use strict";
 
+	const t = i18n.t;
+	// key: what the product switch does; title and subtitle come from i18n (products.<key>, products.<key>Sub)
 	const PRODUCTS = [
-		{title: "Mapping Workbench", subTitle: "Current app", icon: "sap-icon://chain-link"},
-		{title: "AI Assistant", subTitle: "Joule, Generative AI Hub, GENB AI", icon: "sap-icon://ai"},
-		{title: "B&B Service Desk", subTitle: "Implementation requests", icon: "sap-icon://collaborate"},
-		{title: "eDocument Cockpit", subTitle: "Monitor eDocuments", icon: "sap-icon://monitor-payments"},
-		{title: "Rule Library", subTitle: "Reusable rule sets", icon: "sap-icon://course-book"},
-		{title: "Code Generator", subTitle: "ABAP adaptors", icon: "sap-icon://syntax"},
-		{title: "Test Center", subTitle: "Sample documents", icon: "sap-icon://lab"},
-		{title: "Compliance Feed", subTitle: "Legal changes", icon: "sap-icon://official-service"}
+		{key: "workbench", title: "Mapping Workbench", icon: "sap-icon://chain-link"},
+		{key: "ai", icon: "sap-icon://ai"},
+		{key: "serviceDesk", title: "B&B Service Desk", icon: "sap-icon://collaborate"},
+		{key: "cockpit", title: "eDocument Cockpit", icon: "sap-icon://monitor-payments"},
+		{key: "ruleLibrary", icon: "sap-icon://course-book"},
+		{key: "codeGenerator", icon: "sap-icon://syntax"},
+		{key: "testCenter", icon: "sap-icon://lab"},
+		{key: "complianceFeed", icon: "sap-icon://official-service"}
 	];
 
 	return Controller.extend("bnb.edoc.controller.App", {
@@ -50,11 +55,11 @@ sap.ui.define([
 			Theming.attachApplied(this._onThemeApplied.bind(this));
 
 			const oMenu = this.byId("appMenu");
-			oMenu.addItem(new MenuItem({text: "Overview", icon: "sap-icon://home", key: "home"}));
+			oMenu.addItem(new MenuItem({text: t("nav.overview"), icon: "sap-icon://home", key: "home"}));
 			engine.COUNTRIES.filter(c => !c.planned).forEach((c, i) => oMenu.addItem(new MenuItem({text: c.name, icon: "sap-icon://flag", key: c.code, startsSection: i === 0})));
 
 			const oApp = this.getOwnerComponent().getModel("app");
-			oApp.setProperty("/ai/prompts", assistant.prompts.map(text => ({text})));
+			oApp.setProperty("/ai/prompts", assistant.prompts().map(text => ({text})));
 			// Other views open the assistant with a question about the field they show
 			const oBus = this.getOwnerComponent().getEventBus();
 			oBus.subscribe("edoc", "ai", (sChannel, sEvent, oData) => this._askAi(oData.prompt, oData.ctx));
@@ -72,9 +77,9 @@ sap.ui.define([
 			const oModel = this.getOwnerComponent().getModel("app");
 			this.byId("toolPage").destroyHeader();
 			sap.ui.require(["sap/ushell/Container"], Container => Container.getServiceAsync("Extension").then(oExtension => Promise.all([
-				oExtension.createHeaderItem({icon: "sap-icon://menu2", tooltip: "Menu", press: () => this.onToggleSide()}, {position: "begin", helpId: "edocMenu"}),
-				oExtension.createHeaderItem({icon: "sap-icon://ai", tooltip: "AI Assistant: Joule, SAP Generative AI Hub, GENB AI", press: () => this.onAi()}, {helpId: "edocAi"}),
-				oExtension.createHeaderItem({icon: "sap-icon://bell", tooltip: "Notifications", floatingNumber: oModel.getProperty("/notifications").filter(n => n.unread).length, press: () => this.onNotifications()}, {helpId: "edocNotifications"})
+				oExtension.createHeaderItem({icon: "sap-icon://menu2", tooltip: t("shell.menu"), press: () => this.onToggleSide()}, {position: "begin", helpId: "edocMenu"}),
+				oExtension.createHeaderItem({icon: "sap-icon://ai", tooltip: t("shell.aiTooltip"), press: () => this.onAi()}, {helpId: "edocAi"}),
+				oExtension.createHeaderItem({icon: "sap-icon://bell", tooltip: t("shell.notifications"), floatingNumber: oModel.getProperty("/notifications").filter(n => n.unread).length, press: () => this.onNotifications()}, {helpId: "edocNotifications"})
 			])).then(aItems => {
 				// shown while the app is open, hidden again on the launchpad home
 				aItems.forEach(oItem => oItem.showForCurrentApp());
@@ -126,7 +131,7 @@ sap.ui.define([
 		onEngineToggle: function (oEvent) {
 			const oCtx = oEvent.getSource().getBindingContext("app");
 			if (!this.getOwnerComponent().setEngine(oCtx.getProperty("key"), oEvent.getParameter("pressed"))) {
-				MessageToast.show("Keep at least one AI engine on.");
+				MessageToast.show(t("ai.keepOne"));
 			}
 		},
 
@@ -180,12 +185,12 @@ sap.ui.define([
 		onRequests: function () {
 			const oModel = this.getView().getModel("app");
 			if (!oModel.getProperty("/requests").length) {
-				MessageToast.show("No implementation requests yet. Open a scenario, generate the code and choose Request B&B Implementation.");
+				MessageToast.show(t("req.none"));
 				return;
 			}
 			if (!this._oRequests) {
 				this._oRequests = new Dialog({
-					title: "Implementation Requests",
+					title: t("req.title"),
 					icon: "sap-icon://collaborate",
 					contentWidth: "36rem",
 					content: new List({
@@ -194,17 +199,17 @@ sap.ui.define([
 							template: new ObjectListItem({
 								title: "{app>ticket}: {app>scenario}",
 								number: "{app>rules}",
-								numberUnit: "rules",
+								numberUnit: t("common.ruleUnitN"),
 								icon: "sap-icon://collaborate",
 								attributes: [
 									new ObjectAttribute({text: "{app>objectsText}"}),
-									new ObjectAttribute({text: "Sent {app>sentAt} · {app>systemText}"})
+									new ObjectAttribute({text: {parts: ["app>sentAt", "app>systemText"], formatter: (sAt, sSys) => t("req.sent", sAt, sSys)}})
 								],
 								firstStatus: new ObjectStatus({text: "{app>status}", state: "Information", icon: "sap-icon://pending"})
 							})
 						}
 					}),
-					endButton: new Button({text: "Close", press: () => this._oRequests.close()})
+					endButton: new Button({text: t("common.close"), press: () => this._oRequests.close()})
 				});
 				this._oRequests.setModel(oModel, "app");
 				this.getView().addDependent(this._oRequests);
@@ -266,7 +271,7 @@ sap.ui.define([
 			if (sKey === "home") {
 				this._router.navTo("home");
 			} else if (oCountry && oCountry.planned) {
-				MessageToast.show(`${oCountry.name} is planned for a future release.`);
+				MessageToast.show(t("msg.planned", oCountry.name));
 			} else if (oCountry) {
 				this._router.navTo("country", {code: sKey});
 			} else if (sKey === "available" || sKey === "planned") {
@@ -279,7 +284,7 @@ sap.ui.define([
 		},
 
 		onNotInMock: function () {
-			MessageToast.show("Not part of this demo yet.");
+			MessageToast.show(t("msg.notInMock"));
 		},
 
 		onShellSearch: function (oEvent) {
@@ -291,9 +296,9 @@ sap.ui.define([
 			if (oCountry && !oCountry.planned) {
 				this._router.navTo("country", {code: oCountry.code});
 			} else if (oCountry) {
-				MessageToast.show(`${oCountry.name} is planned for a future release.`);
+				MessageToast.show(t("msg.planned", oCountry.name));
 			} else {
-				MessageToast.show(`No country matches "${sQuery}". Open a document type to search its XML fields.`);
+				MessageToast.show(t("msg.noCountry", sQuery));
 			}
 		},
 
@@ -323,14 +328,28 @@ sap.ui.define([
 										alignItems: "Center",
 										justifyContent: "SpaceBetween",
 										items: [
-											new Label({text: "Dark theme (Horizon Evening)"}),
+											new Label({text: t("profile.dark")}),
 											new Switch({state: "{app>/darkMode}", change: this.onThemeSwitch.bind(this)})
 										]
 									}).addStyleClass("sapUiSmallMarginBeginEnd")
 								}),
-								new StandardListItem({title: "My Settings", icon: "sap-icon://action-settings", type: "Active", press: this.onNotInMock.bind(this)}),
-								new StandardListItem({title: "About", icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show("GENB Accelerator, product preview (mock data).")}),
-								new StandardListItem({title: "Sign Out", icon: "sap-icon://log", type: "Active", press: () => MessageToast.show("This is a demo, there is nothing to sign out from.")})
+								new CustomListItem({
+									content: new HBox({
+										alignItems: "Center",
+										justifyContent: "SpaceBetween",
+										items: [
+											new Label({text: t("profile.language"), labelFor: this.createId("langSelect")}),
+											new Select(this.createId("langSelect"), {
+												selectedKey: "{app>/language}",
+												items: {path: "app>/languages", template: new Item({key: "{app>key}", text: "{app>text}"})},
+												change: oEvent => i18n.switchTo(oEvent.getParameter("selectedItem").getKey())
+											})
+										]
+									}).addStyleClass("sapUiSmallMarginBeginEnd")
+								}),
+								new StandardListItem({title: t("profile.settings"), icon: "sap-icon://action-settings", type: "Active", press: this.onNotInMock.bind(this)}),
+								new StandardListItem({title: t("profile.about"), icon: "sap-icon://hint", type: "Active", press: () => MessageToast.show(t("profile.aboutText"))}),
+								new StandardListItem({title: t("profile.signOut"), icon: "sap-icon://log", type: "Active", press: () => MessageToast.show(t("profile.signOutText"))})
 							]
 						})
 					]
@@ -352,7 +371,7 @@ sap.ui.define([
 			if (!this._oNotif) {
 				const oModel = this.getView().getModel("app");
 				this._oNotif = new ResponsivePopover({
-					title: "Notifications",
+					title: t("shell.notifications"),
 					placement: "Bottom",
 					contentWidth: "26rem",
 					content: new List({
@@ -371,7 +390,7 @@ sap.ui.define([
 							})
 						}
 					}),
-					endButton: new Button({text: "Mark all as read", type: "Transparent", press: this.onNotificationsRead.bind(this)})
+					endButton: new Button({text: t("notif.markRead"), type: "Transparent", press: this.onNotificationsRead.bind(this)})
 				});
 				this._oNotif.setModel(oModel, "app");
 				this.getView().addDependent(this._oNotif);
@@ -412,16 +431,16 @@ sap.ui.define([
 					showHeader: false,
 					placement: "Bottom",
 					content: new ProductSwitch({
-						items: PRODUCTS.map(p => new ProductSwitchItem({title: p.title, subTitle: p.subTitle, src: p.icon})),
+						items: PRODUCTS.map(p => new ProductSwitchItem({title: p.title || t("products." + p.key), subTitle: t(`products.${p.key}Sub`), src: p.icon}).data("key", p.key)),
 						change: function (e) {
-							const sTitle = e.getParameter("itemPressed").getTitle();
+							const oItem = e.getParameter("itemPressed"), sKey = oItem.data("key");
 							this._oProducts.close();
-							if (sTitle === "AI Assistant") {
+							if (sKey === "ai") {
 								this.onAi();
-							} else if (sTitle === "B&B Service Desk") {
+							} else if (sKey === "serviceDesk") {
 								this.onRequests();
-							} else if (sTitle !== "Mapping Workbench") {
-								MessageToast.show(`${sTitle} is part of the product vision, not of this demo.`);
+							} else if (sKey !== "workbench") {
+								MessageToast.show(t("msg.vision", oItem.getTitle()));
 							}
 						}.bind(this)
 					})

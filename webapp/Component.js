@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/model/json/JSONModel",
+	"./model/i18n",
 	"./model/engine"
-], function (UIComponent, JSONModel, engine) {
+], function (UIComponent, JSONModel, i18n, engine) {
 	"use strict";
 
 	return UIComponent.extend("bnb.edoc.Component", {
@@ -12,38 +13,51 @@ sap.ui.define([
 		},
 
 		init: function () {
+			// Texts of the current language and the sample XML files load before the root view is created
+			this._pReady = i18n.load().then(() => engine.load()).then(() => this._createAppModel());
 			UIComponent.prototype.init.apply(this, arguments);
 
 			// Inside the Fiori launchpad (index.html) the shell header, density and theme belong to the launchpad
-			const bEmbedded = !!sap.ui.require("sap/ushell/Container");
-			if (!bEmbedded) {
+			if (!sap.ui.require("sap/ushell/Container")) {
 				// Compact by default (same as Fiori Elements on desktop); ?density=cozy to compare
 				const bCozy = new URLSearchParams(window.location.search).get("density") === "cozy";
 				document.body.classList.toggle("sapUiSizeCompact", !bCozy);
 				document.body.classList.toggle("sapUiSizeCozy", bCozy);
 			}
+			this._pReady.then(() => this.getRouter().initialize());
+		},
 
-			const toNav = c => ({code: c.code, name: c.name, tag: c.tag || ""});
+		/** The root view (App) needs the app model, so it waits for the texts. */
+		createContent: function () {
+			const aArgs = arguments;
+			// runAsOwner: the view is created later, it still has to know its component
+			return this._pReady.then(() => this.runAsOwner(() => UIComponent.prototype.createContent.apply(this, aArgs)));
+		},
+
+		_createAppModel: function () {
+			const t = i18n.t, toNav = c => ({code: c.code, name: c.name, tag: c.tag || ""});
 			// Fictional demo profile shown in the shell bar
 			this.setModel(new JSONModel({
 				user: {
 					name: "Tori Hayes",
 					initials: "TH",
-					role: "eDocument Key User",
+					role: t("profile.role"),
 					email: "tori.hayes@demo-company.example",
-					company: "Demo Company (fictional)"
+					company: t("profile.company")
 				},
 				countries: engine.COUNTRIES.filter(c => !c.planned).map(toNav),
 				planned: engine.COUNTRIES.filter(c => c.planned).map(toNav),
-				embedded: bEmbedded,
+				embedded: !!sap.ui.require("sap/ushell/Container"),
+				language: i18n.lang(),
+				languages: i18n.LANGUAGES,
 				sideExpanded: true,
 				canGoBack: false,
 				unreadCount: "2",
 				darkMode: false,
 				notifications: [
-					{id: "n1", title: "France: lifecycle statuses updated", description: "The certified platform published new invoice lifecycle codes. Review the Customer Invoice mapping before the next release.", datetime: "10 minutes ago", priority: "High", author: "Compliance Feed", initials: "CF", unread: true},
-					{id: "n2", title: "Rule set approved", description: "Mexico, CFDI Invoice: 38 rules approved by Taylor Brooks.", datetime: "2 hours ago", priority: "Medium", author: "Taylor Brooks", initials: "TB", unread: true},
-					{id: "n3", title: "ABAP adaptor generated", description: "Germany, FI Invoice by E-mail: the adaptor class passed the syntax check.", datetime: "Yesterday", priority: "Low", author: "Code Generator", initials: "CG", unread: false}
+					{id: "n1", title: t("notif.n1Title"), description: t("notif.n1Text"), datetime: t("notif.minutesAgo", 10), priority: "High", author: t("products.complianceFeed"), initials: "CF", unread: true},
+					{id: "n2", title: t("notif.n2Title"), description: t("notif.n2Text"), datetime: t("notif.hoursAgo", 2), priority: "Medium", author: "Taylor Brooks", initials: "TB", unread: true},
+					{id: "n3", title: t("notif.n3Title"), description: t("notif.n3Text"), datetime: t("notif.yesterday"), priority: "Low", author: t("products.codeGenerator"), initials: "CG", unread: false}
 				],
 				// Implementation requests sent to B&B (ticket in the B&B service ERP)
 				requests: [],
@@ -53,37 +67,34 @@ sap.ui.define([
 					messages: [],
 					activeText: "",
 					engines: [
-						{key: "joule", name: "Joule", by: "SAP Business AI", icon: "sap-icon://da-2", initials: "", color: "Accent7", status: "Connected", enabled: true,
-							desc: "Reuse the Joule agents and knowledge bases you already have.",
+						{key: "joule", name: "Joule", by: "SAP Business AI", icon: "sap-icon://da-2", initials: "", color: "Accent7", status: t("ai.connected"), enabled: true,
+							desc: t("ai.jouleDesc"),
 							items: [
 								{text: "Finance Operations Agent", icon: "sap-icon://da"},
 								{text: "Order-to-Cash Agent", icon: "sap-icon://da"},
-								{text: "Billing handbook, 214 documents", icon: "sap-icon://course-book"},
-								{text: "Customer master guidelines, 38 documents", icon: "sap-icon://course-book"}
+								{text: t("ai.jouleItem3"), icon: "sap-icon://course-book"},
+								{text: t("ai.jouleItem4"), icon: "sap-icon://course-book"}
 							]},
-						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP Business AI Platform", icon: sap.ui.require.toUrl("bnb/edoc/img/sap-logo.svg"), initials: "", color: "Transparent", status: "Connected", enabled: true,
-							desc: "Use the LLMs of your own SAP Business AI Platform subscription on your documents.",
+						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP Business AI Platform", icon: sap.ui.require.toUrl("bnb/edoc/img/sap-logo.svg"), initials: "", color: "Transparent", status: t("ai.connected"), enabled: true,
+							desc: t("ai.hubDesc"),
 							items: [
-								{text: "Your choice of model: GPT, Claude, Gemini, Mistral", icon: "sap-icon://chain-link"},
-								{text: "Grounding on your documents and eDocument history", icon: "sap-icon://documents"},
-								{text: "Data masking of names and tax IDs", icon: "sap-icon://locked"},
-								{text: "Runs under your SAP contract and data residency", icon: "sap-icon://shield"}
+								{text: t("ai.hubItem1"), icon: "sap-icon://chain-link"},
+								{text: t("ai.hubItem2"), icon: "sap-icon://documents"},
+								{text: t("ai.hubItem3"), icon: "sap-icon://locked"},
+								{text: t("ai.hubItem4"), icon: "sap-icon://shield"}
 							]},
-						{key: "genb", name: "GENB AI", by: "B&B Enterprise Solutions", icon: "sap-icon://ai", initials: "", color: "Accent7", status: "Connected", enabled: true,
-							desc: "Add B&B's DRC knowledge, built from live projects.",
+						{key: "genb", name: "GENB AI", by: "B&B Enterprise Solutions", icon: "sap-icon://ai", initials: "", color: "Accent7", status: t("ai.connected"), enabled: true,
+							desc: t("ai.genbDesc"),
 							items: [
-								{text: "Rule library for every available country", icon: "sap-icon://course-book"},
-								{text: "Legal XML schemas and change feed", icon: "sap-icon://official-service"},
-								{text: "Patterns reviewed by B&B consultants", icon: "sap-icon://employee-approvals"},
-								{text: "Updated with every new go-live", icon: "sap-icon://history"}
+								{text: t("ai.genbItem1"), icon: "sap-icon://course-book"},
+								{text: t("ai.genbItem2"), icon: "sap-icon://official-service"},
+								{text: t("ai.genbItem3"), icon: "sap-icon://employee-approvals"},
+								{text: t("ai.genbItem4"), icon: "sap-icon://history"}
 							]}
 					]
 				}
 			}), "app");
-
 			this.updateEngines();
-			// Samples are small static XML files, load them all before the first route renders
-			engine.load().then(() => this.getRouter().initialize());
 		},
 
 		/** Switch an AI engine on or off; at least one stays on. Returns false when the change was refused. */

@@ -18,19 +18,40 @@
 		}
 	</script>
 	<script>
+		// Language: ?sap-language=xx wins; otherwise the last choice (user menu), otherwise English
+		let sLanguage = null;
+		try {
+			sLanguage = localStorage.getItem("genb-language");
+		} catch (e) {
+			// storage blocked: English
+		}
 		// Same steps as sap/ushell/bootstrap/sandbox2.js, but with our own site instead of the SAP sample apps
 		window["sap-ui-config"] = {
+			"language": sLanguage || "en",
 			"xx-bootTask": function (fnDone) {
-				sap.ui.require(["sap/ushell/bootstrap/sandbox2/sandbox", "sap/ushell/utils"], function (Sandbox, ushellUtils) {
+				sap.ui.require(["sap/ushell/bootstrap/sandbox2/sandbox", "sap/ushell/utils", "sap/base/i18n/Localization"], function (Sandbox, ushellUtils, Localization) {
 					(async function () {
 						const oConfig = window["sap-ushell-config"] = {};
-						const [oDefaults, oOwn, oSite] = await Promise.all([
+						const sLang = Localization.getLanguage().split("-")[0].toLowerCase();
+						const [oDefaults, oOwn, oSite, oTexts] = await Promise.all([
 							Sandbox._loadJSON(sap.ui.require.toUrl("sap/ushell/bootstrap/sandbox2/sandboxConfig.json")),
 							Sandbox._loadJSON("launchpad/config.json"),
-							Sandbox._loadJSON("launchpad/site.json")
+							Sandbox._loadJSON("launchpad/site.json"),
+							// tile texts use the same dictionary as the app content (English text = key)
+							sLang === "en" ? {} : fetch(`webapp/i18n/content_${sLang}.json`).then(r => r.ok ? r.json() : {}, () => ({}))
 						]);
+						(function translate(o) {
+							Object.keys(o).forEach(k => {
+								if (typeof o[k] === "string" && ["title", "subTitle", "info", "description"].includes(k)) {
+									o[k] = oTexts[o[k]] || o[k];
+								} else if (o[k] && typeof o[k] === "object") {
+									translate(o[k]);
+								}
+							});
+						})(oSite);
 						Sandbox._applyDefaultUshellConfig(oDefaults, oConfig);
 						Sandbox._applyDefaultUshellConfig(oOwn, oConfig); // ours wins over the SAP defaults
+						Object.assign(oConfig.services.Container.adapter.config.userProfile.defaults, {language: sLang.toUpperCase(), languageBcp47: sLang});
 						Sandbox._applyDefaultSiteData(oSite, oConfig);
 						const [Container] = await ushellUtils.requireAsync(["sap/ushell/Container"]);
 						await Container.init("cdm");
@@ -47,17 +68,20 @@
 		id="sap-ui-bootstrap"
 		src="https://ui5.sap.com/1.148.9/resources/sap-ui-core.js"
 		data-sap-ui-libs="sap.m, sap.ushell"
+		data-sap-ui-resource-roots='{"launchpad": "./launchpad/"}'
 		data-sap-ui-theme="sap_horizon"
 		data-sap-ui-compat-version="edge"
 		data-sap-ui-async="true"
-		data-sap-ui-xx-component-preload="off"
-		data-sap-ui-language="en"></script>
+		data-sap-ui-xx-component-preload="off"></script>
 	<script>
 		sap.ui.require(["sap/ui/core/Core"], function (Core) {
 			Core.ready().then(function () {
 				sap.ui.require(["sap/ushell/Container"], function (Container) {
 					Container.createRendererInternal("fiori2").then(function (oRenderer) {
 						oRenderer.placeAt("content");
+						sap.ui.require(["launchpad/shell"], function (shell) {
+							shell.init(Container);
+						});
 					});
 				});
 			});

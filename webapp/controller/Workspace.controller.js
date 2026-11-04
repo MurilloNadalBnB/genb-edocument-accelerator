@@ -7,19 +7,16 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
 	"sap/m/CustomTreeItem",
+	"../model/i18n",
 	"../model/engine"
-], function (Controller, Element, Fragment, JSONModel, Row, MessageToast, MessageBox, CustomTreeItem, engine) {
+], function (Controller, Element, Fragment, JSONModel, Row, MessageToast, MessageBox, CustomTreeItem, i18n, engine) {
 	"use strict";
 
+	const t = i18n.t;
 	const clone = o => JSON.parse(JSON.stringify(o));
 	const toList = o => Object.entries(o).map(([key, text]) => ({key, text}));
-	const PARAM_PH = {maxLen: "e.g. 10", pattern: "e.g. ^[0-9]{10}$", inList: "e.g. PLN,EUR,USD", ref: "e.g. T005-LAND1"};
-	// what each AI engine checks when it reviews the generated code
-	const REVIEW_ROLE = {
-		joule: "Checks the code against your custom objects, billing types and existing AIF value maps.",
-		hub: "Reviews the code with the LLM of your SAP Business AI Platform subscription and adds explanations as comments.",
-		genb: "Checks the code against B&B's DRC patterns and the legal schema of the country."
-	};
+	const PARAM_PH = {maxLen: "10", pattern: "^[0-9]{10}$", inList: "PLN,EUR,USD", ref: "T005-LAND1"};
+	const time = () => new Date().toLocaleTimeString(i18n.locale(), {hour: "2-digit", minute: "2-digit"});
 
 	return Controller.extend("bnb.edoc.controller.Workspace", {
 		onInit: function () {
@@ -45,14 +42,14 @@ sap.ui.define([
 			engine.setRelevance(this._cc, this._doc, oData.types);
 			this._markDirty();
 			this._refreshAll();
-			MessageToast.show(`Rule added: no eDocument for billing types ${oData.types.join(", ")}.`);
+			MessageToast.show(t("msg.relevanceAdded", oData.types.join(", ")));
 		},
 
 		_relevanceRow: function () {
 			const rel = engine.relevanceOf(this._cc, this._doc);
 			return rel && {id: "relevance", nodeId: null, type: "relevance", short: "SKIP", icon: "sap-icon://decline", state: "Indication03", source: rel.field,
-				desc: `No eDocument for billing types ${rel.values.join(", ")}`, field: "Document relevance", path: "IF_EDOC_ADAPTOR~IS_RELEVANT",
-				shortPath: "Whole billing document", selected: false, auto: false};
+				desc: t("ws.relevanceDesc", rel.values.join(", ")), field: t("ws.relevanceField"), path: "IF_EDOC_ADAPTOR~IS_RELEVANT",
+				shortPath: t("ws.relevancePath"), selected: false, auto: false};
 		},
 
 		/* =================== Routing =================== */
@@ -79,8 +76,8 @@ sap.ui.define([
 			this._ws.setProperty("/source", oDoc.source);
 			this._ws.setProperty("/sourceType", oDoc.sourceType);
 			this._ws.setProperty("/isInbound", oDoc.dir === "in");
-			this._ws.setProperty("/dirText", oDoc.dir === "in" ? "Inbound: XML to SAP" : "Outbound: SAP to XML");
-			this._ws.setProperty("/sub", `${oCountry.name} · ${oDoc.schema} · ${oDoc.source} · eDocument type ${oDoc.edoc}`);
+			this._ws.setProperty("/dirText", t(oDoc.dir === "in" ? "ws.dirIn" : "ws.dirOut"));
+			this._ws.setProperty("/sub", `${oCountry.name} · ${oDoc.schema} · ${oDoc.source} · ${t("ws.edocType")} ${oDoc.edoc}`);
 			const aObjects = engine.objects(code, doc);
 			this._ws.setProperty("/objects", aObjects);
 			this._ws.setProperty("/objKey", aObjects[0].key);
@@ -112,7 +109,8 @@ sap.ui.define([
 			s.pct = s.total ? Math.round(s.filled / s.total * 100) : 0;
 			this._ws.setProperty("/stats", s);
 			this._ws.setProperty("/savedAt", this._savedAt[this._cc + "|" + this._doc] || null);
-			this._ws.setProperty("/treeSub", `${s.total} fields · ${s.filled} filled`);
+			this._ws.setProperty("/treeSub", t("ws.treeSub", s.total, s.filled));
+			this._ws.setProperty("/countsText", `${i18n.count(s.rules, "common.ruleCount")} · ${i18n.count(s.checks, "common.checkCount")}`);
 			this._renderTree(bRebuildTree);
 			this._refreshSide();
 			this._refreshPreviews();
@@ -125,6 +123,7 @@ sap.ui.define([
 			} else if (sTab === "code") {
 				const sKey = this._ws.getProperty("/objKey"), oObj = this._ws.getProperty("/objects").find(o => o.key === sKey);
 				this._ws.setProperty("/obj", oObj);
+				this._ws.setProperty("/fromText", oObj.generated ? t("ws.fromRules", i18n.count(this._ws.getProperty("/stats/rules"), "common.ruleCount")) : t("ws.fromSettings"));
 				this._ws.setProperty("/abap", engine.objectCode(this._cc, this._doc, sKey, this._review) || "");
 			}
 		},
@@ -169,7 +168,7 @@ sap.ui.define([
 					local: n.isAttr ? "@" + n.local : n.local,
 					prefix: n.prefix ? n.prefix + ":" : "",
 					idx: n.idx,
-					listText: n.count > 1 ? `1..n · ${n.count} in sample` : "",
+					listText: n.count > 1 ? t("ws.listText", n.count) : "",
 					value: n.leaf ? n.value : "",
 					leaf: !!n.leaf,
 					icon: n.isAttr ? "sap-icon://tag" : n.leaf ? "sap-icon://form" : "sap-icon://folder-blank",
@@ -321,7 +320,7 @@ sap.ui.define([
 			if (!n) {
 				sel = {kind: "none", suggestions: [], rules: []};
 			} else if (!n.leaf) {
-				sel = {kind: "group", name: n.local, path: n.path, kindText: n.count > 1 ? `Repeating group (1..n, ${n.count} in sample)` : "Group", total: n.total, ruleCount: engine.mappedCounts(this._cc, this._doc)[n.id] || 0, suggestions: [], rules: []};
+				sel = {kind: "group", name: n.local, path: n.path, kindText: n.count > 1 ? t("ws.kindRepeatingGroup", n.count) : t("ws.kindGroup"), total: n.total, ruleCount: engine.mappedCounts(this._cc, this._doc)[n.id] || 0, suggestions: [], rules: []};
 			} else {
 				const rs = this._rulesFor(n.id);
 				sel = {
@@ -330,7 +329,7 @@ sap.ui.define([
 					name: n.isAttr ? n.name : n.local,
 					path: n.path,
 					value: n.value,
-					kindText: (n.isAttr ? "Attribute" : "Element") + (n.count > 1 ? ", repeats 1..n" : "") + (engine.isLine(n, m, this._d) ? ", line item" : ""),
+					kindText: [t(n.isAttr ? "ws.kindAttribute" : "ws.kindElement"), n.count > 1 ? t("ws.kindRepeats") : "", engine.isLine(n, m, this._d) ? t("ws.kindLineItem") : ""].filter(Boolean).join(", "),
 					ruleCount: rs.length,
 					suggestions: engine.suggest(n, m, this._cc, this._d).map(f => ({f, desc: engine.fieldDesc(f)})),
 					rules: rs.map(r => this._ruleRow(r))
@@ -350,7 +349,7 @@ sap.ui.define([
 			const oRel = this._relevanceRow();
 			if (oRel) { aAll.unshift(oRel); }
 			this._ws.setProperty("/allRules", aAll);
-			this._ws.setProperty("/allRulesTitle", `All rules (${aAll.length})`);
+			this._ws.setProperty("/allRulesTitle", t("ws.allRules", aAll.length));
 		},
 
 		_ruleRow: function (r) {
@@ -369,7 +368,7 @@ sap.ui.define([
 		onEditRule: function (oEvent) {
 			const sId = oEvent.getSource().getBindingContext("ws").getProperty("id");
 			if (sId === "relevance") {
-				MessageToast.show("Describe the change in the AI assistant, for example: billing type ZF5 must not create e-invoices.");
+				MessageToast.show(t("msg.relevanceEdit"));
 				return;
 			}
 			const r = this._rules().find(x => x.id === sId);
@@ -383,14 +382,14 @@ sap.ui.define([
 				engine.setRelevance(this._cc, this._doc, null);
 				this._markDirty();
 				this._refreshAll();
-				MessageToast.show("Rule deleted.");
+				MessageToast.show(t("msg.ruleDeleted"));
 				return;
 			}
 			const aRules = this._rules();
 			aRules.splice(aRules.findIndex(x => x.id === sId), 1);
 			this._markDirty();
 			this._refreshAll();
-			MessageToast.show("Rule deleted.");
+			MessageToast.show(t("msg.ruleDeleted"));
 		},
 
 		onRuleRowPress: function (oEvent) {
@@ -399,8 +398,8 @@ sap.ui.define([
 		},
 
 		onClearRules: function () {
-			MessageBox.confirm(`Remove all ${this._rules().length} rules for ${this._ws.getProperty("/countryName")}, ${this._ws.getProperty("/docLabel")}?`, {
-				title: "Clear all rules",
+			MessageBox.confirm(t("msg.clearConfirm", this._rules().length, this._ws.getProperty("/countryName"), this._ws.getProperty("/docLabel")), {
+				title: t("msg.clearTitle"),
 				emphasizedAction: MessageBox.Action.OK,
 				onClose: sAction => {
 					if (sAction !== MessageBox.Action.OK) {
@@ -409,7 +408,7 @@ sap.ui.define([
 					this._rules().length = 0;
 					this._markDirty();
 					this._refreshAll();
-					MessageToast.show("All rules removed for this document type.");
+					MessageToast.show(t("msg.cleared"));
 				}
 			});
 		},
@@ -427,9 +426,9 @@ sap.ui.define([
 		},
 
 		onSave: function () {
-			this._savedAt[this._cc + "|" + this._doc] = new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+			this._savedAt[this._cc + "|" + this._doc] = time();
 			this._ws.setProperty("/savedAt", this._savedAt[this._cc + "|" + this._doc]);
-			MessageToast.show("Draft saved (in this browser session only).");
+			MessageToast.show(t("msg.draftSaved"));
 		},
 
 		onObject: function () {
@@ -440,12 +439,12 @@ sap.ui.define([
 		onAskAi: function () {
 			const n = this._selected ? this._m.nodes[this._selected] : null;
 			if (!n || !n.leaf) {
-				this.getOwnerComponent().getEventBus().publish("edoc", "ai", {prompt: `Help me map the ${this._d.label} for ${this._ws.getProperty("/countryName")}. What should I suggest?`});
+				this.getOwnerComponent().getEventBus().publish("edoc", "ai", {prompt: t("ai.promptHelpMap", this._d.label, this._ws.getProperty("/countryName"))});
 				return;
 			}
 			const sField = n.isAttr ? n.name.slice(1) : n.local, sg = engine.suggest(n, this._m, this._cc, this._d);
 			this.getOwnerComponent().getEventBus().publish("edoc", "ai", {
-				prompt: `Explain <${sField}> in the ${this._d.label} (${this._ws.getProperty("/countryName")}) and how to fill it`,
+				prompt: t("ai.promptExplain", `<${sField}>`, this._d.label, this._ws.getProperty("/countryName")),
 				ctx: {field: n.local, path: n.path, countryName: this._ws.getProperty("/countryName"), docLabel: this._d.label, suggestion: sg[0]}
 			});
 		},
@@ -454,7 +453,7 @@ sap.ui.define([
 		onRequestImpl: function () {
 			const oRel = engine.relevanceOf(this._cc, this._doc);
 			if (!this._rules().length && !oRel) {
-				MessageBox.information("Define at least one rule before sending the package to B&B.");
+				MessageBox.information(t("msg.needRuleImpl"));
 				return;
 			}
 			const s = engine.stats(this._cc, this._doc), oUser = this.getOwnerComponent().getModel("app").getProperty("/user");
@@ -462,8 +461,8 @@ sap.ui.define([
 			this._implModel = this._implModel || new JSONModel();
 			this._implModel.setData({
 				scenario: `${this._ws.getProperty("/countryName")}, ${this._d.label}`,
-				edoc: `${this._d.edoc} (interface ${this._d.iface})`,
-				ruleText: (oRel ? `Document relevance (no eDocument for ${oRel.values.join(", ")}), ` : "") + `${s.rules} rules, ${s.checks} checks, ${s.filled} of ${s.total} fields filled`,
+				edoc: t("impl.edocText", this._d.edoc, this._d.iface),
+				ruleText: (oRel ? t("impl.relevanceText", oRel.values.join(", ")) + ", " : "") + [i18n.count(s.rules, "common.ruleCount"), i18n.count(s.checks, "common.checkCount"), t("impl.filledText", s.filled, s.total)].join(", "),
 				objects: engine.objects(this._cc, this._doc).map(o => ({name: o.name, badi: o.badi, selected: true})),
 				system: "DEV",
 				priority: "normal",
@@ -490,7 +489,7 @@ sap.ui.define([
 			const oDialog = this.byId("implDialog"), d = this._implModel.getData(), oApp = this.getOwnerComponent().getModel("app");
 			const aObjects = d.objects.filter(o => o.selected);
 			if (!aObjects.length) {
-				MessageToast.show("Select at least one object to implement.");
+				MessageToast.show(t("msg.needObject"));
 				return;
 			}
 			this._implModel.setProperty("/busy", true);
@@ -503,19 +502,19 @@ sap.ui.define([
 					scenario: d.scenario,
 					rules: String(this._rules().length + (engine.relevanceOf(this._cc, this._doc) ? 1 : 0)),
 					objectsText: aObjects.map(o => o.name).join(", "),
-					systemText: d.system === "DEV" ? "S4D, client 100" : "S4X, client 200",
-					sentAt: new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}),
-					status: "Received by B&B"
+					systemText: t(d.system === "DEV" ? "impl.sysDevShort" : "impl.sysSbxShort"),
+					sentAt: time(),
+					status: t("req.received")
 				}]);
 				const aNotif = oApp.getProperty("/notifications");
-				aNotif.unshift({id: sTicket, title: `${sTicket} received by B&B`, description: `${d.scenario}: a B&B consultant will contact you within one business day.`, datetime: "Just now", priority: "Medium", author: "B&B Service Desk", initials: "BB", unread: true});
+				aNotif.unshift({id: sTicket, title: t("notif.ticketTitle", sTicket), description: t("notif.ticketText", d.scenario), datetime: t("notif.justNow"), priority: "Medium", author: "B&B Service Desk", initials: "BB", unread: true});
 				oApp.setProperty("/notifications", aNotif);
 				oApp.setProperty("/unreadCount", String(aNotif.filter(x => x.unread).length));
 				oDialog.setBusy(false);
 				oDialog.close();
-				MessageBox.success(`Ticket ${sTicket} was created in the B&B service ERP.`, {
-					title: "Sent to B&B",
-					details: `<p><strong>${d.scenario}</strong></p><ul>${aObjects.map(o => `<li>${o.name}</li>`).join("")}</ul><p>Next steps: analysis, implementation in ${d.system === "DEV" ? "S4D" : "S4X"}, tests with your documents, transport for your approval.</p>`
+				MessageBox.success(t("msg.ticketCreated", sTicket), {
+					title: t("msg.sentTitle"),
+					details: `<p><strong>${d.scenario}</strong></p><ul>${aObjects.map(o => `<li>${o.name}</li>`).join("")}</ul><p>${t("msg.nextSteps", d.system === "DEV" ? "S4D" : "S4X")}</p>`
 				});
 			}, 1200);
 		},
@@ -528,7 +527,7 @@ sap.ui.define([
 		/** One AI active: generate right away. More than one: ask which AI reviews the code, unless remembered. */
 		onGenerate: function () {
 			if (!this._rules().length && !engine.relevanceOf(this._cc, this._doc)) {
-				MessageToast.show("Add at least one rule first.");
+				MessageToast.show(t("msg.needRule"));
 				return;
 			}
 			const aOn = this._activeEngines();
@@ -545,8 +544,8 @@ sap.ui.define([
 			this._genModel.setData({
 				remember: false,
 				options: [
-					{key: "all", name: `All active AI: ${aOn.map(e => e.name).join(", ")}`, desc: "Each one checks its part. The review notes show who found what.", icon: "sap-icon://ai", initials: "", color: "Accent7", recommended: true, selected: true},
-					...aOn.map(e => ({key: e.key, name: e.name, desc: REVIEW_ROLE[e.key], icon: e.icon, initials: e.initials, color: e.color, recommended: false, selected: false}))
+					{key: "all", name: t("gen.allActive", aOn.map(e => e.name).join(", ")), desc: t("gen.allActiveText"), icon: "sap-icon://ai", initials: "", color: "Accent7", recommended: true, selected: true},
+					...aOn.map(e => ({key: e.key, name: e.name, desc: t("gen.role." + e.key), icon: e.icon, initials: e.initials, color: e.color, recommended: false, selected: false}))
 				]
 			});
 			if (!this._pGen) {
@@ -578,14 +577,14 @@ sap.ui.define([
 			this._ws.setProperty("/objKey", this._ws.getProperty("/objects")[0].key);
 			this._ws.setProperty("/tab", "code");
 			this._refreshPreviews();
-			MessageToast.show(`ABAP generated and reviewed by ${this._ws.getProperty("/reviewText")}.`);
+			MessageToast.show(t("msg.generated", this._ws.getProperty("/reviewText")));
 		},
 
 		onCopyCode: function () {
 			const sCode = this._ws.getProperty("/abap");
-			const fail = () => MessageToast.show("Copy is blocked here, select the code manually.");
+			const fail = () => MessageToast.show(t("msg.copyBlocked"));
 			try {
-				navigator.clipboard.writeText(sCode).then(() => MessageToast.show("Code copied to clipboard."), fail);
+				navigator.clipboard.writeText(sCode).then(() => MessageToast.show(t("msg.copied")), fail);
 			} catch (e) {
 				fail();
 			}
@@ -621,13 +620,13 @@ sap.ui.define([
 			this._dlgSugg = sg;
 			this._dlgOpen = new Set(d.source ? [d.source.split("-")[0]] : []);
 			this._dlgModel.setData(Object.assign(d, {
-				title: `${d.editId ? "Edit" : "Define"} rule for <${n.name}>`,
+				title: t(d.editId ? "rule.titleEdit" : "rule.titleDefine", `<${n.name}>`),
 				path: n.path,
 				nodeName: n.name,
 				nodeValue: n.value,
 				sourceLabel: oDoc.source,
-				catalogTitle: oDoc.dir === "in" ? "SAP target fields" : "SAP source fields",
-				saveText: d.editId ? "Save Rule" : "Apply Rule",
+				catalogTitle: t(oDoc.dir === "in" ? "rule.catalogTarget" : "rule.catalogSource"),
+				saveText: t(d.editId ? "rule.save" : "rule.apply"),
 				q: "",
 				error: "",
 				formats: toList(engine.FORMATS),
@@ -647,7 +646,7 @@ sap.ui.define([
 			M.setProperty("/typeHelp", engine.TYPES[d.type].help);
 			M.setProperty("/sourceDesc", d.source ? engine.fieldDesc(d.source) : "");
 			M.setProperty("/suggestions", this._dlgSugg.map(f => ({f, desc: engine.fieldDesc(f), selected: d.source === f})));
-			M.setProperty("/paramPlaceholder", PARAM_PH[d.cfg.cond] || "");
+			M.setProperty("/paramPlaceholder", PARAM_PH[d.cfg.cond] ? `${t("common.eg")} ${PARAM_PH[d.cfg.cond]}` : "");
 			M.setProperty("/preview", engine.previewText(this._dlgNode, d, this._d.dir === "in"));
 		},
 
@@ -829,7 +828,7 @@ sap.ui.define([
 			this._selected = rule.nodeId;
 			this._markDirty();
 			this._refreshAll();
-			MessageToast.show(`${engine.TYPES[rule.type].label} rule ${d.editId ? "updated" : "added"} for <${this._dlgNode.local}>`);
+			MessageToast.show(t(d.editId ? "msg.ruleUpdated" : "msg.ruleAdded", engine.TYPES[rule.type].text, `<${this._dlgNode.local}>`));
 		},
 
 		onDlgClose: function () {

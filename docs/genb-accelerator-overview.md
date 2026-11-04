@@ -153,6 +153,7 @@ Este caso é usado no vídeo. A personagem é fictícia: **Tori Hayes**, key use
   - `#/country/{code}`;
   - `#/country/{code}/{doc}` (Workspace). Exemplo: `#/country/FR/customer-invoice`.
 - **Bibliotecas:** `sap.m`, `sap.f`, `sap.tnt` (ToolPage e SideNavigation), `sap.ui.table` (TreeTable da árvore XML) e `sap.ui.codeeditor` (ABAP). Os dados ficam em JSONModel, e as telas se comunicam por EventBus.
+- **Idiomas:** inglês (padrão), português do Brasil, espanhol, francês e alemão. Troca pelo menu do usuário (launchpad), pelo menu do perfil (standalone) ou por `?sap-language=xx`; a escolha fica gravada no navegador. Textos da interface em `webapp/i18n/i18n*.properties`; conteúdo do mock (países, cenários, campos SAP, respostas da IA, tiles) em `webapp/i18n/content_*.json`, com o texto em inglês como chave. O ABAP gerado e os nomes técnicos ficam em inglês. O AI Assistant reconhece as perguntas nas cinco línguas.
 
 ### 5.3 Telas
 
@@ -203,6 +204,9 @@ webapp/Component.js          perfil fictício, notificações, motores de IA, pe
 webapp/model/engine.js       países, cenários, catálogo SAP, sugestões, validações, regra de relevância, gerador ABAP
 webapp/model/templates.js    ABAP de e-mail, custom fields e UI functions
 webapp/model/assistant.js    respostas simuladas por motor de IA, detecção do requisito de relevância
+webapp/model/i18n.js         idioma atual, textos da interface e do conteúdo, troca de idioma
+webapp/i18n/                 i18n*.properties (interface) e content_*.json (conteúdo) em EN, PT-BR, ES, FR, DE
+launchpad/shell.js           logo da B&B no cabeçalho do launchpad e opção de idioma no menu do usuário
 webapp/model/plTemplate.js   XML de exemplo da Polônia (KSeF FA(2))
 webapp/samples/<país>/       XMLs anonimizados (fr, de, mx, be, sk, ae)
 webapp/view/, controller/    telas, diálogo de regra, painel de IA, pedido à B&B
@@ -298,7 +302,9 @@ Para regenerar o vídeo ou o PPT é preciso instalar Node, Playwright, ffmpeg, e
 ## 9. Situação e próximos passos
 
 - **Mock:** publicado e estável. Último ajuste relevante: Auto-suggest retirado da tela e a regra de relevância contando como regra em todos os lugares.
-- **Launchpad (desde 2026-11-04, página inicial):** pedido dos gestores. O app roda dentro do SAP Fiori launchpad real em modo sandbox (`index.html`), estático, sem BTP. Links antigos (`#/country/...`) vão para o `standalone.html`. Próximo passo possível: o mesmo app como HTML5 app no BTP com SAP Build Work Zone (não precisa de CAP, o mock é todo client-side).
+- **Launchpad (desde 2026-11-04, página inicial):** pedido dos gestores. O app roda dentro do SAP Fiori launchpad real em modo sandbox (`index.html`), estático, sem BTP. Links antigos (`#/country/...`) vão para o `standalone.html`. Logo da B&B no cabeçalho do launchpad.
+- **Idiomas (desde 2026-11-04):** EN, PT-BR, ES, FR e DE em todas as camadas (interface, conteúdo, respostas da IA). As traduções de ES, FR e DE ainda pedem revisão de um nativo da B&B.
+- **Próximo passo possível do launchpad:** o mesmo app como HTML5 app no BTP com SAP Build Work Zone (não precisa de CAP, o mock é todo client-side).
 - **Vídeo:** fechado, versão final aprovada.
 - **PPT:** em revisão com os dois gestores da B&B. Pontos que ainda dependem deles:
   - a fonte dos títulos (Montserrat Bold no lugar da Code Bold dos PPTs originais);

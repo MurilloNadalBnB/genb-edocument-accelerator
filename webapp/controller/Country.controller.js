@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
+	"../model/i18n",
 	"../model/engine"
-], function (Controller, JSONModel, engine) {
+], function (Controller, JSONModel, i18n, engine) {
 	"use strict";
 
 	return Controller.extend("bnb.edoc.controller.Country", {
@@ -25,7 +26,7 @@ sap.ui.define([
 				edocs: uniq(oCountry.docs.map(d => d.edoc)),
 				docs: oCountry.docs.map(d => Object.assign({}, d, {
 					rules: engine.docRuleCount(sCode, d.id),
-					dirText: d.dir === "in" ? "Inbound" : "Outbound"
+					dirText: i18n.t(d.dir === "in" ? "common.inbound" : "common.outbound")
 				}))
 			}));
 		},

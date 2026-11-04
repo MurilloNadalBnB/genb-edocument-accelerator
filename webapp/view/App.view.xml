@@ -10,13 +10,13 @@
 		<tnt:header>
 			<!-- Same layout as the Work Zone / Launchpad shell header: back, logo, site title | app title, search, actions, avatar -->
 			<tnt:ToolHeader id="shellBar">
-				<Button icon="sap-icon://menu2" type="Transparent" tooltip="Menu" press=".onToggleSide">
+				<Button icon="sap-icon://menu2" type="Transparent" tooltip="{i18n>shell.menu}" press=".onToggleSide">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Button>
-				<Button icon="sap-icon://nav-back" type="Transparent" tooltip="Back" enabled="{app>/canGoBack}" press=".onBack">
+				<Button icon="sap-icon://nav-back" type="Transparent" tooltip="{i18n>shell.back}" enabled="{app>/canGoBack}" press=".onBack">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Button>
-				<Image id="logo" src="webapp/img/logo.svg" height="1.875rem" alt="B&amp;B" tooltip="Overview" press=".onHome" class="sapUiTinyMarginBeginEnd">
+				<Image id="logo" src="webapp/img/logo.svg" height="1.875rem" alt="B&amp;B" tooltip="{i18n>nav.overview}" press=".onHome" class="sapUiTinyMarginBeginEnd">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Image>
 				<Link text="GENB Accelerator" press=".onHome" class="edocShellTitle">
@@ -30,19 +30,19 @@
 					</menu>
 				</MenuButton>
 				<ToolbarSpacer/>
-				<SearchField width="24rem" placeholder="Search" search=".onShellSearch">
+				<SearchField width="24rem" placeholder="{i18n>shell.search}" search=".onShellSearch">
 					<layoutData><OverflowToolbarLayoutData priority="Low"/></layoutData>
 				</SearchField>
-				<Button id="aiBtn" icon="sap-icon://ai" type="Transparent" tooltip="AI Assistant: Joule, SAP Generative AI Hub, GENB AI" press=".onAi">
+				<Button id="aiBtn" icon="sap-icon://ai" type="Transparent" tooltip="{i18n>shell.aiTooltip}" press=".onAi">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Button>
-				<Button icon="sap-icon://palette" type="Transparent" tooltip="Theme (Horizon Morning / Evening)" press=".onThemeToggle"/>
-				<Button icon="sap-icon://bell" type="Transparent" tooltip="Notifications" press=".onNotifications">
+				<Button icon="sap-icon://palette" type="Transparent" tooltip="{i18n>shell.theme}" press=".onThemeToggle"/>
+				<Button icon="sap-icon://bell" type="Transparent" tooltip="{i18n>shell.notifications}" press=".onNotifications">
 					<customData>
 						<BadgeCustomData key="badge" value="{app>/unreadCount}" visible="{= !!${app>/unreadCount} }"/>
 					</customData>
 				</Button>
-				<Button icon="sap-icon://grid" type="Transparent" tooltip="My Products" press=".onProductSwitcher"/>
+				<Button icon="sap-icon://grid" type="Transparent" tooltip="{i18n>shell.products}" press=".onProductSwitcher"/>
 				<Avatar initials="{app>/user/initials}" tooltip="{app>/user/name}" displaySize="XS" press=".onAvatar" class="sapUiTinyMarginBegin">
 					<layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
 				</Avatar>
@@ -51,27 +51,27 @@
 		<tnt:sideContent>
 			<tnt:SideNavigation id="sideNav" itemPress=".onNavPress">
 				<tnt:NavigationList>
-					<tnt:NavigationListItem key="home" text="Overview" icon="sap-icon://home"/>
+					<tnt:NavigationListItem key="home" text="{i18n>nav.overview}" icon="sap-icon://home"/>
 					<!-- Countries: available ones open the country page, planned ones only show a message -->
-					<tnt:NavigationListGroup text="Countries">
+					<tnt:NavigationListGroup text="{i18n>nav.countries}">
 						<!-- data-tag: short status of the mandates in the news (Live, 2027, Reform), drawn by style.css -->
-						<tnt:NavigationListItem key="available" text="Available" icon="sap-icon://flag" selectable="false" expanded="true" items="{app>/countries}">
+						<tnt:NavigationListItem key="available" text="{i18n>nav.available}" icon="sap-icon://flag" selectable="false" expanded="true" items="{app>/countries}">
 							<tnt:NavigationListItem key="{app>code}" text="{app>name}">
 								<tnt:customData><core:CustomData key="tag" value="{app>tag}" writeToDom="true"/></tnt:customData>
 							</tnt:NavigationListItem>
 						</tnt:NavigationListItem>
-						<tnt:NavigationListItem key="planned" text="Planned" icon="sap-icon://future" selectable="false" expanded="true" items="{app>/planned}">
+						<tnt:NavigationListItem key="planned" text="{i18n>nav.planned}" icon="sap-icon://future" selectable="false" expanded="true" items="{app>/planned}">
 							<tnt:NavigationListItem key="{app>code}" text="{app>name}" selectable="false">
 								<tnt:customData><core:CustomData key="tag" value="{app>tag}" writeToDom="true"/></tnt:customData>
 							</tnt:NavigationListItem>
 						</tnt:NavigationListItem>
 					</tnt:NavigationListGroup>
-					<tnt:NavigationListItem key="library" text="Rule Library" icon="sap-icon://course-book" selectable="false"/>
-					<tnt:NavigationListItem key="requests" text="B&amp;B Requests" icon="sap-icon://collaborate" selectable="false"/>
+					<tnt:NavigationListItem key="library" text="{i18n>nav.ruleLibrary}" icon="sap-icon://course-book" selectable="false"/>
+					<tnt:NavigationListItem key="requests" text="{i18n>nav.requests}" icon="sap-icon://collaborate" selectable="false"/>
 				</tnt:NavigationList>
 				<tnt:fixedItem>
 					<tnt:NavigationList>
-						<tnt:NavigationListItem key="settings" text="Settings" icon="sap-icon://action-settings" selectable="false"/>
+						<tnt:NavigationListItem key="settings" text="{i18n>nav.settings}" icon="sap-icon://action-settings" selectable="false"/>
 					</tnt:NavigationList>
 				</tnt:fixedItem>
 			</tnt:SideNavigation>

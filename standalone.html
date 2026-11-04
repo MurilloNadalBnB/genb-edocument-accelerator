@@ -5,6 +5,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>GENB Accelerator</title>
 	<link rel="icon" type="image/svg+xml" href="webapp/img/favicon-ai.svg">
+	<script>
+		// Language: ?sap-language=xx wins; otherwise the last choice (profile menu), otherwise English
+		let sLanguage = null;
+		try {
+			sLanguage = localStorage.getItem("genb-language");
+		} catch (e) {
+			// storage blocked: English
+		}
+		window["sap-ui-config"] = {language: sLanguage || "en"};
+	</script>
 	<!-- OpenUI5 from the SAP CDN, pinned to an LTS patch so the look does not change between recordings -->
 	<script
 		id="sap-ui-bootstrap"
@@ -14,8 +24,7 @@
 		data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
 		data-sap-ui-compat-version="edge"
 		data-sap-ui-async="true"
-		data-sap-ui-xx-component-preload="off"
-		data-sap-ui-language="en"></script>
+		data-sap-ui-xx-component-preload="off"></script>
 </head>
 <body class="sapUiBody sapUiSizeCompact" id="content">
 	<div data-sap-ui-component data-name="bnb.edoc" data-id="container" data-settings='{"id": "edoc"}' style="height:100%"></div>

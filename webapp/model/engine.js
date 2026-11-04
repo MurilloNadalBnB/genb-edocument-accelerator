@@ -1,8 +1,11 @@
 sap.ui.define([
+	"./i18n",
 	"./plTemplate",
 	"./templates"
-], function (PL_XML, templates) {
+], function (i18n, PL_XML, templates) {
 	"use strict";
+
+	const t = i18n.t, tr = i18n.tr;
 
 	/* ======================= Master data ======================= */
 	// One entry per eDocument scenario. Samples are anonymized copies of real SAP DRC output (webapp/samples).
@@ -61,7 +64,9 @@ sap.ui.define([
 		{code: "PT", name: "Portugal", short: "CIUS-PT", planned: true},
 		{code: "SA", name: "Saudi Arabia", short: "ZATCA FATOORA", planned: true},
 		{code: "ES", name: "Spain", short: "SII / VeriFactu", planned: true}
-	].sort((a, b) => !!a.planned - !!b.planned || a.name.localeCompare(b.name)); // available first, each group alphabetical
+	];
+	const sortCountries = () => COUNTRIES.sort((a, b) => !!a.planned - !!b.planned || a.name.localeCompare(b.name, i18n.locale())); // available first, each group alphabetical
+	sortCountries();
 
 	// state = IndicationColor used by sap.m.ObjectStatus (MAP blue, CHECK orange, CHANGE purple, CONST green)
 	const TYPES = {
@@ -107,7 +112,7 @@ sap.ui.define([
 		FI: [["Accounting", ["BKPF", "BSEG", "BSET", "BSAD", "SKAT"]], ["Partner", ["KNA1", "LFA1", "ADRC", "ADR6"]], ["Company", ["T001", "T001Z", "T012K", "TIBAN", "BNKA"]]],
 		MM: [["Invoice verification", ["RBKP", "RSEG"]], ["Purchasing", ["EKKO", "EKPO"]], ["Material", ["MARA"]], ["Partner", ["LFA1", "ADRC", "ADR6", "TIBAN", "BNKA"]], ["Company", ["T001", "T001Z"]]]
 	};
-	const catGroups = (cc, d) => [...CAT_BASE[d.src], ["Texts", ["TLINE"]], ["Framework", cc === "MX" ? ["EDOCUMENT", "EDOMXINVOICE", "SYST"] : ["EDOCUMENT", "SYST"]]];
+	const catGroups = (cc, d) => [...CAT_BASE[d.src], ["Texts", ["TLINE"]], ["Framework", cc === "MX" ? ["EDOCUMENT", "EDOMXINVOICE", "SYST"] : ["EDOCUMENT", "SYST"]]].map(([g, a]) => [tr(g), a]);
 	const HEAD_TABLE = {SD: "VBRK", FI: "BKPF", MM: "RBKP"};
 	const ITEM_TABLE = {SD: "VBRP", FI: "BSEG", MM: "RSEG"};
 	const SRC_VAR = {SD: "is_sd_invoice", FI: "is_fi_invoice", MM: "is_mm_invoice"};
@@ -131,8 +136,37 @@ sap.ui.define([
 	/* ======================= Samples ======================= */
 	const SAMPLES = {};
 	const key = (cc, doc) => cc + "|" + doc;
-	/** Load the sample XML of every scenario once, before the router starts. */
+	/**
+	 * Translate the mock content into the current language (i18n.load must have run). The English texts are kept
+	 * in nameEn / labelEn / sourceEn for the generated ABAP, which stays in English like any ABAP code.
+	 */
+	function localize() {
+		COUNTRIES.forEach(c => {
+			c.nameEn = c.name;
+			["name", "short", "scenario"].forEach(k => { if (c[k]) { c[k] = tr(c[k]); } });
+			(c.docs || []).forEach(d => {
+				Object.assign(d, {labelEn: d.label, sourceEn: d.source});
+				["label", "desc", "source", "schema"].forEach(k => { d[k] = tr(d[k]); });
+			});
+		});
+		sortCountries();
+		Object.values(CATALOG).forEach(T => {
+			T.d = tr(T.d);
+			T.f.forEach(f => { f[1] = tr(f[1]); });
+		});
+		Object.entries(TYPES).forEach(([k, T]) => {
+			T.text = t("rule.type" + k[0].toUpperCase() + k.slice(1));
+			T.help = t("rule.help" + k[0].toUpperCase() + k.slice(1));
+		});
+		Object.keys(FORMATS).forEach(k => { FORMATS[k] = t("format." + k); });
+		Object.keys(CONDS).forEach(k => { CONDS[k] = t("cond." + k); });
+		Object.keys(TRANSFORMS).forEach(k => { TRANSFORMS[k] = t("transform." + k); });
+		Object.entries(OBJECT_DEFS).forEach(([k, o]) => { o.text = t("obj." + k); });
+	}
+
+	/** Translate the content, then load the sample XML of every scenario once, before the router starts. */
 	function load() {
+		localize();
 		const aJobs = [];
 		COUNTRIES.filter(c => !c.planned).forEach(c => c.docs.forEach(d => {
 			if (!d.sample) {
@@ -425,45 +459,45 @@ sap.ui.define([
 	}
 	function defaultCfg(n, cc, d) {
 		const fmt = DATE_FIELDS.includes(n.local) ? "date" : D102_FIELDS.includes(n.local) ? "d102" : DATETIME_FIELDS.includes(n.local) ? "datetime" : cc === "MX" && DEC6_RE.test(n.local) ? "dec6" : AMOUNT_RE.test(n.local) ? "dec2" : "none";
-		return {format: fmt, cond: "notInitial", param: "", severity: "E", msg: `${n.local} must not be empty`, transform: "valmap", valmap: prefillValmap(n, cc, d), second: "", sep: " ", prefix: "", datefmt: "ts", constant: ""};
+		return {format: fmt, cond: "notInitial", param: "", severity: "E", msg: t("rule.defaultMsg", n.local), transform: "valmap", valmap: prefillValmap(n, cc, d), second: "", sep: " ", prefix: "", datefmt: "ts", constant: ""};
 	}
 
 	/* ======================= Rule texts ======================= */
 	function describe(r) {
 		const c = r.cfg;
 		switch (r.type) {
-			case "map": return c.format === "none" ? "Direct value" : FORMATS[c.format];
-			case "constant": return `Always '${c.constant}'`;
+			case "map": return c.format === "none" ? t("rule.directValue") : FORMATS[c.format];
+			case "constant": return t("rule.always", c.constant);
 			case "check": {
 				const p = c.cond === "notInitial" ? "" : ` ${c.param}`;
-				return `${CONDS[c.cond]}${p}, ${c.severity === "E" ? "error" : "warning"}`;
+				return `${CONDS[c.cond]}${p}, ${t(c.severity === "E" ? "rule.error" : "rule.warning")}`;
 			}
 			case "change": switch (c.transform) {
-				case "valmap": return c.valmap.filter(v => v.from || v.to).map(v => `${v.from || "(empty)"} → ${v.to}`).join(", ") || "Value mapping";
-				case "concat": return `Concatenate with ${c.second || "?"}`;
-				case "prefix": return `Prefix '${c.prefix}'`;
+				case "valmap": return c.valmap.filter(v => v.from || v.to).map(v => `${v.from || t("rule.emptyValue")} → ${v.to}`).join(", ") || t("rule.valueMapping");
+				case "concat": return t("rule.concatWith", c.second || "?");
+				case "prefix": return t("rule.prefixWith", c.prefix);
 				default: return TRANSFORMS[c.transform];
 			}
 		}
 		return "";
 	}
 	function previewText(n, r, bInbound) {
-		const tag = `<${n.name}>`, src = r.source || (r.type === "check" ? "XML value" : "?");
+		const tag = `<${n.name}>`, src = r.source || (r.type === "check" ? t("rule.xmlValue") : "?");
 		const arrow = (a, b) => bInbound ? `${b}  ←  ${a}` : `${a}  ←  ${b}`;
 		switch (r.type) {
 			case "map": return `${arrow(tag, src)}${r.cfg.format !== "none" ? `\n           ${FORMATS[r.cfg.format]}` : ""}`;
 			case "constant": return `${tag}  =  '${r.cfg.constant}'`;
 			case "change": return `${arrow(tag, src)}\n           ${describe(r)}`;
-			case "check": return `CHECK ${src}: ${CONDS[r.cfg.cond]}${r.cfg.cond === "notInitial" ? "" : " " + r.cfg.param}\n   otherwise ${r.cfg.severity === "E" ? "ERROR" : "WARNING"} "${r.cfg.msg}"`;
+			case "check": return `CHECK ${src}: ${CONDS[r.cfg.cond]}${r.cfg.cond === "notInitial" ? "" : " " + r.cfg.param}\n   ${t("rule.otherwise")} ${r.cfg.severity === "E" ? "ERROR" : "WARNING"} "${r.cfg.msg}"`;
 		}
 		return "";
 	}
 	function validate(r) {
 		const c = r.cfg;
-		if ((r.type === "map" || r.type === "change") && !r.source) { return "Pick the SAP field on the left first."; }
-		if (r.type === "constant" && !c.constant.trim()) { return "Enter the constant value."; }
-		if (r.type === "check" && c.cond !== "notInitial" && !c.param.trim()) { return "Enter the parameter for this condition."; }
-		if (r.type === "change" && c.transform === "concat" && !/^[A-Z0-9_]+-[A-Z0-9_]+$/i.test(c.second.trim())) { return "Second field must look like TABLE-FIELD, for example ADRC-HOUSE_NUM1."; }
+		if ((r.type === "map" || r.type === "change") && !r.source) { return t("rule.errSource"); }
+		if (r.type === "constant" && !c.constant.trim()) { return t("rule.errConstant"); }
+		if (r.type === "check" && c.cond !== "notInitial" && !c.param.trim()) { return t("rule.errParam"); }
+		if (r.type === "change" && c.transform === "concat" && !/^[A-Z0-9_]+-[A-Z0-9_]+$/i.test(c.second.trim())) { return t("rule.errSecond"); }
 		return "";
 	}
 
@@ -548,7 +582,7 @@ sap.ui.define([
 				out.push(`<div class="xl"><span>${pad}<span class="xt">&lt;/${esc(n.name)}&gt;</span></span></div>`);
 			}
 			if (n.count > 1) {
-				out.push(`<div class="xl"><span>${pad}<span class="xc">&lt;!-- repeats 1..n, ${n.count} in this sample --&gt;</span></span></div>`);
+				out.push(`<div class="xl"><span>${pad}<span class="xc">&lt;!-- ${esc(t("ws.xmlRepeats", n.count))} --&gt;</span></span></div>`);
 			}
 		})(m.root, 0);
 		return out.join("");
@@ -579,7 +613,7 @@ sap.ui.define([
 			return [n, ...reviewNotes(k, d, rs, vmaps, null)];
 		}
 		switch (k) {
-			case "genb": return [`GENB AI: matches the B&B pattern for ${d.label} (${d.edoc}), ${vmaps.length} AIF value maps reused from the rule library.`,
+			case "genb": return [`GENB AI: matches the B&B pattern for ${d.labelEn} (${d.edoc}), ${vmaps.length} AIF value maps reused from the rule library.`,
 				checks ? `GENB AI: ${checks} checks, messages follow the cockpit wording.` : "GENB AI: no checks yet, live projects usually check the buyer's tax ID."];
 			case "joule": return [d.src === "SD" ? "Joule (Order-to-Cash Agent): billing types ZF2 and ZG2 are used but not in the value maps yet." : "Joule (Finance Operations Agent): document types and tax codes in use are all covered.",
 				"Joule: no custom field or Z table of your system is affected."];
@@ -686,10 +720,10 @@ sap.ui.define([
 		const out = [
 			"\" ----------------------------------------------------------------",
 			"\" Generated by GENB Accelerator (mock preview)",
-			`" Country ........: ${c.name} (${c.code})`,
-			`" Scenario .......: ${d.label}, ${d.dir === "in" ? "inbound" : "outbound"}`,
+			`" Country ........: ${c.nameEn} (${c.code})`,
+			`" Scenario .......: ${d.labelEn}, ${d.dir === "in" ? "inbound" : "outbound"}`,
 			`" eDocument type .: ${d.edoc} / interface ${d.iface}`,
-			`" Source type ....: ${d.sourceType}, ${d.source}`,
+			`" Source type ....: ${d.sourceType}, ${d.sourceEn}`,
 			`" Rules ..........: ${rs.length + (rel ? 1 : 0)}`,
 			...(aReview && aReview.length ? [`" AI review ......: ${aReview.map(k => ({joule: "Joule", hub: "SAP Generative AI Hub", genb: "GENB AI"}[k])).join(", ")}`] : []),
 			"\" ----------------------------------------------------------------",
