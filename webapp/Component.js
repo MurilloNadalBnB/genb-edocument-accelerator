@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/model/json/JSONModel",
 	"./model/i18n",
+	"./model/session",
 	"./model/engine"
-], function (UIComponent, JSONModel, i18n, engine) {
+], function (UIComponent, JSONModel, i18n, session, engine) {
 	"use strict";
 
 	return UIComponent.extend("bnb.edoc.Component", {
@@ -35,6 +36,12 @@ sap.ui.define([
 		},
 
 		_createAppModel: function () {
+			// Back from the launchpad home: same requests, notifications and AI conversation as before
+			if (session.app) {
+				session.app.ai.busy = false;
+				this.setModel(new JSONModel(session.app), "app");
+				return;
+			}
 			const t = i18n.t, toNav = c => ({code: c.code, name: c.name, tag: c.tag || ""});
 			// Fictional demo profile shown in the shell bar
 			this.setModel(new JSONModel({
@@ -94,6 +101,7 @@ sap.ui.define([
 					]
 				}
 			}), "app");
+			session.app = this.getModel("app").getData();
 			this.updateEngines();
 		},
 

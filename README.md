@@ -2,7 +2,7 @@
 
 Protótipo navegável, com visual **SAP Fiori (Horizon)**, de um produto que ainda não existe. A ideia: o consultor mapeia, de forma visual, cada campo do XML legal de um país (SAP DRC / eDocument) para um campo SAP, define validações e transformações, e a ferramenta gera o código ABAP.
 
-> **Tudo é mock.** Não há backend, login nem dados reais. As regras ficam em memória e somem ao recarregar a página. O ABAP gerado é ilustrativo e não compila.
+> **Tudo é mock.** Não há backend, login nem dados reais. Regras, pedidos à B&B, notificações e conversa da IA ficam em memória enquanto a página está aberta, inclusive ao voltar para o launchpad e entrar de novo, e somem ao recarregar a página (bom para recomeçar a demo). O ABAP gerado é ilustrativo e não compila.
 
 **Demo online:** https://murillonadalbnb.github.io/genb-edocument-accelerator/
 
@@ -104,6 +104,7 @@ webapp/
   model/engine.js           países, cenários, catálogo SAP, sugestões, validações, gerador ABAP
   model/templates.js        ABAP de e-mail, custom fields e UI functions
   model/assistant.js        respostas simuladas, uma parte por motor de IA
+  model/session.js          estado da demo que sobrevive à volta para o launchpad (pedidos, notificações, IA)
   model/i18n.js             idioma atual, textos da interface e do conteúdo, troca de idioma
   i18n/                     i18n*.properties (interface) e content_*.json (conteúdo), em EN, PT-BR, ES, FR e DE
   model/plTemplate.js       XML de exemplo da Polônia (KSeF FA(2))

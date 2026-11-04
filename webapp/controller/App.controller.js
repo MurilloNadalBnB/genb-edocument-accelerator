@@ -205,7 +205,7 @@ sap.ui.define([
 							template: new ObjectListItem({
 								title: "{app>ticket}: {app>scenario}",
 								number: "{app>rules}",
-								numberUnit: t("common.ruleUnitN"),
+								numberUnit: {path: "app>rules", formatter: n => t((i18n.lang() === "fr" ? +n <= 1 : +n === 1) ? "common.ruleUnit1" : "common.ruleUnitN")},
 								icon: "sap-icon://collaborate",
 								attributes: [
 									new ObjectAttribute({text: "{app>objectsText}"}),

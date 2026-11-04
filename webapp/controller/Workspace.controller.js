@@ -8,8 +8,9 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/CustomTreeItem",
 	"../model/i18n",
+	"../model/session",
 	"../model/engine"
-], function (Controller, Element, Fragment, JSONModel, Row, MessageToast, MessageBox, CustomTreeItem, i18n, engine) {
+], function (Controller, Element, Fragment, JSONModel, Row, MessageToast, MessageBox, CustomTreeItem, i18n, session, engine) {
 	"use strict";
 
 	const t = i18n.t;
@@ -25,7 +26,7 @@ sap.ui.define([
 			this.getView().setModel(this._ws, "ws");
 			this._dlgModel = new JSONModel({});
 			this._dlgModel.attachPropertyChange(this._onDlgPropertyChange, this);
-			this._savedAt = {};
+			this._savedAt = session.savedAt; // kept when the launchpad recreates the app
 			this._router = this.getOwnerComponent().getRouter();
 			this._router.getRoute("workspace").attachPatternMatched(this._onMatched, this);
 
@@ -535,7 +536,7 @@ sap.ui.define([
 				this._generate([aOn[0].key]);
 				return;
 			}
-			const aKept = (this._genChoice || []).filter(k => aOn.some(e => e.key === k));
+			const aKept = (session.genChoice || []).filter(k => aOn.some(e => e.key === k));
 			if (aKept.length) {
 				this._generate(aKept);
 				return;
@@ -561,7 +562,7 @@ sap.ui.define([
 		onGenConfirm: function () {
 			const d = this._genModel.getData(), oPick = d.options.find(o => o.selected) || d.options[0];
 			const aKeys = oPick.key === "all" ? this._activeEngines().map(e => e.key) : [oPick.key];
-			this._genChoice = d.remember ? aKeys : null;
+			session.genChoice = d.remember ? aKeys : null;
 			this.byId("genDialog").close();
 			this._generate(aKeys);
 		},
