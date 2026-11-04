@@ -21,13 +21,14 @@
 			"payload": {
 				"viz": [
 					"edoc-workbench",
-					"edoc-country-BE",
-					"edoc-country-FR",
-					"edoc-country-DE",
-					"edoc-country-MX",
-					"edoc-country-PL",
-					"edoc-country-SK",
-					"edoc-country-AE"
+					"edoc-ai",
+					"edoc-requests",
+					"soon-ruleLibrary",
+					"soon-testCenter",
+					"soon-dashboard",
+					"soon-reports",
+					"soon-aiAnalysis",
+					"soon-feed"
 				]
 			}
 		}
@@ -58,7 +59,6 @@
 					"keywords": [
 						"eDocument",
 						"DRC",
-						"mapping",
 						"GENB"
 					]
 				}
@@ -83,6 +83,58 @@
 			"sap.platform.runtime": {
 				"componentProperties": {
 					"url": "./webapp"
+				}
+			}
+		},
+		"bnb.soon": {
+			"sap.app": {
+				"id": "bnb.soon",
+				"title": "GENB Accelerator",
+				"subTitle": "Roadmap",
+				"ach": "CA-GTF-CSC-EDO",
+				"applicationVersion": {
+					"version": "0.1.0"
+				},
+				"crossNavigation": {
+					"inbounds": {
+						"display": {
+							"semanticObject": "GENBRoadmap",
+							"action": "display",
+							"signature": {
+								"parameters": {},
+								"additionalParameters": "allowed"
+							}
+						}
+					}
+				},
+				"tags": {
+					"keywords": [
+						"eDocument",
+						"DRC",
+						"GENB"
+					]
+				}
+			},
+			"sap.flp": {
+				"type": "application"
+			},
+			"sap.ui": {
+				"technology": "UI5",
+				"icons": {
+					"icon": "sap-icon://future"
+				},
+				"deviceTypes": {
+					"desktop": true,
+					"tablet": true,
+					"phone": true
+				}
+			},
+			"sap.ui5": {
+				"componentName": "bnb.soon"
+			},
+			"sap.platform.runtime": {
+				"componentProperties": {
+					"url": "./launchpad/soon"
 				}
 			}
 		}
@@ -116,17 +168,17 @@
 				}
 			}
 		},
-		"edoc-country-BE": {
+		"edoc-ai": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "Belgium",
-					"subTitle": "Peppol BIS 3.0"
+					"title": "AI Assistant",
+					"subTitle": "Your AI, your choice"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://ai"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -137,23 +189,22 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/BE"
+						"url": "#EDocumentMapping-manage?open=ai"
 					}
 				}
 			}
 		},
-		"edoc-country-FR": {
+		"edoc-requests": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "France",
-					"subTitle": "UBL, e-reporting",
-					"info": "Live"
+					"title": "B&B Requests",
+					"subTitle": "Implementation tickets"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://collaborate"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -164,23 +215,23 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/FR"
+						"url": "#EDocumentMapping-manage?open=requests"
 					}
 				}
 			}
 		},
-		"edoc-country-DE": {
+		"soon-ruleLibrary": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "Germany",
-					"subTitle": "XRechnung, ZUGFeRD",
-					"info": "Mandate 2027"
+					"title": "Rule Library",
+					"subTitle": "Reusable rule sets",
+					"info": "Coming soon"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://course-book"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -191,22 +242,23 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/DE"
+						"url": "#GENBRoadmap-display?feature=ruleLibrary"
 					}
 				}
 			}
 		},
-		"edoc-country-MX": {
+		"soon-testCenter": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "Mexico",
-					"subTitle": "CFDI 4.0, Pagos 2.0"
+					"title": "Test Center",
+					"subTitle": "Test with samples",
+					"info": "Coming soon"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://lab"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -217,23 +269,23 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/MX"
+						"url": "#GENBRoadmap-display?feature=testCenter"
 					}
 				}
 			}
 		},
-		"edoc-country-PL": {
+		"soon-dashboard": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "Poland",
-					"subTitle": "KSeF, FA(2)",
-					"info": "Live"
+					"title": "Compliance Dashboard",
+					"subTitle": "Status by country",
+					"info": "Coming soon"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://kpi-managing-my-area"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -244,23 +296,23 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/PL"
+						"url": "#GENBRoadmap-display?feature=dashboard"
 					}
 				}
 			}
 		},
-		"edoc-country-SK": {
+		"soon-reports": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "Slovakia",
-					"subTitle": "Peppol, 5-corner",
-					"info": "Mandate 2027"
+					"title": "eDocument Reports",
+					"subTitle": "Volumes and errors",
+					"info": "Coming soon"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://area-chart"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -271,23 +323,23 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/SK"
+						"url": "#GENBRoadmap-display?feature=reports"
 					}
 				}
 			}
 		},
-		"edoc-country-AE": {
+		"soon-aiAnalysis": {
 			"vizType": "sap.ushell.StaticAppLauncher",
 			"businessApp": "bnb.edoc",
 			"vizConfig": {
 				"sap.app": {
-					"title": "UAE",
-					"subTitle": "Peppol PINT AE",
-					"info": "Mandate 2027"
+					"title": "AI Analysis",
+					"subTitle": "Rejection patterns",
+					"info": "Coming soon"
 				},
 				"sap.ui": {
 					"icons": {
-						"icon": "sap-icon://flag"
+						"icon": "sap-icon://ai"
 					},
 					"deviceTypes": {
 						"desktop": true,
@@ -298,7 +350,34 @@
 				"sap.flp": {
 					"target": {
 						"type": "URL",
-						"url": "#EDocumentMapping-manage&/country/AE"
+						"url": "#GENBRoadmap-display?feature=aiAnalysis"
+					}
+				}
+			}
+		},
+		"soon-feed": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Compliance Feed",
+					"subTitle": "Legal changes",
+					"info": "Coming soon"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://official-service"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#GENBRoadmap-display?feature=feed"
 					}
 				}
 			}
@@ -314,7 +393,7 @@
 				"layout": {
 					"sectionOrder": [
 						"apps",
-						"countries"
+						"insights"
 					]
 				},
 				"sections": {
@@ -323,58 +402,63 @@
 						"title": "GENB Accelerator",
 						"layout": {
 							"vizOrder": [
-								"s-edoc-workbench"
+								"s-edoc-workbench",
+								"s-edoc-ai",
+								"s-edoc-requests",
+								"s-soon-ruleLibrary",
+								"s-soon-testCenter"
 							]
 						},
 						"viz": {
 							"s-edoc-workbench": {
 								"id": "s-edoc-workbench",
 								"vizId": "edoc-workbench"
+							},
+							"s-edoc-ai": {
+								"id": "s-edoc-ai",
+								"vizId": "edoc-ai"
+							},
+							"s-edoc-requests": {
+								"id": "s-edoc-requests",
+								"vizId": "edoc-requests"
+							},
+							"s-soon-ruleLibrary": {
+								"id": "s-soon-ruleLibrary",
+								"vizId": "soon-ruleLibrary"
+							},
+							"s-soon-testCenter": {
+								"id": "s-soon-testCenter",
+								"vizId": "soon-testCenter"
 							}
 						}
 					},
-					"countries": {
-						"id": "countries",
-						"title": "Countries",
+					"insights": {
+						"id": "insights",
+						"title": "Insights",
 						"layout": {
 							"vizOrder": [
-								"s-edoc-country-BE",
-								"s-edoc-country-FR",
-								"s-edoc-country-DE",
-								"s-edoc-country-MX",
-								"s-edoc-country-PL",
-								"s-edoc-country-SK",
-								"s-edoc-country-AE"
+								"s-soon-dashboard",
+								"s-soon-reports",
+								"s-soon-aiAnalysis",
+								"s-soon-feed"
 							]
 						},
 						"viz": {
-							"s-edoc-country-BE": {
-								"id": "s-edoc-country-BE",
-								"vizId": "edoc-country-BE"
+							"s-soon-dashboard": {
+								"id": "s-soon-dashboard",
+								"vizId": "soon-dashboard"
 							},
-							"s-edoc-country-FR": {
-								"id": "s-edoc-country-FR",
-								"vizId": "edoc-country-FR"
+							"s-soon-reports": {
+								"id": "s-soon-reports",
+								"vizId": "soon-reports"
 							},
-							"s-edoc-country-DE": {
-								"id": "s-edoc-country-DE",
-								"vizId": "edoc-country-DE"
+							"s-soon-aiAnalysis": {
+								"id": "s-soon-aiAnalysis",
+								"vizId": "soon-aiAnalysis"
 							},
-							"s-edoc-country-MX": {
-								"id": "s-edoc-country-MX",
-								"vizId": "edoc-country-MX"
-							},
-							"s-edoc-country-PL": {
-								"id": "s-edoc-country-PL",
-								"vizId": "edoc-country-PL"
-							},
-							"s-edoc-country-SK": {
-								"id": "s-edoc-country-SK",
-								"vizId": "edoc-country-SK"
-							},
-							"s-edoc-country-AE": {
-								"id": "s-edoc-country-AE",
-								"vizId": "edoc-country-AE"
+							"s-soon-feed": {
+								"id": "s-soon-feed",
+								"vizId": "soon-feed"
 							}
 						}
 					}

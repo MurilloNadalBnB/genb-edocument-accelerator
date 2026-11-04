@@ -83,6 +83,15 @@ sap.ui.define([
 			])).then(aItems => {
 				// shown while the app is open, hidden again on the launchpad home
 				aItems.forEach(oItem => oItem.showForCurrentApp());
+				const sOpen = (((this.getOwnerComponent().getComponentData() || {}).startupParameters || {}).open || [])[0];
+				// the header buttons render a moment after showForCurrentApp; the AI popover opens by its button
+				setTimeout(() => {
+					if (sOpen === "ai") {
+						this.onAi();
+					} else if (sOpen === "requests") {
+						this.onRequests();
+					}
+				}, 600);
 			}));
 		},
 
@@ -184,16 +193,13 @@ sap.ui.define([
 		/* ---------- B&B implementation requests ---------- */
 		onRequests: function () {
 			const oModel = this.getView().getModel("app");
-			if (!oModel.getProperty("/requests").length) {
-				MessageToast.show(t("req.none"));
-				return;
-			}
 			if (!this._oRequests) {
 				this._oRequests = new Dialog({
 					title: t("req.title"),
 					icon: "sap-icon://collaborate",
 					contentWidth: "36rem",
 					content: new List({
+						noDataText: t("req.none"),
 						items: {
 							path: "app>/requests",
 							template: new ObjectListItem({

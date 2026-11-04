@@ -1,0 +1,157 @@
+{
+	"en": {
+		"soon": "Coming soon",
+		"roadmap": "Coming soon, on the GENB Accelerator roadmap.",
+		"open": "Open Mapping Workbench",
+		"features": {
+			"ruleLibrary": {
+				"title": "Rule Library",
+				"text": "Browse and reuse the rule sets B&B built in live projects, per country and scenario."
+			},
+			"testCenter": {
+				"title": "Test Center",
+				"text": "Run your rules against sample documents and check the XML against the legal schema before you transport."
+			},
+			"dashboard": {
+				"title": "Compliance Dashboard",
+				"text": "See the eDocument status of every country at a glance: sent, accepted, rejected and waiting."
+			},
+			"reports": {
+				"title": "eDocument Reports",
+				"text": "Analyse eDocument volumes, errors and rejection reasons by company code and period."
+			},
+			"aiAnalysis": {
+				"title": "AI Analysis",
+				"text": "Let the AI find patterns in rejected eDocuments and propose the rule that fixes them."
+			},
+			"feed": {
+				"title": "Compliance Feed",
+				"text": "Follow the legal changes of each country and see which of your mappings they affect."
+			}
+		}
+	},
+	"pt": {
+		"soon": "Em breve",
+		"roadmap": "Em breve, no roadmap do GENB Accelerator.",
+		"open": "Abrir o Mapping Workbench",
+		"features": {
+			"ruleLibrary": {
+				"title": "Biblioteca de regras",
+				"text": "Consulte e reutilize os conjuntos de regras que a B&B criou em projetos em produção, por país e cenário."
+			},
+			"testCenter": {
+				"title": "Central de testes",
+				"text": "Rode suas regras com documentos de exemplo e valide o XML contra o schema legal antes do transporte."
+			},
+			"dashboard": {
+				"title": "Painel de compliance",
+				"text": "Veja o status dos eDocuments de todos os países de uma vez: enviados, aceitos, rejeitados e pendentes."
+			},
+			"reports": {
+				"title": "Relatórios de eDocument",
+				"text": "Analise volumes, erros e motivos de rejeição dos eDocuments por empresa e período."
+			},
+			"aiAnalysis": {
+				"title": "Análise por IA",
+				"text": "Deixe a IA encontrar padrões nos eDocuments rejeitados e propor a regra que resolve o problema."
+			},
+			"feed": {
+				"title": "Feed de compliance",
+				"text": "Acompanhe as mudanças legais de cada país e veja quais dos seus mapeamentos elas afetam."
+			}
+		}
+	},
+	"es": {
+		"soon": "Próximamente",
+		"roadmap": "Próximamente, en la hoja de ruta de GENB Accelerator.",
+		"open": "Abrir Mapping Workbench",
+		"features": {
+			"ruleLibrary": {
+				"title": "Biblioteca de reglas",
+				"text": "Consulte y reutilice los conjuntos de reglas que B&B creó en proyectos productivos, por país y escenario."
+			},
+			"testCenter": {
+				"title": "Centro de pruebas",
+				"text": "Ejecute sus reglas con documentos de ejemplo y valide el XML contra el esquema legal antes del transporte."
+			},
+			"dashboard": {
+				"title": "Panel de cumplimiento",
+				"text": "Vea el estado de los eDocuments de todos los países de un vistazo: enviados, aceptados, rechazados y pendientes."
+			},
+			"reports": {
+				"title": "Informes de eDocument",
+				"text": "Analice volúmenes, errores y motivos de rechazo de los eDocuments por sociedad y período."
+			},
+			"aiAnalysis": {
+				"title": "Análisis con IA",
+				"text": "Deje que la IA encuentre patrones en los eDocuments rechazados y proponga la regla que los corrige."
+			},
+			"feed": {
+				"title": "Novedades legales",
+				"text": "Siga los cambios legales de cada país y vea a qué asignaciones suyas afectan."
+			}
+		}
+	},
+	"fr": {
+		"soon": "Bientôt disponible",
+		"roadmap": "Bientôt disponible, sur la feuille de route de GENB Accelerator.",
+		"open": "Ouvrir Mapping Workbench",
+		"features": {
+			"ruleLibrary": {
+				"title": "Bibliothèque de règles",
+				"text": "Consultez et réutilisez les ensembles de règles créés par B&B dans des projets réels, par pays et par scénario."
+			},
+			"testCenter": {
+				"title": "Centre de test",
+				"text": "Testez vos règles sur des documents exemples et contrôlez le XML par rapport au schéma légal avant le transport."
+			},
+			"dashboard": {
+				"title": "Tableau de bord conformité",
+				"text": "Visualisez le statut des eDocuments de chaque pays en un coup d’œil : envoyés, acceptés, rejetés et en attente."
+			},
+			"reports": {
+				"title": "Rapports eDocument",
+				"text": "Analysez les volumes, les erreurs et les motifs de rejet des eDocuments par société et par période."
+			},
+			"aiAnalysis": {
+				"title": "Analyse IA",
+				"text": "Laissez l’IA repérer les tendances des eDocuments rejetés et proposer la règle qui les corrige."
+			},
+			"feed": {
+				"title": "Veille réglementaire",
+				"text": "Suivez les évolutions légales de chaque pays et voyez quels mappages elles concernent."
+			}
+		}
+	},
+	"de": {
+		"soon": "Demnächst",
+		"roadmap": "Demnächst, auf der Roadmap von GENB Accelerator.",
+		"open": "Mapping Workbench öffnen",
+		"features": {
+			"ruleLibrary": {
+				"title": "Regelbibliothek",
+				"text": "Regelsätze, die B&B in Live-Projekten erstellt hat, je Land und Szenario durchsuchen und wiederverwenden."
+			},
+			"testCenter": {
+				"title": "Testcenter",
+				"text": "Regeln mit Beispielbelegen testen und das XML vor dem Transport gegen das gesetzliche Schema prüfen."
+			},
+			"dashboard": {
+				"title": "Compliance-Dashboard",
+				"text": "Den eDocument-Status aller Länder auf einen Blick: gesendet, angenommen, abgelehnt und offen."
+			},
+			"reports": {
+				"title": "eDocument-Berichte",
+				"text": "Volumen, Fehler und Ablehnungsgründe der eDocuments je Buchungskreis und Zeitraum auswerten."
+			},
+			"aiAnalysis": {
+				"title": "KI-Analyse",
+				"text": "Die KI findet Muster in abgelehnten eDocuments und schlägt die Regel vor, die sie behebt."
+			},
+			"feed": {
+				"title": "Compliance-Feed",
+				"text": "Gesetzesänderungen je Land verfolgen und sehen, welche Ihrer Zuordnungen betroffen sind."
+			}
+		}
+	}
+}

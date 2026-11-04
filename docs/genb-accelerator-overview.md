@@ -197,7 +197,8 @@ Este caso é usado no vídeo. A personagem é fictícia: **Tori Hayes**, key use
 ```
 index.html                   página inicial: o app dentro do SAP Fiori launchpad (sandbox do SAPUI5, CDN)
 standalone.html              o app sozinho, bootstrap do OpenUI5 (CDN), versão do vídeo
-launchpad/site.json          site CDM 3.1: space, page e tiles do launchpad
+launchpad/site.json          site CDM 3.1: space, page e tiles do launchpad (3 que funcionam, 6 de roadmap)
+launchpad/soon/              página "em breve" que os tiles de roadmap abrem (textos em 5 idiomas)
 launchpad/config.json        shell do launchpad: usuário fictício e opções do cabeçalho
 webapp/manifest.json         rotas e dependências
 webapp/Component.js          perfil fictício, notificações, motores de IA, pedidos à B&B; carrega as amostras
@@ -302,7 +303,7 @@ Para regenerar o vídeo ou o PPT é preciso instalar Node, Playwright, ffmpeg, e
 ## 9. Situação e próximos passos
 
 - **Mock:** publicado e estável. Último ajuste relevante: Auto-suggest retirado da tela e a regra de relevância contando como regra em todos os lugares.
-- **Launchpad (desde 2026-11-04, página inicial):** pedido dos gestores. O app roda dentro do SAP Fiori launchpad real em modo sandbox (`index.html`), estático, sem BTP. Links antigos (`#/country/...`) vão para o `standalone.html`. Logo da B&B no cabeçalho do launchpad.
+- **Launchpad (desde 2026-11-04, página inicial):** pedido dos gestores. O app roda dentro do SAP Fiori launchpad real em modo sandbox (`index.html`), estático, sem BTP. Links antigos (`#/country/...`) vão para o `standalone.html`. Logo da B&B no cabeçalho do launchpad. Tiles: Mapping Workbench, AI Assistant e B&B Requests funcionam; Rule Library, Test Center, Compliance Dashboard, eDocument Reports, AI Analysis e Compliance Feed são de roadmap (*Coming soon*) e abrem uma página de "em breve". Os países ficam só dentro do app.
 - **Idiomas (desde 2026-11-04):** EN, PT-BR, ES, FR e DE em todas as camadas (interface, conteúdo, respostas da IA). As traduções de ES, FR e DE ainda pedem revisão de um nativo da B&B.
 - **Próximo passo possível do launchpad:** o mesmo app como HTML5 app no BTP com SAP Build Work Zone (não precisa de CAP, o mock é todo client-side).
 - **Vídeo:** fechado, versão final aprovada.

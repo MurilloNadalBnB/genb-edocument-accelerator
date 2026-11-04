@@ -20,7 +20,10 @@ Abra `http://localhost:3000` (ou `:8080`): a página inicial é o **launchpad** 
 
 A página inicial (`index.html`) abre o mesmo app dentro do **launchpad real da SAP**, em modo sandbox (spaces e pages, o mesmo modelo do SAP Build Work Zone), sem backend e sem login. O launchpad vem do CDN do **SAPUI5** (`ui5.sap.com`, mesma versão 1.148.9), porque o `sap.ushell` não existe no OpenUI5.
 
-- **Site:** `launchpad/site.json` (site CDM 3.1): space *eDocument Compliance*, tile *Mapping Workbench* e um tile por país disponível, que abre direto a página do país.
+- **Site:** `launchpad/site.json` (site CDM 3.1): space *eDocument Compliance* com duas seções. Os países ficam dentro do app (menu lateral e Overview), não no launchpad.
+  - *GENB Accelerator*: **Mapping Workbench**, **AI Assistant** (abre o app com o assistente aberto, `?open=ai`) e **B&B Requests** (abre os pedidos à B&B, `?open=requests`), que funcionam; **Rule Library** e **Test Center**, de roadmap.
+  - *Insights*: **Compliance Dashboard**, **eDocument Reports**, **AI Analysis** e **Compliance Feed**, de roadmap.
+- **Tiles de roadmap:** mostram *Coming soon* no rodapé e abrem uma página única de "em breve" dentro do launchpad (`launchpad/soon`, intent `#GENBRoadmap-display?feature=…`), com o que a funcionalidade vai fazer e um botão para o Mapping Workbench. Os textos dessa página, nos 5 idiomas, ficam em `launchpad/soon/texts.json`.
 - **Shell:** `launchpad/config.json`: usuário fictício (*Tori Hayes*) e opções do cabeçalho.
 - **App embutido:** quando roda dentro do launchpad, o app esconde o próprio cabeçalho e põe menu, AI Assistant e notificações no cabeçalho do launchpad. Tema e densidade passam a ser os do launchpad (menu do usuário). O `standalone.html` continua igual ao do vídeo.
 - **Intent:** `#EDocumentMapping-manage`, com as rotas do app depois de `&/`, por exemplo `index.html#EDocumentMapping-manage&/country/FR/customer-invoice`.
@@ -94,6 +97,7 @@ Os XMLs em `webapp/samples/` vêm de projetos reais e foram anonimizados: nomes,
 index.html                  página inicial: o app dentro do SAP Fiori launchpad (sandbox do SAPUI5, CDN)
 standalone.html             o app sozinho, bootstrap do OpenUI5 (CDN), versão do vídeo
 launchpad/                  site CDM (spaces, pages, tiles), configuração do shell e shell.js (logo e idiomas do Settings)
+launchpad/soon/             página "em breve" dos tiles de roadmap
 webapp/
   manifest.json             rotas e dependências
   Component.js              perfil fictício, notificações, motores de IA e pedidos à B&B; carrega as amostras

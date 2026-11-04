@@ -1,0 +1,21 @@
+{
+	"_version": "1.60.0",
+	"sap.app": {
+		"id": "bnb.soon",
+		"type": "application",
+		"title": "GENB Accelerator",
+		"description": "Roadmap placeholder for the launchpad tiles marked Coming soon",
+		"applicationVersion": {"version": "0.1.0"}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"deviceTypes": {"desktop": true, "tablet": true, "phone": true}
+	},
+	"sap.ui5": {
+		"dependencies": {
+			"minUI5Version": "1.148.0",
+			"libs": {"sap.m": {}}
+		},
+		"contentDensities": {"compact": true, "cozy": true}
+	}
+}
