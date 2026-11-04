@@ -14,10 +14,14 @@ sap.ui.define([
 		init: function () {
 			UIComponent.prototype.init.apply(this, arguments);
 
-			// Compact by default (same as Fiori Elements on desktop); ?density=cozy to compare
-			const bCozy = new URLSearchParams(window.location.search).get("density") === "cozy";
-			document.body.classList.toggle("sapUiSizeCompact", !bCozy);
-			document.body.classList.toggle("sapUiSizeCozy", bCozy);
+			// Inside the Fiori launchpad (index.html) the shell header, density and theme belong to the launchpad
+			const bEmbedded = !!sap.ui.require("sap/ushell/Container");
+			if (!bEmbedded) {
+				// Compact by default (same as Fiori Elements on desktop); ?density=cozy to compare
+				const bCozy = new URLSearchParams(window.location.search).get("density") === "cozy";
+				document.body.classList.toggle("sapUiSizeCompact", !bCozy);
+				document.body.classList.toggle("sapUiSizeCozy", bCozy);
+			}
 
 			const toNav = c => ({code: c.code, name: c.name, tag: c.tag || ""});
 			// Fictional demo profile shown in the shell bar
@@ -31,6 +35,7 @@ sap.ui.define([
 				},
 				countries: engine.COUNTRIES.filter(c => !c.planned).map(toNav),
 				planned: engine.COUNTRIES.filter(c => c.planned).map(toNav),
+				embedded: bEmbedded,
 				sideExpanded: true,
 				canGoBack: false,
 				unreadCount: "2",
@@ -56,7 +61,7 @@ sap.ui.define([
 								{text: "Billing handbook, 214 documents", icon: "sap-icon://course-book"},
 								{text: "Customer master guidelines, 38 documents", icon: "sap-icon://course-book"}
 							]},
-						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP Business AI Platform", icon: "webapp/img/sap-logo.svg", initials: "", color: "Transparent", status: "Connected", enabled: true,
+						{key: "hub", name: "SAP Generative AI Hub", by: "SAP AI Core on SAP Business AI Platform", icon: sap.ui.require.toUrl("bnb/edoc/img/sap-logo.svg"), initials: "", color: "Transparent", status: "Connected", enabled: true,
 							desc: "Use the LLMs of your own SAP Business AI Platform subscription on your documents.",
 							items: [
 								{text: "Your choice of model: GPT, Claude, Gemini, Mistral", icon: "sap-icon://chain-link"},

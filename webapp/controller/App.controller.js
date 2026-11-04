@@ -1,5 +1,6 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
+	"sap/ui/core/Element",
 	"sap/ui/core/Theming",
 	"sap/m/MessageToast",
 	"sap/m/ResponsivePopover",
@@ -25,7 +26,7 @@ sap.ui.define([
 	"sap/ui/core/Fragment",
 	"../model/engine",
 	"../model/assistant"
-], function (Controller, Theming, MessageToast, ResponsivePopover, VBox, HBox, Avatar, Title, Text, List,
+], function (Controller, Element, Theming, MessageToast, ResponsivePopover, VBox, HBox, Avatar, Title, Text, List,
 	StandardListItem, CustomListItem, Switch, Label, Button, NotificationListItem, ProductSwitch, ProductSwitchItem,
 	MenuItem, Dialog, ObjectListItem, ObjectStatus, ObjectAttribute, Fragment, engine, assistant) {
 	"use strict";
@@ -57,8 +58,38 @@ sap.ui.define([
 			// Other views open the assistant with a question about the field they show
 			const oBus = this.getOwnerComponent().getEventBus();
 			oBus.subscribe("edoc", "ai", (sChannel, sEvent, oData) => this._askAi(oData.prompt, oData.ctx));
-			oBus.subscribe("edoc", "aiOpen", () => this._getAi().then(oPanel => oPanel.isOpen() || oPanel.openBy(this.byId("aiBtn"))));
+			oBus.subscribe("edoc", "aiOpen", () => this._getAi().then(oPanel => oPanel.isOpen() || oPanel.openBy(this._aiAnchor())));
 			oBus.subscribe("edoc", "requests", this.onRequests, this);
+
+			if (oApp.getProperty("/embedded")) {
+				this._useLaunchpadHeader();
+			}
+		},
+
+		/* ---------- Inside the Fiori launchpad ---------- */
+		/** The launchpad already has a shell header: drop ours and add the app buttons to the launchpad header instead. */
+		_useLaunchpadHeader: function () {
+			const oModel = this.getOwnerComponent().getModel("app");
+			this.byId("toolPage").destroyHeader();
+			sap.ui.require(["sap/ushell/Container"], Container => Container.getServiceAsync("Extension").then(oExtension => Promise.all([
+				oExtension.createHeaderItem({icon: "sap-icon://menu2", tooltip: "Menu", press: () => this.onToggleSide()}, {position: "begin", helpId: "edocMenu"}),
+				oExtension.createHeaderItem({icon: "sap-icon://ai", tooltip: "AI Assistant: Joule, SAP Generative AI Hub, GENB AI", press: () => this.onAi()}, {helpId: "edocAi"}),
+				oExtension.createHeaderItem({icon: "sap-icon://bell", tooltip: "Notifications", floatingNumber: oModel.getProperty("/notifications").filter(n => n.unread).length, press: () => this.onNotifications()}, {helpId: "edocNotifications"})
+			])).then(aItems => {
+				// shown while the app is open, hidden again on the launchpad home
+				aItems.forEach(oItem => oItem.showForCurrentApp());
+			}));
+		},
+
+		/** Launchpad header button with this help id (the launchpad gives its header items generated ids only). */
+		_headerItem: function (sHelpId) {
+			const oDom = document.querySelector(`[data-help-id="${sHelpId}"]`);
+			return oDom && Element.closestTo(oDom);
+		},
+
+		/** What the AI assistant popover opens by: our button, or the one in the launchpad header. */
+		_aiAnchor: function () {
+			return this.byId("aiBtn") || this._headerItem("edocAi");
 		},
 
 		/* ---------- AI assistant ---------- */
@@ -73,7 +104,7 @@ sap.ui.define([
 		},
 
 		onAi: function () {
-			this._getAi().then(oPanel => oPanel.isOpen() ? oPanel.close() : oPanel.openBy(this.byId("aiBtn")));
+			this._getAi().then(oPanel => oPanel.isOpen() ? oPanel.close() : oPanel.openBy(this._aiAnchor()));
 		},
 
 		onAiClose: function () {
@@ -105,7 +136,7 @@ sap.ui.define([
 			const aEngines = oModel.getProperty("/ai/engines").filter(e => e.enabled);
 			this._getAi().then(oPanel => {
 				if (!oPanel.isOpen()) {
-					oPanel.openBy(this.byId("aiBtn"));
+					oPanel.openBy(this._aiAnchor());
 				}
 				aMsgs.push({from: "user", text: sPrompt});
 				oModel.setProperty("/ai/messages", aMsgs);
@@ -183,7 +214,10 @@ sap.ui.define([
 
 		_onThemeApplied: function () {
 			const bDark = Theming.getTheme().includes("dark");
-			this.byId("logo").setSrc(bDark ? "webapp/img/logo-dark.svg" : "webapp/img/logo.svg");
+			const oLogo = this.byId("logo"); // not there inside the launchpad
+			if (oLogo) {
+				oLogo.setSrc(sap.ui.require.toUrl(bDark ? "bnb/edoc/img/logo-dark.svg" : "bnb/edoc/img/logo.svg"));
+			}
 			this.getOwnerComponent().getModel("app").setProperty("/darkMode", bDark);
 		},
 
@@ -313,7 +347,8 @@ sap.ui.define([
 
 		/* ---------- Notifications ---------- */
 		onNotifications: function (oEvent) {
-			const oSource = oEvent.getSource();
+			// launchpad header items call their handler without an event
+			const oSource = oEvent ? oEvent.getSource() : this._headerItem("edocNotifications");
 			if (!this._oNotif) {
 				const oModel = this.getView().getModel("app");
 				this._oNotif = new ResponsivePopover({
@@ -363,6 +398,10 @@ sap.ui.define([
 			const oModel = this.getView().getModel("app");
 			const iCount = oModel.getProperty("/notifications").filter(n => n.unread).length;
 			oModel.setProperty("/unreadCount", iCount ? String(iCount) : "");
+			const oBell = oModel.getProperty("/embedded") && this._headerItem("edocNotifications");
+			if (oBell) {
+				oBell.setFloatingNumber(iCount);
+			}
 		},
 
 		/* ---------- Product switch ---------- */

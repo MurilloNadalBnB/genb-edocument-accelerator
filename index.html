@@ -1,23 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="sapUShellFullHeight">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>GENB Accelerator</title>
 	<link rel="icon" type="image/svg+xml" href="webapp/img/favicon-ai.svg">
-	<!-- OpenUI5 from the SAP CDN, pinned to an LTS patch so the look does not change between recordings -->
+	<!--
+		SAP Fiori launchpad in sandbox mode (spaces and pages, CDM 3.1 site, the same model as SAP Build Work Zone).
+		It is the real launchpad from the SAPUI5 CDN, with no backend: the site (spaces, pages, tiles) is in
+		launchpad/site.json and the shell settings (user, header) in launchpad/config.json.
+		The Mapping Workbench (webapp/) opens inside it as a normal Fiori app. standalone.html has the app on its own (OpenUI5).
+	-->
+	<script>
+		// Links from before the launchpad (#/country/FR/...) are app routes: open them in the standalone app
+		if (location.hash.startsWith("#/")) {
+			location.replace("standalone.html" + location.search + location.hash);
+		}
+	</script>
+	<script>
+		// Same steps as sap/ushell/bootstrap/sandbox2.js, but with our own site instead of the SAP sample apps
+		window["sap-ui-config"] = {
+			"xx-bootTask": function (fnDone) {
+				sap.ui.require(["sap/ushell/bootstrap/sandbox2/sandbox", "sap/ushell/utils"], function (Sandbox, ushellUtils) {
+					(async function () {
+						const oConfig = window["sap-ushell-config"] = {};
+						const [oDefaults, oOwn, oSite] = await Promise.all([
+							Sandbox._loadJSON(sap.ui.require.toUrl("sap/ushell/bootstrap/sandbox2/sandboxConfig.json")),
+							Sandbox._loadJSON("launchpad/config.json"),
+							Sandbox._loadJSON("launchpad/site.json")
+						]);
+						Sandbox._applyDefaultUshellConfig(oDefaults, oConfig);
+						Sandbox._applyDefaultUshellConfig(oOwn, oConfig); // ours wins over the SAP defaults
+						Sandbox._applyDefaultSiteData(oSite, oConfig);
+						const [Container] = await ushellUtils.requireAsync(["sap/ushell/Container"]);
+						await Container.init("cdm");
+					})().then(fnDone, function (oError) {
+						console.error("Launchpad sandbox failed to start", oError);
+						fnDone();
+					});
+				});
+			}
+		};
+	</script>
+	<!-- SAPUI5 (not OpenUI5): the launchpad (sap.ushell) is only in SAPUI5. Same LTS patch as standalone.html. -->
 	<script
 		id="sap-ui-bootstrap"
-		src="https://sdk.openui5.org/1.148.9/resources/sap-ui-core.js"
+		src="https://ui5.sap.com/1.148.9/resources/sap-ui-core.js"
+		data-sap-ui-libs="sap.m, sap.ushell"
 		data-sap-ui-theme="sap_horizon"
-		data-sap-ui-resource-roots='{"bnb.edoc": "./webapp/"}'
-		data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
 		data-sap-ui-compat-version="edge"
 		data-sap-ui-async="true"
 		data-sap-ui-xx-component-preload="off"
 		data-sap-ui-language="en"></script>
+	<script>
+		sap.ui.require(["sap/ui/core/Core"], function (Core) {
+			Core.ready().then(function () {
+				sap.ui.require(["sap/ushell/Container"], function (Container) {
+					Container.createRendererInternal("fiori2").then(function (oRenderer) {
+						oRenderer.placeAt("content");
+					});
+				});
+			});
+		});
+	</script>
 </head>
-<body class="sapUiBody sapUiSizeCompact" id="content">
-	<div data-sap-ui-component data-name="bnb.edoc" data-id="container" data-settings='{"id": "edoc"}' style="height:100%"></div>
-</body>
+<body class="sapUiBody sapUShellFullHeight" id="content"></body>
 </html>

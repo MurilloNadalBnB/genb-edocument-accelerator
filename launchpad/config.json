@@ -1,0 +1,34 @@
+{
+	"renderers": {
+		"fiori2": {
+			"componentData": {
+				"config": {
+					"enableSearch": false,
+					"enablePersonalization": false,
+					"enableUserDefaultParameters": false,
+					"enableAbout": true,
+					"rootIntent": "Shell-home"
+				}
+			}
+		}
+	},
+	"services": {
+		"Container": {
+			"adapter": {
+				"config": {
+					"userProfile": {
+						"defaults": {
+							"email": "tori.hayes@demo-company.example",
+							"firstName": "Tori",
+							"lastName": "Hayes",
+							"fullName": "Tori Hayes",
+							"id": "THAYES",
+							"language": "EN",
+							"languageBcp47": "en"
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -14,7 +14,17 @@ Protótipo navegável, com visual **SAP Fiori (Horizon)**, de um produto que ain
 npx serve .            # ou: python3 -m http.server 8080
 ```
 
-Abra `http://localhost:3000` (ou `:8080`). A densidade padrão é **Compact**, a mesma dos apps Fiori Elements no desktop. Para comparar com **Cozy**, use `?density=cozy` na URL, por exemplo `index.html?density=cozy#/country/FR/customer-invoice`. Precisa de internet, porque o OpenUI5 vem do CDN da SAP (`sdk.openui5.org`, versão LTS 1.148.9 fixada no `index.html`).
+Abra `http://localhost:3000` (ou `:8080`): a página inicial é o **launchpad** (ver abaixo). O app sozinho, sem launchpad, fica em `standalone.html`, que é a versão gravada no vídeo. No `standalone.html`, a densidade padrão é **Compact**, a mesma dos apps Fiori Elements no desktop. Para comparar com **Cozy**, use `?density=cozy` na URL, por exemplo `standalone.html?density=cozy#/country/FR/customer-invoice`. Precisa de internet, porque o OpenUI5 vem do CDN da SAP (`sdk.openui5.org`, versão LTS 1.148.9 fixada no `standalone.html`).
+
+### Dentro do SAP Fiori launchpad
+
+A página inicial (`index.html`) abre o mesmo app dentro do **launchpad real da SAP**, em modo sandbox (spaces e pages, o mesmo modelo do SAP Build Work Zone), sem backend e sem login. O launchpad vem do CDN do **SAPUI5** (`ui5.sap.com`, mesma versão 1.148.9), porque o `sap.ushell` não existe no OpenUI5.
+
+- **Site:** `launchpad/site.json` (site CDM 3.1): space *eDocument Compliance*, tile *Mapping Workbench* e um tile por país disponível, que abre direto a página do país.
+- **Shell:** `launchpad/config.json`: usuário fictício (*Tori Hayes*) e opções do cabeçalho.
+- **App embutido:** quando roda dentro do launchpad, o app esconde o próprio cabeçalho e põe menu, AI Assistant e notificações no cabeçalho do launchpad. Tema e densidade passam a ser os do launchpad (menu do usuário). O `standalone.html` continua igual ao do vídeo.
+- **Intent:** `#EDocumentMapping-manage`, com as rotas do app depois de `&/`, por exemplo `index.html#EDocumentMapping-manage&/country/FR/customer-invoice`.
+- **Links antigos:** endereços do tempo antes do launchpad (`…/#/country/FR/customer-invoice`) são redirecionados para o `standalone.html`.
 
 ## O que tem na demo
 
@@ -71,7 +81,9 @@ Os XMLs em `webapp/samples/` vêm de projetos reais e foram anonimizados: nomes,
 ## Estrutura
 
 ```
-index.html                  bootstrap do OpenUI5 (CDN)
+index.html                  página inicial: o app dentro do SAP Fiori launchpad (sandbox do SAPUI5, CDN)
+standalone.html             o app sozinho, bootstrap do OpenUI5 (CDN), versão do vídeo
+launchpad/                  site CDM (spaces, pages, tiles) e configuração do shell
 webapp/
   manifest.json             rotas e dependências
   Component.js              perfil fictício, notificações, motores de IA e pedidos à B&B; carrega as amostras

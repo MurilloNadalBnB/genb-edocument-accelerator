@@ -147,8 +147,8 @@ Este caso é usado no vídeo. A personagem é fictícia: **Tori Hayes**, key use
 ### 5.2 Stack e execução
 
 - **Base:** site estático com **OpenUI5 1.148.9** (LTS, carregado do CDN da SAP), tema SAP Fiori **Horizon**, densidade Compact. É preciso internet para carregar o UI5.
-- **Rodar localmente:** sirva a raiz com qualquer servidor HTTP (`python3 -m http.server 8080`) e abra `index.html`.
-- **Rotas:**
+- **Rodar localmente:** sirva a raiz com qualquer servidor HTTP (`python3 -m http.server 8080`) e abra `index.html`, a página inicial: o app dentro do SAP Fiori launchpad real, em modo sandbox, com SAPUI5 do CDN `ui5.sap.com` (ver o README). O app sozinho, com OpenUI5 e o cabeçalho próprio do vídeo, fica em `standalone.html`.
+- **Rotas** (no `standalone.html`; no launchpad vêm depois de `#EDocumentMapping-manage&`, por exemplo `index.html#EDocumentMapping-manage&/country/FR`):
   - `#/` (Overview);
   - `#/country/{code}`;
   - `#/country/{code}/{doc}` (Workspace). Exemplo: `#/country/FR/customer-invoice`.
@@ -194,7 +194,10 @@ Este caso é usado no vídeo. A personagem é fictícia: **Tori Hayes**, key use
 ### 5.5 Arquivos principais
 
 ```
-index.html                   bootstrap do OpenUI5 (CDN)
+index.html                   página inicial: o app dentro do SAP Fiori launchpad (sandbox do SAPUI5, CDN)
+standalone.html              o app sozinho, bootstrap do OpenUI5 (CDN), versão do vídeo
+launchpad/site.json          site CDM 3.1: space, page e tiles do launchpad
+launchpad/config.json        shell do launchpad: usuário fictício e opções do cabeçalho
 webapp/manifest.json         rotas e dependências
 webapp/Component.js          perfil fictício, notificações, motores de IA, pedidos à B&B; carrega as amostras
 webapp/model/engine.js       países, cenários, catálogo SAP, sugestões, validações, regra de relevância, gerador ABAP
@@ -282,7 +285,7 @@ Ficam em pastas **locais, fora do git** (veja a seção 8).
 
 | Pasta | No git? | Conteúdo |
 |---|---|---|
-| `index.html`, `webapp/`, `docs/`, `README.md` | Sim | O mock e a documentação |
+| `index.html`, `standalone.html`, `launchpad/`, `webapp/`, `docs/`, `README.md` | Sim | O mock e a documentação |
 | `private/` | Não | Material bruto de clientes (nunca commitar) |
 | `temp/` | Não | PPTs e PDFs de referência da B&B, com nomes de clientes |
 | `video/` | Não | `genb-promo.mp4` (final) e `build/`, com as fontes do vídeo e do PPT e um README de como regenerar |
@@ -295,6 +298,7 @@ Para regenerar o vídeo ou o PPT é preciso instalar Node, Playwright, ffmpeg, e
 ## 9. Situação e próximos passos
 
 - **Mock:** publicado e estável. Último ajuste relevante: Auto-suggest retirado da tela e a regra de relevância contando como regra em todos os lugares.
+- **Launchpad (desde 2026-11-04, página inicial):** pedido dos gestores. O app roda dentro do SAP Fiori launchpad real em modo sandbox (`index.html`), estático, sem BTP. Links antigos (`#/country/...`) vão para o `standalone.html`. Próximo passo possível: o mesmo app como HTML5 app no BTP com SAP Build Work Zone (não precisa de CAP, o mock é todo client-side).
 - **Vídeo:** fechado, versão final aprovada.
 - **PPT:** em revisão com os dois gestores da B&B. Pontos que ainda dependem deles:
   - a fonte dos títulos (Montserrat Bold no lugar da Code Bold dos PPTs originais);

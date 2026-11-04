@@ -5,7 +5,19 @@
 		"type": "application",
 		"title": "GENB Accelerator",
 		"description": "Mapping Workbench (mock)",
-		"applicationVersion": {"version": "0.1.0"}
+		"applicationVersion": {"version": "0.1.0"},
+		"crossNavigation": {
+			"inbounds": {
+				"manage": {
+					"semanticObject": "EDocumentMapping",
+					"action": "manage",
+					"title": "Mapping Workbench",
+					"subTitle": "GENB Accelerator",
+					"icon": "sap-icon://chain-link",
+					"signature": {"parameters": {}, "additionalParameters": "allowed"}
+				}
+			}
+		}
 	},
 	"sap.ui": {
 		"technology": "UI5",
@@ -28,6 +40,7 @@
 				"sap.ui.codeeditor": {}
 			}
 		},
+		"contentDensities": {"compact": true, "cozy": true},
 		"resources": {
 			"css": [{"uri": "css/style.css"}]
 		},

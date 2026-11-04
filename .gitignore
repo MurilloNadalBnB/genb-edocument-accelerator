@@ -12,3 +12,6 @@ temp/
 
 # GENB Accelerator deck (brand photos and embedded fonts): kept locally, latest version only
 presentation/
+
+# Local backups (zip archives of the project): never commit
+*.zip

@@ -1,0 +1,418 @@
+{
+	"_version": "3.1.0",
+	"site": {
+		"identification": {
+			"id": "genb-accelerator-site",
+			"namespace": "",
+			"title": "GENB Accelerator",
+			"description": "eDocument compliance launchpad (demo)"
+		},
+		"payload": {
+			"groupsOrder": [],
+			"config": {}
+		}
+	},
+	"catalogs": {
+		"edoc-catalog": {
+			"identification": {
+				"id": "edoc-catalog",
+				"title": "GENB Accelerator"
+			},
+			"payload": {
+				"viz": [
+					"edoc-workbench",
+					"edoc-country-BE",
+					"edoc-country-FR",
+					"edoc-country-DE",
+					"edoc-country-MX",
+					"edoc-country-PL",
+					"edoc-country-SK",
+					"edoc-country-AE"
+				]
+			}
+		}
+	},
+	"applications": {
+		"bnb.edoc": {
+			"sap.app": {
+				"id": "bnb.edoc",
+				"title": "Mapping Workbench",
+				"subTitle": "GENB Accelerator",
+				"ach": "CA-GTF-CSC-EDO",
+				"applicationVersion": {
+					"version": "0.1.0"
+				},
+				"crossNavigation": {
+					"inbounds": {
+						"manage": {
+							"semanticObject": "EDocumentMapping",
+							"action": "manage",
+							"signature": {
+								"parameters": {},
+								"additionalParameters": "allowed"
+							}
+						}
+					}
+				},
+				"tags": {
+					"keywords": [
+						"eDocument",
+						"DRC",
+						"mapping",
+						"GENB"
+					]
+				}
+			},
+			"sap.flp": {
+				"type": "application"
+			},
+			"sap.ui": {
+				"technology": "UI5",
+				"icons": {
+					"icon": "sap-icon://chain-link"
+				},
+				"deviceTypes": {
+					"desktop": true,
+					"tablet": true,
+					"phone": true
+				}
+			},
+			"sap.ui5": {
+				"componentName": "bnb.edoc"
+			},
+			"sap.platform.runtime": {
+				"componentProperties": {
+					"url": "./webapp"
+				}
+			}
+		}
+	},
+	"systemAliases": {},
+	"visualizations": {
+		"edoc-workbench": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Mapping Workbench",
+					"subTitle": "GENB Accelerator",
+					"info": "AI-assisted mapping"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://chain-link"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"appId": "bnb.edoc",
+						"inboundId": "manage"
+					}
+				}
+			}
+		},
+		"edoc-country-BE": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Belgium",
+					"subTitle": "Peppol BIS 3.0"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/BE"
+					}
+				}
+			}
+		},
+		"edoc-country-FR": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "France",
+					"subTitle": "UBL, e-reporting",
+					"info": "Live"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/FR"
+					}
+				}
+			}
+		},
+		"edoc-country-DE": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Germany",
+					"subTitle": "XRechnung, ZUGFeRD",
+					"info": "Mandate 2027"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/DE"
+					}
+				}
+			}
+		},
+		"edoc-country-MX": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Mexico",
+					"subTitle": "CFDI 4.0, Pagos 2.0"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/MX"
+					}
+				}
+			}
+		},
+		"edoc-country-PL": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Poland",
+					"subTitle": "KSeF, FA(2)",
+					"info": "Live"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/PL"
+					}
+				}
+			}
+		},
+		"edoc-country-SK": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "Slovakia",
+					"subTitle": "Peppol, 5-corner",
+					"info": "Mandate 2027"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/SK"
+					}
+				}
+			}
+		},
+		"edoc-country-AE": {
+			"vizType": "sap.ushell.StaticAppLauncher",
+			"businessApp": "bnb.edoc",
+			"vizConfig": {
+				"sap.app": {
+					"title": "UAE",
+					"subTitle": "Peppol PINT AE",
+					"info": "Mandate 2027"
+				},
+				"sap.ui": {
+					"icons": {
+						"icon": "sap-icon://flag"
+					},
+					"deviceTypes": {
+						"desktop": true,
+						"tablet": true,
+						"phone": true
+					}
+				},
+				"sap.flp": {
+					"target": {
+						"type": "URL",
+						"url": "#EDocumentMapping-manage&/country/AE"
+					}
+				}
+			}
+		}
+	},
+	"pages": {
+		"edoc-page": {
+			"identification": {
+				"id": "edoc-page",
+				"title": "eDocument Compliance"
+			},
+			"payload": {
+				"layout": {
+					"sectionOrder": [
+						"apps",
+						"countries"
+					]
+				},
+				"sections": {
+					"apps": {
+						"id": "apps",
+						"title": "GENB Accelerator",
+						"layout": {
+							"vizOrder": [
+								"s-edoc-workbench"
+							]
+						},
+						"viz": {
+							"s-edoc-workbench": {
+								"id": "s-edoc-workbench",
+								"vizId": "edoc-workbench"
+							}
+						}
+					},
+					"countries": {
+						"id": "countries",
+						"title": "Countries",
+						"layout": {
+							"vizOrder": [
+								"s-edoc-country-BE",
+								"s-edoc-country-FR",
+								"s-edoc-country-DE",
+								"s-edoc-country-MX",
+								"s-edoc-country-PL",
+								"s-edoc-country-SK",
+								"s-edoc-country-AE"
+							]
+						},
+						"viz": {
+							"s-edoc-country-BE": {
+								"id": "s-edoc-country-BE",
+								"vizId": "edoc-country-BE"
+							},
+							"s-edoc-country-FR": {
+								"id": "s-edoc-country-FR",
+								"vizId": "edoc-country-FR"
+							},
+							"s-edoc-country-DE": {
+								"id": "s-edoc-country-DE",
+								"vizId": "edoc-country-DE"
+							},
+							"s-edoc-country-MX": {
+								"id": "s-edoc-country-MX",
+								"vizId": "edoc-country-MX"
+							},
+							"s-edoc-country-PL": {
+								"id": "s-edoc-country-PL",
+								"vizId": "edoc-country-PL"
+							},
+							"s-edoc-country-SK": {
+								"id": "s-edoc-country-SK",
+								"vizId": "edoc-country-SK"
+							},
+							"s-edoc-country-AE": {
+								"id": "s-edoc-country-AE",
+								"vizId": "edoc-country-AE"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"menus": {
+		"main": {
+			"identification": {
+				"id": "main"
+			},
+			"payload": {
+				"menuEntries": [
+					{
+						"id": "edoc-space",
+						"help-id": "Space-edoc-space",
+						"title": "eDocument Compliance",
+						"description": "GENB Accelerator",
+						"icon": "sap-icon://official-service",
+						"type": "IBN",
+						"target": {
+							"semanticObject": "Launchpad",
+							"action": "openFLPPage",
+							"parameters": [
+								{
+									"name": "pageId",
+									"value": "edoc-page"
+								},
+								{
+									"name": "spaceId",
+									"value": "edoc-space"
+								}
+							]
+						}
+					}
+				]
+			}
+		}
+	}
+}
