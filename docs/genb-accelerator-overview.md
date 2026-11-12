@@ -251,7 +251,7 @@ Ficam em pastas **locais, fora do git** (veja a seção 8).
   - 20+ anos de SAP;
   - parceiro oficial SAP DRC;
   - Tax & Compliance (e-invoicing, e-reporting, statutory reports, localization);
-  - 34 países com SAP DRC, por região;
+  - 40 países com SAP DRC, por região e com bandeiras;
   - os mandatos;
   - os produtos GENB AI e GENB Accelerator;
   - Build · Extend · Operate;
