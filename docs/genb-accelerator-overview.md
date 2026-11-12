@@ -243,6 +243,23 @@ Ficam em pastas **locais, fora do git** (veja a seção 8).
   - montagem com ffmpeg numa grade exata de 60 fps.
 - **Fontes e passo a passo:** em `video/build/`, com o `README.md` de como regenerar.
 
+### 6.1.1 Vídeo institucional da B&B e loop da TV (12/11/2026)
+
+- **Institucional:** `video/bnb-institutional.mp4`, com 1:22, 60 fps, **sem narração e sem legendas**. São slides animados e minimalistas, no mesmo preto e branco e com o mesmo fundo das telas de título do vídeo promocional. O conteúdo vem só do PDF institucional da B&B, sem nomes ou logos de clientes.
+- **Roteiro:**
+  - logo B|B com "Your partner";
+  - 20+ anos de SAP;
+  - parceiro oficial SAP DRC;
+  - Tax & Compliance (e-invoicing, e-reporting, statutory reports, localization);
+  - 34 países com SAP DRC, por região;
+  - os mandatos;
+  - os produtos GENB AI e GENB Accelerator;
+  - Build · Extend · Operate;
+  - Portugal · Brasil;
+  - cartão final.
+- **Loop da TV:** `video/bnb-tv-loop.mp4`, com 3:50: institucional, 2 s de preto, vídeo promocional (com fade-out só nesta versão), 2 s de preto.
+- **Como é feito:** a página `video/build/institutional/stage.html` é renderizada quadro a quadro (Playwright posiciona o tempo de cada animação e tira um screenshot). O passo a passo está no `README.md` da mesma pasta.
+
 ### 6.2 PPT de apresentação
 
 - **Arquivo e formato:** `presentation/GENB-Accelerator.pptx`, com 17 slides para apresentação ao vivo e o roteiro de fala nas notas. A Montserrat vai embutida.
@@ -293,7 +310,7 @@ Ficam em pastas **locais, fora do git** (veja a seção 8).
 | `index.html`, `standalone.html`, `launchpad/`, `webapp/`, `docs/`, `README.md` | Sim | O mock e a documentação |
 | `private/` | Não | Material bruto de clientes (nunca commitar) |
 | `temp/` | Não | PPTs e PDFs de referência da B&B, com nomes de clientes |
-| `video/` | Não | `genb-promo.mp4` (final) e `build/`, com as fontes do vídeo e do PPT e um README de como regenerar |
+| `video/` | Não | `genb-promo.mp4` (final), `bnb-institutional.mp4`, `bnb-tv-loop.mp4` e `build/`, com as fontes dos vídeos e do PPT e READMEs de como regenerar |
 | `presentation/` | Não | `GENB-Accelerator.pptx` |
 
 Para regenerar o vídeo ou o PPT é preciso instalar Node, Playwright, ffmpeg, espeak-ng e os modelos Kokoro (os links estão em `video/build/README.md`), além de pptxgenjs e fontTools.
